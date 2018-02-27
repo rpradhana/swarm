@@ -19,7 +19,7 @@ export default {
   },
   head () {
     return {
-      title: 'Users'
+      title: 'Swarm'
     }
   },
   components: {

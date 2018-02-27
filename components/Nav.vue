@@ -4,7 +4,7 @@
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <a href="#"><img src="http://via.placeholder.com/160x35"></a>
+            <a href="#"><img src="swarm-logo.svg"></a>
           </div>
           <div class="nav-menu">
             <b-button variant="link" class="nav-link">
@@ -34,13 +34,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .nav-brand {
-    display: flex;
-    align-items: center;
-  }
   .nav {
     padding-top: $spacer * 0.5;
     padding-bottom: $spacer * 0.5;
+    position: fixed;
+    width: 100%;
+    background: $white;
+    z-index: 100000;
+    -webkit-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
   }
   .nav-menu {
     display: flex;

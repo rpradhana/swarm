@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto:400,700');
+
+@font-face {
+  font-family: Geomanist;
+  src: url('/fonts/Geomanist-Book.otf') format('otf');
+}
+
 body * {
   &:hover{
     box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.2);
@@ -8,7 +15,7 @@ html, body
 {
   background-color: #fff;
   color: #000;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
   font-family: "Roboto", Arial, sans-serif;
   margin: 0;
 }
@@ -27,5 +34,5 @@ html, body
 }
 
 .title {
-  font-family: "Roboto", sans-serif
+  font-family: "Geomanist", "Montserrat", "Roboto", sans-serif;
 }

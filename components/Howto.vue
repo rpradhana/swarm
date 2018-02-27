@@ -1,6 +1,6 @@
 <template>
   <section class="howto">
-    <b-container class="mt-5 mb-5">
+    <b-container class="pt-5 pb-5">
       <b-row v-for="(step, index) in steps" :key="step">
         <b-col cols="2" md="1" offset-md="2">
           <div class="pt-3">
