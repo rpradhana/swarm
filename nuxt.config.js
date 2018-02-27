@@ -1,3 +1,5 @@
+const resolve = require('path').resolve
+
 const dev = !(process.env.NODE_ENV === 'production')
 let middlewares = []
 
@@ -26,7 +28,24 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['~/assets/css/main.css'],
+  css: [
+    '~/assets/css/bootstrap.css',
+    '~/assets/css/main.css'
+  ],
+  /**
+  ** Modules
+  */
+  modules: [
+    // Custom bootstrap CSS...
+    ['bootstrap-vue/nuxt', { css: false }],
+
+    // Sass resource loader
+    ['nuxt-sass-resources-loader', [
+        resolve(__dirname, 'assets/bootstrap/scss/_functions.scss'),
+        resolve(__dirname, 'assets/bootstrap/scss/_variables.scss'),
+        resolve(__dirname, 'assets/bootstrap/scss/_mixins.scss')
+    ]]
+  ],
   /*
   ** Add proxy
   */

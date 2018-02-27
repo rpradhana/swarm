@@ -14,14 +14,21 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "bootstrap": "^4.0.0",
+    "bootstrap-vue": "^2.0.0-rc.1",
     "cross-env": "^5.0.1",
     "express": "^4.15.3",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.4",
     "nuxt": "^1.0.0-rc3",
+    "nuxt-sass-resources-loader": "^1.1.1",
     "source-map-support": "^0.4.15"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "backpack-core": "^0.4.1",
+    "css-loader": "^0.28.10",
     "eslint": "^4.3.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-loader": "^1.9.0",
@@ -30,6 +37,12 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "http-proxy-middleware": "^0.17.4"
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0",
+    "gulp-sass-bulk-import": "^1.0.1",
+    "http-proxy-middleware": "^0.17.4",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.20.2"
   }
 }
