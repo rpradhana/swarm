@@ -1,10 +1,10 @@
 <template>
-  <nav class="nav">
+  <nav class="nav sticky-top shadow">
     <b-container>
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <a href="#"><img src="swarm-logo.svg"></a>
+            <a href="#"><img src="img/swarm-logo.svg"></a>
           </div>
           <div class="nav-menu">
             <b-button variant="link" class="nav-link">
@@ -37,13 +37,10 @@ export default {
   .nav {
     padding-top: $spacer * 0.5;
     padding-bottom: $spacer * 0.5;
-    position: fixed;
+    // position: fixed;
     width: 100%;
     background: $white;
     z-index: 100000;
-    -webkit-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
-    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
   }
   .nav-brand {
     display: flex;

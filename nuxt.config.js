@@ -29,8 +29,7 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    '~/assets/css/bootstrap.css',
-    '~/assets/css/main.css'
+    '~/assets/css/custom.css'
   ],
   /**
   ** Modules

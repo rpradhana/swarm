@@ -9,16 +9,16 @@ var bulkSass = require('gulp-sass-bulk-import');
 
 
 gulp.task('sass', function () {
-  gulp.src('./assets/bootstrap/scss/**/*.scss')
+  gulp.src('./assets/css/custom.scss')
     .pipe(bulkSass())
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(sourcemaps.write())
-    .pipe(rename('bootstrap2.css'))
+    .pipe(rename('custom.css'))
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
     }))
-    .pipe(gulp.dest('assets/css'));
+    .pipe(gulp.dest('./assets/css'));
 });
 
 gulp.task('sass:watch', function () {

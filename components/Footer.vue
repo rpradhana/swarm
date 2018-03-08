@@ -6,7 +6,7 @@
           <b-button variant="link" class="footer-link">
             About
           </b-button>
-          <b-button variant="link" class="footer-link">
+          <b-button variant="link" class="footer-link" href="https://github.com/rpradhana/swarm">
             Github
           </b-button>
         </div>
@@ -22,9 +22,6 @@
 
 <script>
 export default {
-
-  name: 'Footer',
-
   data () {
     return {
 
@@ -36,8 +33,8 @@ export default {
 <style lang="scss" scoped>
   .footer {
     background: $gray-900;
-    padding-top: $spacer * 2;
-    padding-bottom: $spacer * 2;
+    padding-top: $spacer;
+    padding-bottom: $spacer;
   }
   .footer-link {
     color: $gray-600;

@@ -2,8 +2,8 @@
   <section class="hero">
     <b-container>
       <b-row>
-        <b-col sm="12" md="8" offset-md="2">
-          <div class="u-flex-center hero-content text-center pt-5 pb-4">
+        <b-col sm="12" md="10" offset-md="1">
+          <div class="u-flex-center hero-content text-center pt-5 pb-5">
             <h1 class="title mb-4">Human-in-the-loop framework for data classification</h1>
             <h5 class="mb-5">
               Utilize the power of crowd to prototype a classification model or improve the accuracy of an existing machine learning framework.
@@ -20,12 +20,8 @@
 
 <script>
 export default {
-
-  name: 'Hero',
-
   data () {
     return {
-
     }
   }
 }

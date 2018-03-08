@@ -1,11 +1,11 @@
 <template>
   <section class="howto">
-    <b-container class="pt-5 pb-5">
+    <b-container class="pt-7 pb-7">
       <b-row v-for="(step, index) in steps" :key="step">
         <b-col cols="2" md="1" offset-md="2">
           <div class="pt-3">
             <div class="number-circle">
-              <h3 class="mb-0">{{ index + 1 }}</h3>
+              <h4 class="mb-0 title">{{ index + 1 }}</h4>
             </div>
           </div>
         </b-col>

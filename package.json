@@ -5,7 +5,7 @@
   "author": "Raymond <raymond.pradhana@gmail.com>",
   "private": true,
   "scripts": {
-    "nuxt": "nuxt",
+    "nuxt": "nuxt --spa",
     "dev": "backpack dev",
     "build": "cross-env NODE_ENV=production nuxt build && backpack build",
     "start": "cross-env NODE_ENV=production node build/main.js",
