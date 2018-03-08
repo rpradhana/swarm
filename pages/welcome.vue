@@ -34,7 +34,7 @@
             <p class="card-text mb-4">
               Do simple tasks and receive incentive money.
             </p>
-            <b-button variant="info">
+            <b-button variant="secondary">
               I'm a Contributor
             </b-button>
           </b-card>
@@ -70,7 +70,7 @@ export default {
   }
 
   #contributor .card-img-top {
-    background: $info;
+    background: $secondary;
     min-height: 12rem;
     padding: $spacer * 2 $spacer * 4;
   }
