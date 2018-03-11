@@ -8,7 +8,7 @@
             <h5 class="mb-5">
               Utilize the power of crowd to prototype a classification model or improve the accuracy of an existing machine learning framework.
             </h5>
-            <b-button variant="primary" size="lg">
+            <b-button variant="primary" size="lg" to="welcome">
               Get Started
             </b-button>
           </div>

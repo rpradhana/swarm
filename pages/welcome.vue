@@ -19,7 +19,7 @@
             <p class="card-text mb-4">
               Create and manage data classification projects.
             </p>
-            <b-button variant="primary">
+            <b-button variant="primary" to="sign-in">
               I'm an Owner
             </b-button>
           </b-card>
@@ -34,7 +34,7 @@
             <p class="card-text mb-4">
               Do simple tasks and receive incentive money.
             </p>
-            <b-button variant="secondary">
+            <b-button variant="secondary" to="register">
               I'm a Contributor
             </b-button>
           </b-card>

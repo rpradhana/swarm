@@ -22,7 +22,8 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: '/swarm-icon.png' }
+      { rel: 'icon', type: 'image/png', href: '/swarm-icon.png' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' }
     ]
   },
   /*
