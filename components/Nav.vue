@@ -40,7 +40,7 @@ export default {
     // position: fixed;
     width: 100%;
     background: $white;
-    z-index: 100000;
+    z-index: 100;
   }
   .nav-brand {
     display: flex;

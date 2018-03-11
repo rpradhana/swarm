@@ -2,7 +2,7 @@
   <section class="v-container u-flex-center">
     <b-container class="pb-7 pt-5">
       <b-row class="text-center mb-5">
-        <b-col col="12">
+        <b-col sm="12">
           <h3 class="title">
             Welcome back!
           </h3>
