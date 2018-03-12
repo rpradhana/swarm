@@ -9,7 +9,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col sm="12">
+        <b-col sm="12" md="8" order-md="1" order-sm="2">
           <b-table class="mb-5"
                    hover
                    :current-page="currentPage"
@@ -27,7 +27,7 @@
               <b-button variant="light" class="mr-3">
                 Preview
               </b-button>
-              <b-button variant="primary" to="/attempt">
+              <b-button variant="primary" to="attempt">
                 Attempt
               </b-button>
             </template>
@@ -55,6 +55,26 @@
                         :total-rows="projects.length"
                         :per-page="20"/>
         </b-col>
+        <b-col sm="12" md="4" order-md="2" order-sm="1">
+          <b-card class="shadow mb-5">
+            <h5 class="mb-3">Available earnings: ${{ available }}</h5>
+            <b-button variant="primary">
+              Transfer via Paypal
+            </b-button>
+          </b-card>
+          <b-card class="shadow mb-5">
+            <h5 class="mb-3">Overview</h5>
+            <div>
+              <strong>Attempts taken: </strong>{{ attemptsTaken }}
+            </div>
+            <div>
+              <strong>Task done: </strong>{{ taskDone }}
+            </div>
+            <div>
+              <strong>Total earnings: </strong>${{ totalEarnings }}
+            </div>
+          </b-card>
+        </b-col>
       </b-row>
     </b-container>
   </section>
@@ -71,70 +91,41 @@ export default {
   },
   data () {
     return {
+      available: 7.5,
+      attemptsTaken: 5,
+      taskDone: 30000,
+      totalEarnings: 12.90,
       fields: [
-        '#',
+        { key: 'date', sortable: true },
         { key: 'title', sortable: true },
         { key: 'type', sortable: true },
-        { key: 'contributors', sortable: true },
-        { key: 'reward', sortable: true },
-        { key: 'created', sortable: true },
-        '##'
+        { key: 'tasks', sortable: true },
+        { key: 'earnings', sortable: true }
       ],
       projects: [
         {
           id: '00000001',
           title: 'Classify the species of birds of paradise',
           type: 'Modelling',
-          contributors: 10000,
-          reward: 0.1,
-          created: '1/03/2017',
-          expiry: '3/04/2018',
-          owner: 'John Doe',
-          description: 'Given a set of images, identify visible features to find out the category of said image'
+          tasks: 10000,
+          earnings: 360,
+          date: '1/03/2017'
         },
         {
           id: '00000002',
-          title: 'Identifying the species of birds',
-          type: 'Prediction',
-          contributors: 14,
-          reward: 0.2,
-          created: '3/12/2016',
-          expiry: '3/04/2018',
-          owner: 'John Doe',
-          description: 'Given a set of images, identify visible features to find out the category of said image'
+          title: 'Identify features of sad and happy expressions',
+          type: 'Modelling',
+          tasks: 10000,
+          earnings: 360,
+          date: '1/02/2017'
         },
         {
           id: '00000003',
-          title: 'Identify features of sad and happy expressions',
-          type: 'Prediction',
-          contributors: 1850,
-          reward: 0.1,
-          created: '3/12/2016',
-          expiry: '3/04/2018',
-          owner: 'John Doe',
-          description: 'Given a set of images, identify visible features to find out the category of said image'
-        },
-        {
-          id: '00000004',
           title: 'Sort 3 types of our user feedback',
-          type: 'Modelling',
-          contributors: 10000,
-          reward: 0.15,
-          created: '1/03/2017',
-          expiry: '3/04/2018',
-          owner: 'John Doe',
-          description: 'Given a set of images, identify visible features to find out the category of said image'
-        },
-        {
-          id: '00000005',
-          title: 'Categorize the feedback we received',
-          type: 'Modelling',
-          contributors: 10000,
-          reward: 0.3,
-          created: '1/03/2017',
-          expiry: '3/04/2018',
-          owner: 'John Doe',
-          description: 'Given a set of images, identify visible features to find out the category of said image'
+          type: 'Prediction',
+          tasks: 10000,
+          earnings: 360,
+          date: '2/04/2017'
         }
       ]
     }
