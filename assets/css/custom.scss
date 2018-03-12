@@ -27,6 +27,9 @@ body
     font-size: 14px;
   }
 }
+strong {
+  font-weight: $font-weight-medium;
+}
 
 .v-container {
   min-height: calc(100vh - 58px);
@@ -50,4 +53,12 @@ body
   -webkit-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15) !important;
   -moz-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15) !important;
   box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15) !important;
+}
+
+.secondary-cta-link {
+  color: $gray-600;
+  & a {
+    color: $gray-600;
+    text-decoration: underline;
+  }
 }

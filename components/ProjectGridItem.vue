@@ -120,7 +120,4 @@ export default {
       justify-content: space-between;
     }
   }
-  strong {
-    font-weight: $font-weight-medium;
-  }
 </style>

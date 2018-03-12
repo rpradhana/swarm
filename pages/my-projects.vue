@@ -6,22 +6,22 @@
           <h4 class="title mb-5">
             My projects
           </h4>
-          <b-row class="project-grid-container">
-            <ProjectGridItem v-for="project in projects"
-                             :key="project.id"
-                             :id                 = "project.id"
-                             :title              = "project.title"
-                             :type               = "project.type"
-                             :contributors       = "project.contributors"
-                             :contributors-limit = "project.contributorsLimit"
-                             :results            = "project.results"
-                             :results-limit      = "project.resultsLimit"
-                             :expense            = "project.expense"
-                             :latest             = "project.latest"
-                             :quality            = "project.quality"
-                             :status             = "project.status"/>
-          </b-row>
         </b-col>
+      </b-row>
+      <b-row class="project-grid-container">
+        <ProjectGridItem v-for="project in projects"
+                         :key="project.id"
+                         :id                 = "project.id"
+                         :title              = "project.title"
+                         :type               = "project.type"
+                         :contributors       = "project.contributors"
+                         :contributors-limit = "project.contributorsLimit"
+                         :results            = "project.results"
+                         :results-limit      = "project.resultsLimit"
+                         :expense            = "project.expense"
+                         :latest             = "project.latest"
+                         :quality            = "project.quality"
+                         :status             = "project.status"/>
       </b-row>
     </b-container>
   </section>
