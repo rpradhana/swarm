@@ -23,6 +23,7 @@
     "gulp-sourcemaps": "^2.6.4",
     "nuxt": "^1.0.0-rc3",
     "nuxt-sass-resources-loader": "^1.1.1",
+    "smartcrop": "^2.0.2",
     "source-map-support": "^0.4.15"
   },
   "devDependencies": {

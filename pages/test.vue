@@ -2,13 +2,6 @@
   <section class="v-container">
     <b-container class="pb-7 pt-5">
       <b-row>
-        <b-col sm="12">
-          <h4 class="title mb-5">
-            All project
-          </h4>
-        </b-col>
-      </b-row>
-      <b-row>
         <b-col sm="12" md="8" order-md="1" order-sm="2">
           <b-row>
             <b-col sm="12" md="12">
