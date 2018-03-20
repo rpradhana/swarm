@@ -1,7 +1,7 @@
 <template>
   <section class="v-container">
     <b-container class="pb-7 pt-5">
-      <b-row>
+      <b-row align-h="center">
         <b-col sm="12" md="8" order-md="1" order-sm="2">
           <b-row>
             <b-col sm="12" md="12">
@@ -9,9 +9,6 @@
                       :img-src="question.src"
                       img-alt="A"
                       img-top>
-                <div class="text-center">
-                  A
-                </div>
               </b-card>
             </b-col>
           </b-row>
@@ -25,14 +22,14 @@
                 <b-button class="mr-3" type="submit" variant="danger" size="lg">
                   No
                 </b-button>
-                <b-button class="mr-3 skip" type="submit" variant="link" size="md">
-                  Skip question
+                <b-button class="skip text-uppercase" variant="link" size="sm">
+                  Skip this question
                 </b-button>
               </b-form>
             </b-col>
           </b-row>
         </b-col>
-        <b-col sm="12" md="4" order-md="2" order-sm="1">
+        <b-col sm="12" md="4" order-md="2" order-sm="1" class="d-none">
           <b-card class="shadow mb-5">
             <div class="mb-3">
               <div>
@@ -59,7 +56,7 @@
 // import axios from '~/plugins/axios'
 
 export default {
-  layout: 'owner',
+  layout: 'contributor',
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

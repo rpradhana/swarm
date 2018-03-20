@@ -58,7 +58,7 @@
                   </div>
                 </b-tab>
 
-                <b-tab ref="step2" title="Step 2" disabled>
+                <b-tab ref="step2" title="Step 2" :disabled="canProceed === 0">
                   <h5 class="title mb-3">
                     Which one has the "{{ feature }}"?
                   </h5>
@@ -197,7 +197,7 @@
 // import axios from '~/plugins/axios'
 
 export default {
-  layout: 'owner',
+  layout: 'contributor',
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
@@ -209,6 +209,7 @@ export default {
       featureA: '',
       featureB: '',
       currentStep: 0,
+      canProceed: 1,
       session: {
         title: 'Classify the species of birds of paradise',
         taskDone: 150,

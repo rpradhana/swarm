@@ -5,14 +5,26 @@
         <b-row align-h="between">
           <div class="nav-brand">
             <nuxt-link to="/"><img src="img/swarm-logo.svg"></nuxt-link>
+            <div class="nav-menu ml-3">
+              <b-button variant="link" class="mr-3 nav-link" to="dashboard">
+                Dashboard
+              </b-button>
+              <b-button variant="link" class="mr-3 nav-link" to="projects">
+                Projects
+              </b-button>
+            </div>
+          </div>
+          <div class="search">
+            <b-form-input type="text"
+                          placeholder="Search projects"/>
           </div>
           <div class="nav-menu">
-            <b-button variant="link" class="nav-link" to="welcome">
-              Sign In
+            <b-button variant="link" class="ml-3 mr-3 nav-link">
+              Filter
             </b-button>
-            <b-button variant="primary" to="welcome">
-              Register
-            </b-button>
+            ​<picture class="avatar">
+              <img src="https://placeimg.com/32/32/people" class="img-fluid img-thumbnail" alt="avatar">
+            </picture>
           </div>
         </b-row>
       </b-col>
@@ -49,6 +61,7 @@ export default {
   .nav-menu {
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
   .nav-link {
     color: $black;
@@ -58,5 +71,13 @@ export default {
     &:hover {
       color: $primary;
     }
+  }
+  .avatar img {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+  }
+  .search {
+    flex-grow: 1;
   }
 </style>

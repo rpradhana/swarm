@@ -64,7 +64,7 @@
 // import axios from '~/plugins/axios'
 
 export default {
-  layout: 'owner',
+  layout: 'contributor',
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

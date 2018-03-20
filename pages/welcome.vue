@@ -4,7 +4,7 @@
       <b-row class="text-center mb-5">
         <b-col sm="12">
           <h3 class="title">
-            Welcome back!
+            Welcome!
           </h3>
         </b-col>
       </b-row>

@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <b-button variant="primary" class="mr-3">
+        <b-button variant="primary" class="mr-3" to="model">
           Manage
         </b-button>
         <b-button variant="secondary" class="mr-3">
