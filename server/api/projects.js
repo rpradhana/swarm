@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 const router = Router()
 
-const Project = require('../models/project');
+const Project = require('../models/project')
 
 // /* GET users listing. */
 // router.get('/users', function (req, res, next) {
@@ -22,32 +22,32 @@ const Project = require('../models/project');
 
 // Add new post
 router.post('/projects', (req, res) => {
-  const db = req.db
-  const title            = req.body.title,
-        description      = req.body.description,
-        owner            = req.body.owner,
-        type             = req.body.type,
-        incentive        = req.body.incentive,
-        contributor      = req.body.contributor,
-        contributorLimit = req.body.contributorLimit,
-        estimatedCost    = req.body.estimatedCost,
-        creationDate     = req.body.creationDate,
-        expiryDate       = req.body.expiryDate
+  // const db = req.db
+  const title = req.body.title
+  const description = req.body.description
+  const owner = req.body.owner
+  const type = req.body.type
+  const incentive = req.body.incentive
+  const contributor = req.body.contributor
+  const contributorLimit = req.body.contributorLimit
+  const estimatedCost = req.body.estimatedCost
+  const creationDate = req.body.creationDate
+  const expiryDate = req.body.expiryDate
 
-  const new_project = new Project({
-    title            : title,
-    description      : description,
-    owner            : owner,
-    type             : type,
-    incentive        : incentive,
-    contributor      : contributor,
-    contributorLimit : contributorLimit,
-    estimatedCost    : estimatedCost,
-    creationDate     : creationDate,
-    expiryDate       : expiryDate
+  const newProject = new Project({
+    title: title,
+    description: description,
+    owner: owner,
+    type: type,
+    incentive: incentive,
+    contributor: contributor,
+    contributorLimit: contributorLimit,
+    estimatedCost: estimatedCost,
+    creationDate: creationDate,
+    expiryDate: expiryDate
   })
 
-  new_project.save(function (error) {
+  newProject.save(function (error) {
     if (error) {
       console.log(error)
     }
@@ -61,11 +61,11 @@ router.post('/projects', (req, res) => {
 // Fetch all posts
 router.get('/projects', (req, res) => {
   Project.find({}, '', function (error, projects) {
-    if (error) { console.error(error); }
+    if (error) { console.error(error) }
     res.send({
       projects: projects
     })
-  }).sort({_id:-1})
+  }).sort({ _id: -1 })
 })
 
 export default router
