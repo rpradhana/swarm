@@ -90,10 +90,21 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
   layout: 'owner',
+  asyncData ({ params, error }) {
+    // let { data } = await axios.get('/api/users')
+    // return { users: data }
+    return axios.get('/api/projects/' + params.id)
+      .then((res) => {
+        return { project: res.data }
+      })
+      .catch((e) => {
+        error({ statusCode: 404, message: 'Project not found' })
+      })
+  },
   data () {
     return {
       selected: 'modelling',
@@ -120,10 +131,6 @@ export default {
       this.show = false
       this.$nextTick(() => { this.show = true })
     }
-  },
-  async asyncData () {
-    // let { data } = await axios.get('/api/users')
-    // return { users: data }
   },
   head () {
     return {
