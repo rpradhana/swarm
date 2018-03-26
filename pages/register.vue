@@ -4,7 +4,7 @@
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
           <h3 class="title mb-5">
-            <a href="#"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></a>
+            <nuxt-link to="welcome"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Register as Contributor
           </h3>
           <b-form @submit="onSubmit" @reset="onReset" v-if="show">

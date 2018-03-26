@@ -4,7 +4,7 @@
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
           <h3 class="title mb-5">
-            <nuxt-link to="#"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+            <nuxt-link to="my-projects"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Create new project
           </h3>
           <b-form @submit="onSubmit" @reset="onReset" v-if="show">
@@ -93,6 +93,7 @@
 // import axios from '~/plugins/axios'
 
 export default {
+  layout: 'owner',
   data () {
     return {
       selected: 'modelling',

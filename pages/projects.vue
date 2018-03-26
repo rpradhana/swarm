@@ -25,7 +25,7 @@
             </template>
             <template slot="##" slot-scope="row">
               <b-button variant="light" class="mr-3">
-                Preview
+                <i class="material-icons secondary-cta-link">remove_red_eye</i>
               </b-button>
               <b-button variant="primary" to="/attempt">
                 Attempt
