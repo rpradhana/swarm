@@ -33,6 +33,11 @@ import ProjectGridItem from '~/components/ProjectGridItem.vue'
 
 export default {
   layout: 'owner',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      return redirect('/welcome?a=sign-in')
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
@@ -97,11 +102,6 @@ export default {
           status: 'Ongoing'
         }
       ]
-    }
-  },
-  fetch ({ store, redirect }) {
-    if (!store.state.authUser) {
-      return redirect('/')
     }
   },
   head () {

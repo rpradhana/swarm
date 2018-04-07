@@ -13,14 +13,14 @@
             <nuxt-link to="welcome?u=contributor"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Register as Contributor
           </h3>
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-form v-if="show" @submit.prevent="register">
             <b-form-group id="nameGroup"
                           class="mb-4"
                           label="Name"
                           label-for="nameGroup">
               <b-form-input id="name"
-                            type="text"
-                            v-model="form.text"
+                            type="name"
+                            v-model="form.name"
                             required
                             placeholder="Enter your full name">
               </b-form-input>
@@ -58,9 +58,9 @@
                           class="mb-4"
                           label="Paypal"
                           label-for="paypalGroup">
-              <b-form-input id="name"
+              <b-form-input id="paypal"
                             type="text"
-                            v-model="form.text"
+                            v-model="form.paypal"
                             required
                             placeholder="Enter your Paypal email">
               </b-form-input>
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
   data () {
@@ -102,22 +102,26 @@ export default {
     }
   },
   methods: {
-    async login () {
-      try {
-        await this.$store.dispatch('login', {
-          username: this.form.email,
-          password: this.form.password
-        })
-        this.form.email = ''
-        this.form.password = ''
-        this.form.errorMessage = null
-        if (this.$store.state.authUser) {
-          alert('succeed')
-          this.$nuxt.$router.replace({ path: '/my-projects' })
-        }
-      } catch (e) {
-        this.form.errorMessage = e.message
+    async register () {
+      let newUser = {
+        name: this.form.name,
+        email: this.form.email,
+        password: this.form.password,
+        rePassword: this.form.rePassword,
+        paypal: this.form.paypal,
+        type: (this.$route.query.u === 'owner') ? 'owner' : 'contributor'
       }
+
+      axios.post('/api/users/', newUser)
+        .then((response) => {
+          console.log(response)
+        })
+        .then(() => {
+          this.$nuxt.$router.replace({ path: '/' })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   async asyncData () {

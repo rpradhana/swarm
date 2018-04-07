@@ -109,6 +109,11 @@ import axios from '~/plugins/axios'
 
 export default {
   layout: 'owner',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      return redirect('/welcome?a=sign-in')
+    }
+  },
   asyncData ({ params, error }) {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

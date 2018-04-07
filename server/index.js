@@ -3,17 +3,20 @@ import { Nuxt, Builder } from 'nuxt'
 
 import api from './api'
 
+// Dependencies
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 
 // MongoDB
-mongoose.connect('mongodb://localhost:27017/');
+mongoose.connect('mongodb://localhost:27017/swarm');
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error'))
 db.once('open', function(callback){
   console.log('connection succeeded')
 })
+
+const User = require('./models/user')
 
 // Express
 const app = express()
@@ -40,11 +43,20 @@ app.use(session({
 
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
 app.post('/api/login', function (req, res) {
-  if (req.body.username === 'demo@demo.com' && req.body.password === 'demo') {
-    req.session.authUser = { username: 'demo@demo.com' }
-    return res.json({ username: 'demo' })
-  }
-  res.status(401).json({ error: 'Bad credentials' })
+
+  User.findOne({ email: req.body.email }, '', (error, user) => {
+    if (error) {
+      console.error(error)
+    } else if (user) {
+      if (req.body.email === user.email && req.body.password === user.password && req.body.type === user.type) {
+        req.session.authUser = { email: user.email, type: user.type }
+        return res.json({ user: user })
+      }
+    } else {
+      res.status(401).json({ error: 'Bad credentials' })
+    }
+  })
+
 })
 
 // POST `/api/logout` to log out the user and remove it from the `req.session`

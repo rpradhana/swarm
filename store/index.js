@@ -24,7 +24,7 @@ const store = () => new Vuex.Store({
         commit('SET_USER', req.session.authUser)
       }
     },
-    login ({ commit }, { username, password }) {
+    login ({ commit }, { email, password, type }) {
       return fetch('/api/login', {
         // Send the client cookies to the server
         credentials: 'same-origin',
@@ -33,30 +33,29 @@ const store = () => new Vuex.Store({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          username,
-          password
+          email,
+          password,
+          type
         })
+      }).then((res) => {
+        if (res.status === 401) {
+          alert('Invalid login credentials')
+          throw new Error('Bad credentials')
+        } else {
+          return res.json()
+        }
+      }).then((authUser) => {
+        commit('SET_USER', authUser)
       })
-        .then((res) => {
-          if (res.status === 401) {
-            throw new Error('Bad credentials')
-          } else {
-            return res.json()
-          }
-        })
-        .then((authUser) => {
-          commit('SET_USER', authUser)
-        })
     },
     logout ({ commit }) {
       return fetch('/api/logout', {
         // Send the client cookies to the server
         credentials: 'same-origin',
         method: 'POST'
+      }).then(() => {
+        commit('SET_USER', null)
       })
-        .then(() => {
-          commit('SET_USER', null)
-        })
     }
   }
 

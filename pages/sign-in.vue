@@ -76,17 +76,18 @@ export default {
 
   methods: {
     async login () {
+      var type = (this.$route.query.u === 'owner') ? 'owner' : 'contributor'
       try {
         await this.$store.dispatch('login', {
-          username: this.form.email,
-          password: this.form.password
+          email: this.form.email,
+          password: this.form.password,
+          type: type
         })
         this.form.email = ''
         this.form.password = ''
         this.form.errorMessage = null
         if (this.$store.state.authUser) {
-          alert('succeed')
-          this.$nuxt.$router.replace({ path: '/my-projects' })
+          this.$nuxt.$router.replace({ path: type + '/dashboard' })
         }
       } catch (e) {
         this.form.errorMessage = e.message
@@ -98,7 +99,6 @@ export default {
       title: 'Swarm'
     }
   },
-
   components: {
   }
 }

@@ -4,7 +4,7 @@
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <nuxt-link to="/"><img class="nav-logo" src="img/swarm-logo.svg"></nuxt-link>
+            <nuxt-link to="/"><img class="nav-logo" src="~assets/img/swarm-logo.svg"></nuxt-link>
           </div>
           <div class="nav-menu">
             <b-button variant="link" class="nav-link" to="welcome?a=sign-in">
