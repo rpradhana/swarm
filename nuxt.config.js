@@ -1,7 +1,20 @@
+const bodyParser = require('body-parser')
+const session = require('express-session')
+
 const resolve = require('path').resolve
 
 const dev = !(process.env.NODE_ENV === 'production')
-let middlewares = []
+let middlewares = [
+  bodyParser.urlencoded({ extended: true }),
+  bodyParser.json(),
+  session({
+    secret: '3/WWH1ii=r<5mJMSfj~2m1G93f{#V"',
+    name: 'sessionId',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 }
+  })
+]
 
 if (dev) {
   const proxy = require('http-proxy-middleware')

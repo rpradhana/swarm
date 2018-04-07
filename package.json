@@ -20,6 +20,7 @@
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.0.1",
     "express": "^4.15.3",
+    "express-session": "^1.15.6",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.4",
@@ -28,7 +29,8 @@
     "nuxt-sass-resources-loader": "^1.1.1",
     "passport": "^0.4.0",
     "smartcrop": "^2.0.2",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

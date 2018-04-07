@@ -3,8 +3,14 @@
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
-          <h3 class="title mb-5">
-            <nuxt-link to="welcome"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+          <h3 v-if="this.$route.query.u === 'owner'"
+              class="title mb-5">
+            <nuxt-link to="welcome?u=owner"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+            Register as Owner
+          </h3>
+          <h3 v-else
+              class="title mb-5">
+            <nuxt-link to="welcome?u=contributor"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Register as Contributor
           </h3>
           <b-form @submit="onSubmit" @reset="onReset" v-if="show">
@@ -43,7 +49,7 @@
               </b-form-input>
               <b-form-input id="re-password"
                             type="password"
-                            v-model="form.password"
+                            v-model="form.rePassword"
                             required
                             placeholder="Re-enter your password">
               </b-form-input>
@@ -60,7 +66,16 @@
               </b-form-input>
             </b-form-group>
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Register</b-button>
-            <span class="small secondary-cta-link">Have an account? <a href="#">Sign in.</a></span>
+            <span class="small secondary-cta-link">Have an account?
+              <nuxt-link v-if="this.$route.query.u === 'owner'"
+                         to="sign-in?=owner">
+                Sign in.
+              </nuxt-link>
+              <nuxt-link v-else
+                         to="sign-in?=contributor">
+                Sign in.
+              </nuxt-link>
+            </span>
           </b-form>
         </b-col>
       </b-row>
@@ -75,25 +90,34 @@ export default {
   data () {
     return {
       form: {
+        name: '',
         email: '',
-        password: ''
+        password: '',
+        rePassword: '',
+        paypal: '',
+        type: '',
+        errorMessage: null
       },
       show: true
     }
   },
   methods: {
-    onSubmit (evt) {
-      evt.preventDefault()
-      alert(JSON.stringify(this.form))
-    },
-    onReset (evt) {
-      evt.preventDefault()
-      /* Reset our form values */
-      this.form.email = ''
-      this.form.password = ''
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false
-      this.$nextTick(() => { this.show = true })
+    async login () {
+      try {
+        await this.$store.dispatch('login', {
+          username: this.form.email,
+          password: this.form.password
+        })
+        this.form.email = ''
+        this.form.password = ''
+        this.form.errorMessage = null
+        if (this.$store.state.authUser) {
+          alert('succeed')
+          this.$nuxt.$router.replace({ path: '/my-projects' })
+        }
+      } catch (e) {
+        this.form.errorMessage = e.message
+      }
     }
   },
   async asyncData () {

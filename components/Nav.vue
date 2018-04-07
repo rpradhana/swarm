@@ -4,13 +4,13 @@
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <nuxt-link to="/"><img src="img/swarm-logo.svg"></nuxt-link>
+            <nuxt-link to="/"><img class="nav-logo" src="img/swarm-logo.svg"></nuxt-link>
           </div>
           <div class="nav-menu">
-            <b-button variant="link" class="nav-link" to="welcome">
+            <b-button variant="link" class="nav-link" to="welcome?a=sign-in">
               Sign In
             </b-button>
-            <b-button variant="primary" to="welcome">
+            <b-button variant="primary" to="welcome?a=register">
               Register
             </b-button>
           </div>
@@ -24,10 +24,13 @@
 export default {
 
   name: 'Nav',
-
-  data () {
-    return {
-
+  methods: {
+    async logout () {
+      try {
+        await this.$store.dispatch('logout')
+      } catch (e) {
+        this.errorMessage = e.message
+      }
     }
   }
 }
@@ -57,6 +60,14 @@ export default {
 
     &:hover {
       color: $primary;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .nav-brand {
+      width: 35px;
+      height: 35px;
+      overflow: hidden;
     }
   }
 </style>
