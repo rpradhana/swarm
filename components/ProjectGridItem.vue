@@ -37,7 +37,13 @@
         <b-button variant="primary" class="mr-3" to="model">
           Manage
         </b-button>
-        <b-button variant="secondary" class="mr-3">
+        <b-button v-if="status === 'Ongoing'" variant="secondary" class="mr-3" @click="startPause">
+          {{ status }}
+        </b-button>
+        <b-button v-else-if="status === 'Paused'" variant="tertiary" class="mr-3" @click="startPause">
+          {{ status }}
+        </b-button>
+        <b-button v-else-if="status === 'Finished'" variant="disabled" class="mr-3">
           {{ status }}
         </b-button>
       </div>
@@ -52,6 +58,8 @@ export default {
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
+  },
+  data: {
   },
   props: {
     id: {
@@ -86,6 +94,34 @@ export default {
     }
   },
   methods: {
+
+    async startPause () {
+      switch (this.status) {
+        case 'Ongoing': {
+          this.status = 'Paused'
+
+          // let statusUpdate = {
+          //   // projectId = this.
+          // }
+
+          // axios.post('/api/status/', statusUpdate)
+          //   .then((response) => {
+          //     console.log(response)
+          //   })
+          //   .catch((error) => {
+          //     console.log(error)
+          //   })
+          break
+        }
+        case 'Paused': {
+          this.status = 'Ongoing'
+          break
+        }
+        case 'Done': {
+          break
+        }
+      }
+    },
     format (type, input) {
       switch (type) {
         case 'comma': return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')

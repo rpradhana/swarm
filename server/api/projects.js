@@ -35,21 +35,6 @@ const Project = require('../models/project')
 
 // Add new projects
 router.post('/projects', upload.any(), (req, res) => {
-  // // busboy parser
-  // var fstream
-  // req.pipe(req.busboy)
-  // req.busboy.on('file', function (fieldname, file, filename) {
-  //   console.log("Uploading: " + filename);
-  //   fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
-  //   file.pipe(fstream)
-  //   fstream.on('close', function () {
-  //     res.redirect('back')
-  //   })
-  // })
-  // console.log('req.body')
-  // console.log(req.body)
-  console.log('req.files')
-  console.log(req.files)
 
   const newProject = new Project({
     title: req.body.title,
@@ -82,6 +67,18 @@ router.post('/projects', upload.any(), (req, res) => {
     })
   })
 })
+
+// Update status
+// router.post('/projects/status', (req, res) => {
+//   Project.update(
+//     { '_id': req.body.projectId },
+//     {
+//       '$set': {
+//         req.body.status
+//       }
+//     }
+//   )
+// })
 
 // Fetch all projects
 router.get('/projects', (req, res) => {
