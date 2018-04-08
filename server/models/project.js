@@ -18,7 +18,8 @@ const ProjectSchema = new Schema({
   creationDate: Date,
   expiryDate: Date,
   modelDate: Date,
-  modelQuality: String
+  modelQuality: String,
+  status: String
 })
 
 const Project = mongoose.model('Project', ProjectSchema)

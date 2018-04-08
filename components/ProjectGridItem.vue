@@ -18,11 +18,11 @@
             <strong>Expense: </strong>
             {{ format('currency', format('comma', expense)) }}
           </div>
-          <div>
+          <div v-if="modelDate">
             <strong>Latest model: </strong>
             {{ modelDate }}
           </div>
-          <div>
+          <div v-if="modelQuality">
             <strong>Model quality: </strong>
             {{ modelQuality }}
           </div>
@@ -55,37 +55,34 @@ export default {
   },
   props: {
     id: {
-      default: false
+      default: null
     },
     title: {
-      default: false
+      default: 'Project Title'
     },
     type: {
-      default: false
+      default: 'Modelling'
     },
     contributor: {
-      default: false
-    },
-    contributorLimit: {
-      default: false
+      default: 0
     },
     expense: {
-      default: false
+      default: 0
     },
     modelDate: {
-      default: false
+      default: null
     },
     modelQuality: {
-      default: false
+      default: null
     },
     attempts: {
-      default: false
+      default: 0
     },
     attemptsLimit: {
-      default: false
+      default: 0
     },
     status: {
-      default: false
+      default: 'Ongoing'
     }
   },
   methods: {

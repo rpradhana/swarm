@@ -171,7 +171,8 @@ export default {
         creationDate: Date.now(),
         expiryDate: null,
         modelDate: null,
-        modelQuality: null
+        modelQuality: null,
+        status: 'Ongoing'
       }
 
       axios.post('/api/projects/', newProject)

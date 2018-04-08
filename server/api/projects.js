@@ -40,7 +40,8 @@ router.post('/projects', (req, res) => {
     creationDate: req.body.creationDate,
     expiryDate: req.body.expiryDate,
     modelDate: req.body.modelDate,
-    modelQuality: req.body.modelQuality
+    modelQuality: req.body.modelQuality,
+    status: req.body.status
   })
 
   newProject.save((error) => {
