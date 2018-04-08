@@ -116,9 +116,9 @@ export default {
   layout: 'owner',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      // return redirect('/welcome?a=sign-in')
+      return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'owner') {
-      // return redirect('/')
+      return redirect('/')
     }
   },
   async asyncData () {

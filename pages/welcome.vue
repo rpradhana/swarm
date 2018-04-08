@@ -31,7 +31,7 @@
             <b-button v-else
                       variant="primary"
                       to="sign-in?u=owner">
-              Sign-in as Owner
+              Sign in as Owner
             </b-button>
           </b-card>
         </b-col>
@@ -53,7 +53,7 @@
             <b-button v-else
                       variant="secondary"
                       to="sign-in?u=contributor">
-              Sign-in as Contributor
+              Sign in as Contributor
             </b-button>
           </b-card>
         </b-col>

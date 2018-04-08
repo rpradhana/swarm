@@ -15,7 +15,6 @@
                          :title              = "project.title"
                          :type               = "project.type"
                          :contributor        = "project.contributor"
-                         :contributor-limit  = "project.contributorLimit"
                          :attempts           = "project.attempts"
                          :attempts-limit     = "project.attemptsLimit"
                          :expense            = "project.incentive*project.attempts"
@@ -35,29 +34,19 @@ export default {
   layout: 'owner',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      // return redirect('/welcome?a=sign-in')
+      return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'owner') {
-      // return redirect('/')
+      return redirect('/')
     }
   },
-  async asyncData () {
-    let { data } = await axios.get('/api/projects')
-    console.log(data)
-    return data
+  async asyncData ({ store }) {
+    if (store.state.authUser) {
+      let { data } = await axios.get('/api/projects/' + store.state.authUser.user._id)
+      return data
+    }
   },
   data () {
     return {
-    }
-  },
-  computed: {
-    hasLoaded: () => {
-      // alert('has loaded')
-      if (this.hasOwnProperty('projects') && this.projects != null) {
-        alert()
-        return true
-      } else {
-        return false
-      }
     }
   },
   head () {

@@ -7,7 +7,7 @@
             <nuxt-link to="dashboard"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Create new project
           </h3>
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-form @submit.prevent="newProject" v-if="show">
             <b-form-group id="titleGroup"
                           class="mb-4"
                           label="Title"
@@ -36,6 +36,14 @@
                           label-for="datasetGroup"
                           required>
               <b-form-file v-model="Project.file" placeholder="Upload your dataset"></b-form-file>
+              <div class="mt-3 small">Selected file: {{ Project.file }}</div>
+            </b-form-group>
+            <b-form-group id="classes"
+                          class="mb-4"
+                          label="Predetermined classes"
+                          label-for="classes"
+                          required>
+              <b-form-file v-model="Project.file" placeholder="Upload class dataset"></b-form-file>
               <div class="mt-3 small">Selected file: {{ Project.file }}</div>
             </b-form-group>
             <b-form-group id="typeGroup"
@@ -69,31 +77,25 @@
                 </b-form-group>
               </b-col>
               <b-col md="6">
-                <b-form-group id="contributorGroup"
+                <b-form-group id="AttemptsGroup"
                               class="mb-4"
-                              label="Contributor limit"
-                              label-for="contributorGroup"
+                              label="Attempts limit"
+                              label-for="AttemptsGroup"
                               required>
-                  <b-form-input id="contributorLimit"
+                  <b-form-input id="AttemptsLimit"
                                 type="text"
-                                v-model="Project.contributorLimit"
+                                v-model="Project.attemptsLimit"
                                 placeholder="Empty for unlimited">
                   </b-form-input>
                 </b-form-group>
               </b-col>
             </b-row>
 
-            <b-form-group id="classesGroup"
-                          class="mb-4"
-                          label="Predetermined classes"
-                          label-for="classesGroup">
-              <b-button variant="light">Set classes</b-button>
-            </b-form-group>
-            <b-form-group id="esstimateGroup"
+            <b-form-group id="estimateGroup"
                           class="mb-4"
                           label="Estimated cost"
                           label-for="estimateGroup">
-              <span>{{ Project.incentive }} × {{ Project.contributorLimit }} = ${{ Project.incentive * Project.contributorLimit }} </span>
+              <span>{{ Project.incentive }} × {{ Project.attemptsLimit }} = ${{ Project.incentive * Project.attemptsLimit }} </span>
             </b-form-group>
 
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Create project</b-button>
@@ -130,17 +132,18 @@ export default {
   data () {
     return {
       Project: {
+        title: '',
+        description: '',
+        owner: '',
         file: '',
         typeSelected: 'modelling',
         typeOptions: [
           { text: 'Modelling', value: 'modelling' },
           { text: 'Prediction', value: 'prediction' }
         ],
-        title: '',
-        description: '',
         classes: '',
         incentive: 0.005,
-        contributorLimit: 0
+        attemptsLimit: 0
       },
       show: true
     }
@@ -151,35 +154,33 @@ export default {
         console.log('error')
       }
     },
-    onSubmit (evt) {
-      evt.preventDefault()
-      console.log('SUBMIT')
-
-      let newProject = {
+    async newProject (evt) {
+      var newProject = {
         title: this.Project.title,
         description: this.Project.description,
+        owner: this.$store.state.authUser.user._id,
         file: this.Project.file,
-        typeSelected: this.Project.typeSelected,
-        classes: this.Project.classes,
+        classes: null,
+        type: this.Project.typeSelected,
         incentive: this.Project.incentive,
-        estimatedCost: this.Project.incentive * this.Project.contributorLimit,
-        contributorLimit: this.Project.contributorLimit
+        expense: 0,
+        attempts: 0,
+        attemptsLimit: this.Project.attemptsLimit,
+        contributor: 0,
+        estimatedCost: this.Project.incentive * this.Project.attemptsLimit,
+        creationDate: Date.now(),
+        expiryDate: null,
+        modelDate: null,
+        modelQuality: null
       }
 
       axios.post('/api/projects/', newProject)
         .then((response) => {
-          console.log(response)
+          this.$nuxt.$router.replace({ path: 'dashboard' })
         })
         .catch((error) => {
           console.log(error)
         })
-    },
-    onReset (evt) {
-      evt.preventDefault()
-      /* Reset our form values */
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false
-      this.$nextTick(() => { this.show = true })
     }
   },
   head () {

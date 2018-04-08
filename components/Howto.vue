@@ -1,7 +1,7 @@
 <template>
   <section class="howto">
     <b-container class="pt-7 pb-7">
-      <b-row v-for="(step, index) in steps" >
+      <b-row v-for="(step, index) in steps" :key="index">
         <b-col cols="2" md="1" offset-md="2">
           <div class="pt-3">
             <div class="number-circle">

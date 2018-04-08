@@ -27,13 +27,20 @@ router.post('/projects', (req, res) => {
     title: req.body.title,
     description: req.body.description,
     owner: req.body.owner,
+    file: req.body.file,
+    classes: req.body.classes,
     type: req.body.type,
     incentive: req.body.incentive,
+    expense: req.body.expense,
+    attempts: req.body.attempts,
+    attemptsLimit: req.body.attemptsLimit,
     contributor: req.body.contributor,
     contributorLimit: req.body.contributorLimit,
     estimatedCost: req.body.estimatedCost,
     creationDate: req.body.creationDate,
-    expiryDate: req.body.expiryDate
+    expiryDate: req.body.expiryDate,
+    modelDate: req.body.modelDate,
+    modelQuality: req.body.modelQuality
   })
 
   newProject.save((error) => {
@@ -57,6 +64,20 @@ router.get('/projects', (req, res) => {
       projects: projects
     })
   }).sort({ _id: -1 })
+})
+
+
+// Fetch all projects
+router.get('/projects/:userId', (req, res) => {
+  const userId = req.params.userId
+  Project.find({ owner: userId }, '', (error, projects) => {
+    if (error) {
+      console.error(error)
+    }
+    else res.send({
+      projects: projects
+    })
+  }).sort({ userId: -1 })
 })
 
 export default router

@@ -40,12 +40,14 @@ router.post('/users', (req, res, next) => {
 
 /* GET user by ID. */
 router.get('/users/:id', (req, res, next) => {
-  const id = parseInt(req.params.id)
-  if (id >= 0 && id < users.length) {
-    res.json(users[id])
-  } else {
-    res.sendStatus(404)
-  }
+  const id = req.params.id
+  User.find({ _id: id }, '', (error, users) => {
+    if (error) {
+      console.error(error)
+    } else res.send({
+      users: users
+    })
+  }).sort({ _id: -1 })
 })
 
 // Fetch all users

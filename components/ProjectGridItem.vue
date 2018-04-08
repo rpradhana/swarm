@@ -6,31 +6,30 @@
       <div class="mb-4">
         <p class="card-title mb-3">{{ title }}</p>
         <div class="card-text">
-          <div v-if="type">
+          <div>
             <strong>Type: </strong>
             {{ type }}
           </div>
-          <div v-if="contributor">
+          <div>
             <strong>Contributors: </strong>
             {{ format('comma', contributor) }}
-            <span v-if="contributorLimit">/ {{ format('comma', contributorLimit) }}</span>
           </div>
-          <div v-if="expense">
+          <div>
             <strong>Expense: </strong>
             {{ format('currency', format('comma', expense)) }}
           </div>
-          <div v-if="modelDate">
+          <div>
             <strong>Latest model: </strong>
             {{ modelDate }}
           </div>
-          <div v-if="modelQuality">
+          <div>
             <strong>Model quality: </strong>
             {{ modelQuality }}
           </div>
-          <div v-if="results">
+          <div>
             <strong>Results: </strong>
-            {{ format('comma', results) }}
-            <span v-if="resultsLimit">/ {{ format('comma', resultsLimit) }}</span>
+            {{ format('comma', attempts) }}
+            <span v-if="attemptsLimit > 0">/ {{ format('comma', attemptsLimit) }}</span>
           </div>
         </div>
       </div>

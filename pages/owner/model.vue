@@ -23,11 +23,13 @@
               <div class="clearfix">
                 <img v-for="(c, index) in classes"
                      class="rounded float-left mr-2 mb-2"
+                     :key="c._id"
                      :alt="c.class"
                      :id="'c-' + index"
                      :src="c.src">
                 <b-tooltip v-for="(c, index) in classes"
                            triggers="hover"
+                           :key="c._id"
                            :target="'c-' + index"
                            :title="c.class">
                 </b-tooltip>
@@ -125,9 +127,9 @@ export default {
   layout: 'owner',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      // return redirect('/welcome?a=sign-in')
+      return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'owner') {
-      // return redirect('/')
+      return redirect('/')
     }
   },
   async asyncData () {
