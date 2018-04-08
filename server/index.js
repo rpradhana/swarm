@@ -32,6 +32,9 @@ app.use(require('cookie-parser')());
 // Load API
 app.use('/api', api)
 
+// Use statics
+app.use(express.static('uploads'))
+
 // Sessions to create `req.session`
 app.use(session({
   secret: '3/WWH1ii=r<5mJMSfj~2m1G93f{#V"',

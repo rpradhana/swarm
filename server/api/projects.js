@@ -2,32 +2,60 @@ import { Router } from 'express'
 
 const router = Router()
 
+
+// Dependencies
+const multer = require('multer')
+const path = require('path')
+// const fs = require('fs')
+// const busboy = require('connect-busboy')
+
+// router.use(busboy())
+
+var upload = multer({ storage: multer.diskStorage({
+
+  destination: function (req, file, callback) {
+    callback(null, './uploads')
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+
+}),
+
+fileFilter: function(req, file, callback) {
+  var ext = path.extname(file.originalname)
+  if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+    return callback(/*res.end('Only images are allowed')*/ null, false)
+  }
+  callback(null, true)
+}
+})
+
 const Project = require('../models/project')
 
-// /* GET users listing. */
-// router.get('/users', function (req, res, next) {
-//   res.json(users)
-// })
-
-// /* GET user by ID. */
-// router.get('/users/:id', function (req, res, next) {
-//   const id = parseInt(req.params.id)
-//   if (id >= 0 && id < users.length) {
-//     res.json(users[id])
-//   } else {
-//     res.sendStatus(404)
-//   }
-// })
-//
-
 // Add new projects
-router.post('/projects', (req, res) => {
+router.post('/projects', upload.any(), (req, res) => {
+  // // busboy parser
+  // var fstream
+  // req.pipe(req.busboy)
+  // req.busboy.on('file', function (fieldname, file, filename) {
+  //   console.log("Uploading: " + filename);
+  //   fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
+  //   file.pipe(fstream)
+  //   fstream.on('close', function () {
+  //     res.redirect('back')
+  //   })
+  // })
+  // console.log('req.body')
+  // console.log(req.body)
+  console.log('req.files')
+  console.log(req.files)
 
   const newProject = new Project({
     title: req.body.title,
     description: req.body.description,
     owner: req.body.owner,
-    file: req.body.file,
+    file: req.files,
     classes: req.body.classes,
     type: req.body.type,
     incentive: req.body.incentive,

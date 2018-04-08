@@ -7,7 +7,9 @@
             <nuxt-link to="dashboard"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Create new project
           </h3>
-          <b-form @submit.prevent="newProject" v-if="show">
+          <b-form v-if="show"
+                  @submit.prevent="newProject"
+                  enctype="multipart/form-data">
             <b-form-group id="titleGroup"
                           class="mb-4"
                           label="Title"
@@ -35,16 +37,22 @@
                           label="Dataset"
                           label-for="datasetGroup"
                           required>
-              <b-form-file v-model="Project.file" placeholder="Upload your dataset"></b-form-file>
-              <div class="mt-3 small">Selected file: {{ Project.file }}</div>
+              <b-form-file multiple
+                           class="text-truncate"
+                           v-model="Project.file"
+                           placeholder="Upload a folder"/>
+              <div class="small">Selected files: {{ Project.file.length }}</div>
             </b-form-group>
             <b-form-group id="classes"
                           class="mb-4"
                           label="Predetermined classes"
                           label-for="classes"
                           required>
-              <b-form-file v-model="Project.file" placeholder="Upload class dataset"></b-form-file>
-              <div class="mt-3 small">Selected file: {{ Project.file }}</div>
+              <b-form-file multiple
+                           class="text-truncate"
+                           v-model="Project.classes"
+                           placeholder="Upload sample files"/>
+              <div class="small">Selected files: {{ Project.classes.length }}</div>
             </b-form-group>
             <b-form-group id="typeGroup"
                           class="mb-4"
@@ -155,33 +163,71 @@ export default {
       }
     },
     async newProject (evt) {
-      var newProject = {
-        title: this.Project.title,
-        description: this.Project.description,
-        owner: this.$store.state.authUser.user._id,
-        file: this.Project.file,
-        classes: null,
-        type: this.Project.typeSelected,
-        incentive: this.Project.incentive,
-        expense: 0,
-        attempts: 0,
-        attemptsLimit: this.Project.attemptsLimit,
-        contributor: 0,
-        estimatedCost: this.Project.incentive * this.Project.attemptsLimit,
-        creationDate: Date.now(),
-        expiryDate: null,
-        modelDate: null,
-        modelQuality: null,
-        status: 'Ongoing'
+      // var newProject = {
+      //   title: this.Project.title,
+      //   description: this.Project.description,
+      //   owner: this.$store.state.authUser.user._id,
+      //   // file: this.Project.file,
+      //   classes: null,
+      //   type: this.Project.typeSelected,
+      //   incentive: this.Project.incentive,
+      //   expense: 0,
+      //   attempts: 0,
+      //   attemptsLimit: this.Project.attemptsLimit,
+      //   contributor: 0,
+      //   estimatedCost: this.Project.incentive * this.Project.attemptsLimit,
+      //   creationDate: Date.now(),
+      //   expiryDate: null,
+      //   modelDate: null,
+      //   modelQuality: null,
+      //   status: 'Ongoing'
+      // }
+
+      // var url = '/api/projects/'
+      // var xhr = new XMLHttpRequest()
+
+      // xhr.open('POST', url, true)
+      // xhr.setRequestHeader('Content-type', 'multipart/form-data; boundary=X')
+
+      // xhr.onload = function () {
+      // }
+
+      // xhr.send(newProject)
+
+      // var dateStr = new Date.now().toUTCString() /* eslint-disable-line */
+
+      let formData = new FormData()
+      formData.append('title', this.Project.title)
+      formData.append('description', this.Project.description)
+      formData.append('owner', this.$store.state.authUser.user._id)
+      formData.append('type', this.Project.typeSelected)
+      formData.append('incentive', this.Project.incentive)
+      formData.append('expense', 0)
+      formData.append('attempts', 0)
+      formData.append('attemptsLimit', this.Project.attemptsLimit)
+      formData.append('contributor', 0)
+      formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
+      formData.append('creationDate', Date.now())
+      formData.append('expiryDate', null)
+      formData.append('modelDate', null)
+      formData.append('modelQuality', null)
+      formData.append('status', 'Ongoing')
+      for (var ii = 0; ii < this.Project.file.length; ii++) {
+        formData.append('file', this.Project.file[ii])
       }
 
-      axios.post('/api/projects/', newProject)
-        .then((response) => {
-          this.$nuxt.$router.replace({ path: 'dashboard' })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      console.log(formData)
+
+      axios.post(
+        '/api/projects/',
+        formData,
+        { headers: { 'content-type': 'multipart/form-data; boundary=X' } }
+      ).then((response) => {
+        console.log(this.Project.file)
+        this.$nuxt.$router.replace({ path: 'dashboard' })
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   },
   head () {

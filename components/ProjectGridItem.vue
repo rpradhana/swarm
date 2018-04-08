@@ -18,11 +18,11 @@
             <strong>Expense: </strong>
             {{ format('currency', format('comma', expense)) }}
           </div>
-          <div v-if="modelDate">
+          <div v-if="modelDate && modelDate !== 'null'">
             <strong>Latest model: </strong>
             {{ modelDate }}
           </div>
-          <div v-if="modelQuality">
+          <div v-if="modelQuality && modelQuality !== 'null'">
             <strong>Model quality: </strong>
             {{ modelQuality }}
           </div>
