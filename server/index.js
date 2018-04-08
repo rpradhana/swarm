@@ -37,8 +37,8 @@ app.use(session({
   secret: '3/WWH1ii=r<5mJMSfj~2m1G93f{#V"',
   name: 'sessionId',
   resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60000 }
+  saveUninitialized: true,
+  cookie: { maxAge: 60*60*1000, secure: false }
 }))
 
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`

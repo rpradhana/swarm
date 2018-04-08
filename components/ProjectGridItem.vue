@@ -10,22 +10,22 @@
             <strong>Type: </strong>
             {{ type }}
           </div>
-          <div v-if="contributors">
+          <div v-if="contributor">
             <strong>Contributors: </strong>
-            {{ format('comma', contributors) }}
-            <span v-if="contributorsLimit">/ {{ format('comma', contributorsLimit) }}</span>
+            {{ format('comma', contributor) }}
+            <span v-if="contributorLimit">/ {{ format('comma', contributorLimit) }}</span>
           </div>
           <div v-if="expense">
             <strong>Expense: </strong>
             {{ format('currency', format('comma', expense)) }}
           </div>
-          <div v-if="latest">
+          <div v-if="modelDate">
             <strong>Latest model: </strong>
-            {{ latest }}
+            {{ modelDate }}
           </div>
-          <div v-if="quality">
+          <div v-if="modelQuality">
             <strong>Model quality: </strong>
-            {{ quality }}
+            {{ modelQuality }}
           </div>
           <div v-if="results">
             <strong>Results: </strong>
@@ -64,25 +64,25 @@ export default {
     type: {
       default: false
     },
-    contributors: {
+    contributor: {
       default: false
     },
-    contributorsLimit: {
+    contributorLimit: {
       default: false
     },
     expense: {
       default: false
     },
-    latest: {
+    modelDate: {
       default: false
     },
-    quality: {
+    modelQuality: {
       default: false
     },
-    results: {
+    attempts: {
       default: false
     },
-    resultsLimit: {
+    attemptsLimit: {
       default: false
     },
     status: {

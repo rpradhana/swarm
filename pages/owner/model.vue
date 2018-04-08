@@ -4,7 +4,7 @@
       <b-row>
         <b-col sm="12">
           <h4 class="title mb-5">
-            <nuxt-link to="my-projects"><i class="material-icons secondary-cta-link offset-min">chevron_left</i></nuxt-link>
+            <nuxt-link to="dashboard"><i class="material-icons secondary-cta-link offset-min">chevron_left</i></nuxt-link>
             {{ project.title }}
           </h4>
         </b-col>
@@ -123,6 +123,13 @@ import ProjectGridItem from '~/components/ProjectGridItem.vue'
 
 export default {
   layout: 'owner',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      // return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type !== 'owner') {
+      // return redirect('/')
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

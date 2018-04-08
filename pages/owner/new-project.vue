@@ -4,7 +4,7 @@
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
           <h3 class="title mb-5">
-            <nuxt-link to="my-projects"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+            <nuxt-link to="dashboard"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Create new project
           </h3>
           <b-form @submit="onSubmit" @reset="onReset" v-if="show">
@@ -111,7 +111,9 @@ export default {
   layout: 'owner',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      return redirect('/welcome?a=sign-in')
+      // return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type !== 'owner') {
+      // return redirect('/')
     }
   },
   asyncData ({ params, error }) {

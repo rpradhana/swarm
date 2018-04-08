@@ -7,11 +7,12 @@ const ProjectSchema = new Schema({
   owner: String,
   type: String,
   incentive: Number,
+  attempts: Number,
   contributor: Number,
   contributorLimit: Number,
   estimatedCost: Number,
   creationDate: Date,
-  expiryDate: Date
+  expiryDate: Date,
 })
 
 const Project = mongoose.model('Project', ProjectSchema)
