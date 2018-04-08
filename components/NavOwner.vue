@@ -4,7 +4,7 @@
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <nuxt-link to="/"><img src="img/swarm-logo.svg"></nuxt-link>
+            <nuxt-link to="/"><img src="~assets/img/swarm-logo.svg"></nuxt-link>
           </div>
           <div class="nav-menu">
             <b-button variant="primary" class="mr-3" to="new-project">

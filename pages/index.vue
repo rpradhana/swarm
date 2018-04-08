@@ -13,6 +13,11 @@ import CTA from '~/components/CTA.vue'
 import Howto from '~/components/Howto.vue'
 
 export default {
+  fetch ({ store, redirect }) {
+    if (store.state.authUser) {
+      return redirect('/owner/dashboard')
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

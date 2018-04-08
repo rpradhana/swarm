@@ -4,7 +4,7 @@
       <b-row>
         <b-col sm="12">
           <h4 class="title mb-5">
-            All project
+            Past projects
           </h4>
         </b-col>
       </b-row>
@@ -85,6 +85,13 @@
 
 export default {
   layout: 'contributor',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type !== 'contributor') {
+      return redirect('/')
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

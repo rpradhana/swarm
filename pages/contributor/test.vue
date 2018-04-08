@@ -57,6 +57,13 @@
 
 export default {
   layout: 'contributor',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type !== 'contributor') {
+      return redirect('/')
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

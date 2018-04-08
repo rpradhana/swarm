@@ -3,18 +3,24 @@
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
-          <h3 class="title mb-5">
-            <nuxt-link to="welcome"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+          <h3 v-if="this.$route.query.u === 'owner'"
+              class="title mb-5">
+            <nuxt-link to="welcome?u=owner"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+            Register as Owner
+          </h3>
+          <h3 v-else
+              class="title mb-5">
+            <nuxt-link to="welcome?u=contributor"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Register as Contributor
           </h3>
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-form v-if="show" @submit.prevent="register">
             <b-form-group id="nameGroup"
                           class="mb-4"
                           label="Name"
                           label-for="nameGroup">
               <b-form-input id="name"
-                            type="text"
-                            v-model="form.text"
+                            type="name"
+                            v-model="form.name"
                             required
                             placeholder="Enter your full name">
               </b-form-input>
@@ -43,7 +49,7 @@
               </b-form-input>
               <b-form-input id="re-password"
                             type="password"
-                            v-model="form.password"
+                            v-model="form.rePassword"
                             required
                             placeholder="Re-enter your password">
               </b-form-input>
@@ -52,15 +58,24 @@
                           class="mb-4"
                           label="Paypal"
                           label-for="paypalGroup">
-              <b-form-input id="name"
+              <b-form-input id="paypal"
                             type="text"
-                            v-model="form.text"
+                            v-model="form.paypal"
                             required
                             placeholder="Enter your Paypal email">
               </b-form-input>
             </b-form-group>
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Register</b-button>
-            <span class="small secondary-cta-link">Have an account? <a href="#">Sign in.</a></span>
+            <span class="small secondary-cta-link">Have an account?
+              <nuxt-link v-if="this.$route.query.u === 'owner'"
+                         to="sign-in?=owner">
+                Sign in.
+              </nuxt-link>
+              <nuxt-link v-else
+                         to="sign-in?=contributor">
+                Sign in.
+              </nuxt-link>
+            </span>
           </b-form>
         </b-col>
       </b-row>
@@ -69,31 +84,44 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
   data () {
     return {
       form: {
+        name: '',
         email: '',
-        password: ''
+        password: '',
+        rePassword: '',
+        paypal: '',
+        type: '',
+        errorMessage: null
       },
       show: true
     }
   },
   methods: {
-    onSubmit (evt) {
-      evt.preventDefault()
-      alert(JSON.stringify(this.form))
-    },
-    onReset (evt) {
-      evt.preventDefault()
-      /* Reset our form values */
-      this.form.email = ''
-      this.form.password = ''
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false
-      this.$nextTick(() => { this.show = true })
+    async register () {
+      let newUser = {
+        name: this.form.name,
+        email: this.form.email,
+        password: this.form.password,
+        rePassword: this.form.rePassword,
+        paypal: this.form.paypal,
+        type: (this.$route.query.u === 'owner') ? 'owner' : 'contributor'
+      }
+
+      axios.post('/api/users/', newUser)
+        .then((response) => {
+          console.log(response)
+        })
+        .then(() => {
+          this.$nuxt.$router.replace({ path: '/' })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   async asyncData () {

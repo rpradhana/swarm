@@ -3,11 +3,17 @@
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6" offset-md="3">
-          <h3 class="title mb-5">
-            <nuxt-link to="welcome"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+          <h3 v-if="this.$route.query.u === 'owner'"
+              class="title mb-5">
+            <nuxt-link to="welcome?u=owner"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
+            Sign in as Owner
+          </h3>
+          <h3 v-else
+              class="title mb-5">
+            <nuxt-link to="welcome?u=contributor"><i class="material-icons offset-min secondary-cta-link">chevron_left</i></nuxt-link>
             Sign in as Contributor
           </h3>
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-form v-if="show" @submit.prevent="login">
             <b-form-group id="emailGroup"
                           class="mb-4"
                           label="Email address"
@@ -31,7 +37,16 @@
               </b-form-input>
             </b-form-group>
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Sign In</b-button>
-            <span class="small secondary-cta-link">New user? <a href="#">Create free account.</a></span>
+            <span class="small secondary-cta-link">New user?
+              <nuxt-link v-if="this.$route.query.u === 'owner'"
+                         to="register?=owner">
+                Create free account.
+              </nuxt-link>
+              <nuxt-link v-else
+                         to="register?=contributor">
+                Create free account.
+              </nuxt-link>
+            </span>
           </b-form>
         </b-col>
       </b-row>
@@ -47,29 +62,37 @@ export default {
     return {
       form: {
         email: '',
-        password: ''
+        password: '',
+        errorMessage: null
       },
       show: true
     }
   },
-  methods: {
-    onSubmit (evt) {
-      evt.preventDefault()
-      alert(JSON.stringify(this.form))
-    },
-    onReset (evt) {
-      evt.preventDefault()
-      /* Reset our form values */
-      this.form.email = ''
-      this.form.password = ''
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false
-      this.$nextTick(() => { this.show = true })
-    }
-  },
+
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
+  },
+
+  methods: {
+    async login () {
+      var type = (this.$route.query.u === 'owner') ? 'owner' : 'contributor'
+      try {
+        await this.$store.dispatch('login', {
+          email: this.form.email,
+          password: this.form.password,
+          type: type
+        })
+        this.form.email = ''
+        this.form.password = ''
+        this.form.errorMessage = null
+        if (this.$store.state.authUser) {
+          this.$nuxt.$router.replace({ path: type + '/dashboard' })
+        }
+      } catch (e) {
+        this.form.errorMessage = e.message
+      }
+    }
   },
   head () {
     return {

@@ -20,52 +20,65 @@ const Project = require('../models/project')
 // })
 //
 
-// Add new post
+// Add new projects
 router.post('/projects', (req, res) => {
-  // const db = req.db
-  const title = req.body.title
-  const description = req.body.description
-  const owner = req.body.owner
-  const type = req.body.type
-  const incentive = req.body.incentive
-  const contributor = req.body.contributor
-  const contributorLimit = req.body.contributorLimit
-  const estimatedCost = req.body.estimatedCost
-  const creationDate = req.body.creationDate
-  const expiryDate = req.body.expiryDate
 
   const newProject = new Project({
-    title: title,
-    description: description,
-    owner: owner,
-    type: type,
-    incentive: incentive,
-    contributor: contributor,
-    contributorLimit: contributorLimit,
-    estimatedCost: estimatedCost,
-    creationDate: creationDate,
-    expiryDate: expiryDate
+    title: req.body.title,
+    description: req.body.description,
+    owner: req.body.owner,
+    file: req.body.file,
+    classes: req.body.classes,
+    type: req.body.type,
+    incentive: req.body.incentive,
+    expense: req.body.expense,
+    attempts: req.body.attempts,
+    attemptsLimit: req.body.attemptsLimit,
+    contributor: req.body.contributor,
+    contributorLimit: req.body.contributorLimit,
+    estimatedCost: req.body.estimatedCost,
+    creationDate: req.body.creationDate,
+    expiryDate: req.body.expiryDate,
+    modelDate: req.body.modelDate,
+    modelQuality: req.body.modelQuality,
+    status: req.body.status
   })
 
-  newProject.save(function (error) {
+  newProject.save((error) => {
     if (error) {
       console.log(error)
     }
-    res.send({
+    else res.send({
       success: true,
-      message: 'Post saved successfully!'
+      message: 'Project saved successfully!'
     })
   })
 })
 
-// Fetch all posts
+// Fetch all projects
 router.get('/projects', (req, res) => {
-  Project.find({}, '', function (error, projects) {
-    if (error) { console.error(error) }
-    res.send({
+  Project.find({}, '', (error, projects) => {
+    if (error) {
+      console.error(error)
+    }
+    else res.send({
       projects: projects
     })
   }).sort({ _id: -1 })
+})
+
+
+// Fetch all projects
+router.get('/projects/:userId', (req, res) => {
+  const userId = req.params.userId
+  Project.find({ owner: userId }, '', (error, projects) => {
+    if (error) {
+      console.error(error)
+    }
+    else res.send({
+      projects: projects
+    })
+  }).sort({ userId: -1 })
 })
 
 export default router

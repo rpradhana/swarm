@@ -6,31 +6,30 @@
       <div class="mb-4">
         <p class="card-title mb-3">{{ title }}</p>
         <div class="card-text">
-          <div v-if="type">
+          <div>
             <strong>Type: </strong>
             {{ type }}
           </div>
-          <div v-if="contributors">
+          <div>
             <strong>Contributors: </strong>
-            {{ format('comma', contributors) }}
-            <span v-if="contributorsLimit">/ {{ format('comma', contributorsLimit) }}</span>
+            {{ format('comma', contributor) }}
           </div>
-          <div v-if="expense">
+          <div>
             <strong>Expense: </strong>
             {{ format('currency', format('comma', expense)) }}
           </div>
-          <div v-if="latest">
+          <div v-if="modelDate">
             <strong>Latest model: </strong>
-            {{ latest }}
+            {{ modelDate }}
           </div>
-          <div v-if="quality">
+          <div v-if="modelQuality">
             <strong>Model quality: </strong>
-            {{ quality }}
+            {{ modelQuality }}
           </div>
-          <div v-if="results">
+          <div>
             <strong>Results: </strong>
-            {{ format('comma', results) }}
-            <span v-if="resultsLimit">/ {{ format('comma', resultsLimit) }}</span>
+            {{ format('comma', attempts) }}
+            <span v-if="attemptsLimit > 0">/ {{ format('comma', attemptsLimit) }}</span>
           </div>
         </div>
       </div>
@@ -56,37 +55,34 @@ export default {
   },
   props: {
     id: {
-      default: false
+      default: null
     },
     title: {
-      default: false
+      default: 'Project Title'
     },
     type: {
-      default: false
+      default: 'Modelling'
     },
-    contributors: {
-      default: false
-    },
-    contributorsLimit: {
-      default: false
+    contributor: {
+      default: 0
     },
     expense: {
-      default: false
+      default: 0
     },
-    latest: {
-      default: false
+    modelDate: {
+      default: null
     },
-    quality: {
-      default: false
+    modelQuality: {
+      default: null
     },
-    results: {
-      default: false
+    attempts: {
+      default: 0
     },
-    resultsLimit: {
-      default: false
+    attemptsLimit: {
+      default: 0
     },
     status: {
-      default: false
+      default: 'Ongoing'
     }
   },
   methods: {
