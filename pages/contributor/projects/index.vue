@@ -91,7 +91,6 @@ export default {
       form: {
         id: ''
       },
-      currentPage: 1,
       fields: [
         '#',
         { key: 'title', sortable: true },
@@ -102,6 +101,9 @@ export default {
         '##'
       ]
     }
+  },
+  props: {
+    currentPage: 1
   },
   methods: {
     async attempt (projectId) {
