@@ -24,12 +24,18 @@
               </b-button>
             </template>
             <template slot="##" slot-scope="row">
-              <b-button variant="light" class="mr-3">
+              <b-button variant="light" class="mr-3 pt-0 pb-0" style="height: 34px">
                 <i class="material-icons secondary-cta-link">remove_red_eye</i>
               </b-button>
-              <b-button variant="primary" to="/attempt">
+              <!-- <b-button variant="primary" :to="{ path: '/contributor/projects/' + row.item._id, params: { id: row.item._id } }">
                 Attempt
-              </b-button>
+              </b-button> -->
+              <b-form @submit.prevent="attempt(row.item._id)">
+                <input id="id" type="hidden" :value="row.item._id" name="id" />
+                <b-button type="submit" variant="primary">
+                  Attempt
+                </b-button>
+              </b-form>
             </template>
             <template slot="row-details" slot-scope="row">
               <div class="details">
@@ -67,9 +73,9 @@ export default {
   layout: 'contributor',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      return redirect('/welcome?a=sign-in')
+      // return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'contributor') {
-      return redirect('/')
+      // return redirect('/')
     }
   },
   async asyncData () {
@@ -79,12 +85,15 @@ export default {
   },
   data () {
     return {
+      form: {
+        id: ''
+      },
       currentPage: 1,
       fields: [
         '#',
         { key: 'title', sortable: true },
         { key: 'type', sortable: true },
-        { key: 'contributor', sortable: true },
+        { key: 'attempts', sortable: true },
         { key: 'incentive', sortable: true },
         { key: 'creationDate', sortable: true },
         '##'
@@ -147,6 +156,20 @@ export default {
       //     description: 'Given a set of images, identify visible features to find out the category of said image'
       //   }
       // ]
+    }
+  },
+  methods: {
+    async attempt (projectId) {
+      try {
+        await this.$store.dispatch('attempt', {
+          id: projectId
+        })
+        this.$nuxt.$router.replace({ path: '/contributor/projects/' + projectId })
+        // if (this.$store.state.attempt) {
+        // }
+      } catch (e) {
+        alert('Failed to attempt project 2')
+      }
     }
   },
   head () {

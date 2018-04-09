@@ -58,16 +58,6 @@
 // import axios from '~/plugins/axios'
 
 export default {
-  data () {
-    return {
-      form: {
-        email: '',
-        password: '',
-        errorMessage: null
-      },
-      show: true
-    }
-  },
 
   async asyncData () {
     // let { data } = await axios.get('/api/users')
@@ -90,6 +80,7 @@ export default {
           this.$nuxt.$router.replace({ path: type + '/dashboard' })
         }
       } catch (e) {
+        alert('Invalid login credentials')
         this.form.errorMessage = e.message
       }
     }

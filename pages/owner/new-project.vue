@@ -183,18 +183,7 @@ export default {
       //   status: 'Ongoing'
       // }
 
-      // var url = '/api/projects/'
-      // var xhr = new XMLHttpRequest()
-
-      // xhr.open('POST', url, true)
-      // xhr.setRequestHeader('Content-type', 'multipart/form-data; boundary=X')
-
-      // xhr.onload = function () {
-      // }
-
-      // xhr.send(newProject)
-
-      // var dateStr = new Date.now().toUTCString() /* eslint-disable-line */
+      axios.get('/api/projects/')
 
       let formData = new FormData()
       formData.append('title', this.Project.title)
@@ -214,9 +203,11 @@ export default {
       formData.append('status', 'Ongoing')
       for (var ii = 0; ii < this.Project.file.length; ii++) {
         formData.append('file', this.Project.file[ii])
+        formData.append('index', ii)
       }
 
-      console.log(formData)
+      console.log('Project data = ' + this.Project)
+      console.log('Form data = ' + formData)
 
       axios.post(
         '/api/projects/',

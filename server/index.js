@@ -17,6 +17,7 @@ db.once('open', function(callback){
 })
 
 const User = require('./models/user')
+const Project = require('./models/project')
 
 // Express
 const app = express()
@@ -44,6 +45,23 @@ app.use(session({
   cookie: { maxAge: 60*60*1000, secure: false }
 }))
 
+// POST `/api/attempt` to attempt a project and add the id to the `req.session.attempt`
+app.post('/api/attempt', function (req, res) {
+
+  Project.findOne({ id: req.body.id }, '', (error, attempt) => {
+    if (error) {
+      console.error(error)
+    } else if (attempt) {
+      if (req.body.id === attempt.id) {
+        req.session.attempt = { id: attempt.id }
+        return res.json({ attempt: attempt })
+      }
+    } else {
+    }
+  })
+
+})
+
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
 app.post('/api/login', function (req, res) {
 
@@ -56,7 +74,7 @@ app.post('/api/login', function (req, res) {
         return res.json({ user: user })
       }
     } else {
-      res.status(401).json({ error: 'Bad credentials' })
+      res.status(401).json({ error: 'Invalid login credentials' })
     }
   })
 

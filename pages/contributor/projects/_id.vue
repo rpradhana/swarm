@@ -1,11 +1,11 @@
 <template>
   <section class="v-container">
     <b-container class="pb-7 pt-5">
-
+      {{ project }}
       <b-row>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
-                  :img-src="task.a"
+                  :img-src="project.file[0].path.substring(6)"
                   img-alt="A"
                   img-top>
             <div class="text-center">
@@ -15,7 +15,7 @@
         </b-col>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
-                  :img-src="task.b"
+                  :img-src="project.file[1].path.substring(6)"
                   img-alt="B"
                   img-top>
             <div class="text-center">
@@ -24,7 +24,6 @@
           </b-card>
         </b-col>
       </b-row>
-
       <b-row align-h="center">
         <b-col sm="12" md="8">
           <b-card no-body class="mb-5">
@@ -194,20 +193,21 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
   layout: 'contributor',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      return redirect('/welcome?a=sign-in')
+      // return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'contributor') {
-      return redirect('/')
+      // return redirect('/')
     }
   },
   async asyncData () {
-    // let { data } = await axios.get('/api/users')
-    // return { users: data }
+    let { data } = await axios.get('/api/project/5aca9d05141d1d28deda75c9')
+    console.log(data)
+    return data
   },
   data () {
     return {

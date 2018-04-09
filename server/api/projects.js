@@ -2,22 +2,20 @@ import { Router } from 'express'
 
 const router = Router()
 
-
 // Dependencies
 const multer = require('multer')
 const path = require('path')
-// const fs = require('fs')
-// const busboy = require('connect-busboy')
 
-// router.use(busboy())
+let uploadIndex = 0
 
 var upload = multer({ storage: multer.diskStorage({
 
   destination: function (req, file, callback) {
-    callback(null, './uploads')
+    callback(null, './static/uploads')
   },
   filename: function (req, file, callback) {
     callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    uploadIndex++
   }
 
 }),
@@ -92,7 +90,6 @@ router.get('/projects', (req, res) => {
   }).sort({ _id: -1 })
 })
 
-
 // Fetch all projects
 router.get('/projects/:userId', (req, res) => {
   const userId = req.params.userId
@@ -104,6 +101,19 @@ router.get('/projects/:userId', (req, res) => {
       projects: projects
     })
   }).sort({ userId: -1 })
+})
+
+// Fetch all project
+router.get('/project/:projectId', (req, res) => {
+  const projectId = req.params.projectId
+  Project.findOne({ _id: projectId }, '', (error, project) => {
+    if (error) {
+      console.error(error)
+    }
+    else res.send({
+      project: project
+    })
+  }).sort({ projectId: 1 })
 })
 
 export default router

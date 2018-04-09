@@ -9,12 +9,16 @@ require('whatwg-fetch')
 const store = () => new Vuex.Store({
 
   state: {
-    authUser: null
+    authUser: null,
+    attempt: null
   },
 
   mutations: {
     SET_USER: function (state, user) {
       state.authUser = user
+    },
+    SET_ATTEMPT: function (state, project) {
+      state.attempt = project
     }
   },
 
@@ -23,6 +27,30 @@ const store = () => new Vuex.Store({
       if (req.session && req.session.authUser) {
         commit('SET_USER', req.session.authUser)
       }
+      if (req.session && req.session.attempt) {
+        commit('SET_ATTEMPT', req.session.attempt)
+      }
+    },
+    attempt ({ commit }, { id }) {
+      return fetch('/api/attempt', {
+        // Send the client cookies to the server
+        credentials: 'same-origin',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id
+        })
+      }).then((res) => {
+        if (res.status >= 400) {
+          throw new Error('Failed to attempt project')
+        } else {
+          return res.json()
+        }
+      }).then((attempt) => {
+        commit('SET_ATTEMPT', attempt)
+      })
     },
     login ({ commit }, { email, password, type }) {
       return fetch('/api/login', {
@@ -40,7 +68,7 @@ const store = () => new Vuex.Store({
       }).then((res) => {
         if (res.status === 401) {
           alert('Invalid login credentials')
-          throw new Error('Bad credentials')
+          throw new Error('Invalid login credentials')
         } else {
           return res.json()
         }

@@ -4,12 +4,12 @@
       <b-col>
         <b-row align-h="between">
           <div class="nav-brand">
-            <nuxt-link to="dashboard"><img src="~assets/img/swarm-logo.svg"></nuxt-link>
+            <nuxt-link to="/contributor/dashboard"><img src="~assets/img/swarm-logo.svg"></nuxt-link>
             <div class="nav-menu ml-3">
-              <b-button variant="link" class="mr-3 nav-link" to="dashboard">
+              <b-button variant="link" class="mr-3 nav-link" to="/contributor/dashboard">
                 Dashboard
               </b-button>
-              <b-button variant="link" class="mr-3 nav-link" to="projects">
+              <b-button variant="link" class="mr-3 nav-link" to="/contributor/projects">
                 Projects
               </b-button>
             </div>
@@ -20,7 +20,6 @@
           </div>
           <div class="nav-menu">
             <b-button variant="link" class="ml-3 mr-5 nav-link">
-              
             </b-button>
             <b-dropdown variant="link" right class="link-black">
               <template slot="button-content">
@@ -46,6 +45,18 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods: {
+    async logout () {
+      try {
+        await this.$store.dispatch('logout')
+        if (!this.$store.state.authUser) {
+          this.$nuxt.$router.replace({ path: '/' })
+        }
+      } catch (e) {
+        this.form.errorMessage = e.message
+      }
     }
   }
 }
