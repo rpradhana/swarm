@@ -24,15 +24,18 @@
               </b-button>
             </template>
             <template slot="##" slot-scope="row">
-              <b-button variant="light" class="mr-3 pt-0 pb-0" style="height: 34px">
+<!--               <b-button variant="light" class="mr-3 pt-0 pb-0" style="height: 34px">
                 <i class="material-icons secondary-cta-link">remove_red_eye</i>
-              </b-button>
+              </b-button> -->
               <!-- <b-button variant="primary" :to="{ path: '/contributor/projects/' + row.item._id, params: { id: row.item._id } }">
                 Attempt
               </b-button> -->
               <b-form @submit.prevent="attempt(row.item._id)">
-                <input id="id" type="hidden" :value="row.item._id" name="id" />
-                <b-button type="submit" variant="primary">
+                <input type="hidden" :value="row.item._id" name="id" />
+                <b-button v-if="!$store.state.attempt" class="float-right" type="submit" variant="primary">
+                  Attempt
+                </b-button>
+                <b-button v-else class="float-right" type="submit" variant="disabled">
                   Attempt
                 </b-button>
               </b-form>
@@ -41,10 +44,10 @@
               <div class="details">
                 <div class="mb-1">
                   <span class="mr-5">
-                    <strong>Owner: </strong>{{ row.item.owner }}
+                    <strong>Owner: </strong>{{ row.item.ownerName }}
                   </span>
                   <span class="mr-5">
-                    <strong>Expiry: </strong>{{ row.item.expirationDate }}
+                    <strong>Expiry: </strong>{{ (row.item.expiryDate !== 'null') ? row.item.expiryDate : 'No time limit' }}
                   </span>
                 </div>
                 <div>
@@ -98,75 +101,20 @@ export default {
         { key: 'creationDate', sortable: true },
         '##'
       ]
-      // ],
-      // projects: [
-      //   {
-      //     id: '00000001',
-      //     title: 'Classify the species of birds of paradise',
-      //     type: 'Modelling',
-      //     contributors: 10000,
-      //     reward: 0.1,
-      //     created: '1/03/2017',
-      //     expiry: '3/04/2018',
-      //     owner: 'John Doe',
-      //     description: 'Given a set of images, identify visible features to find out the category of said image'
-      //   },
-      //   {
-      //     id: '00000002',
-      //     title: 'Identifying the species of birds',
-      //     type: 'Prediction',
-      //     contributors: 14,
-      //     reward: 0.2,
-      //     created: '3/12/2016',
-      //     expiry: '3/04/2018',
-      //     owner: 'John Doe',
-      //     description: 'Given a set of images, identify visible features to find out the category of said image'
-      //   },
-      //   {
-      //     id: '00000003',
-      //     title: 'Identify features of sad and happy expressions',
-      //     type: 'Prediction',
-      //     contributors: 1850,
-      //     reward: 0.1,
-      //     created: '3/12/2016',
-      //     expiry: '3/04/2018',
-      //     owner: 'John Doe',
-      //     description: 'Given a set of images, identify visible features to find out the category of said image'
-      //   },
-      //   {
-      //     id: '00000004',
-      //     title: 'Sort 3 types of our user feedback',
-      //     type: 'Modelling',
-      //     contributors: 10000,
-      //     reward: 0.15,
-      //     created: '1/03/2017',
-      //     expiry: '3/04/2018',
-      //     owner: 'John Doe',
-      //     description: 'Given a set of images, identify visible features to find out the category of said image'
-      //   },
-      //   {
-      //     id: '00000005',
-      //     title: 'Categorize the feedback we received',
-      //     type: 'Modelling',
-      //     contributors: 10000,
-      //     reward: 0.3,
-      //     created: '1/03/2017',
-      //     expiry: '3/04/2018',
-      //     owner: 'John Doe',
-      //     description: 'Given a set of images, identify visible features to find out the category of said image'
-      //   }
-      // ]
     }
   },
   methods: {
     async attempt (projectId) {
+      console.log(projectId)
       try {
-        await this.$store.dispatch('attempt', {
-          id: projectId
-        })
-        this.$nuxt.$router.replace({ path: '/contributor/projects/' + projectId })
-        // if (this.$store.state.attempt) {
-        // }
+        if (!this.$store.state.attempt) {
+          await this.$store.dispatch('attempt', {
+            id: projectId
+          })
+          this.$nuxt.$router.replace({ path: '/contributor/projects/' + projectId })
+        } else {
+          alert('You have another active session.')
+        }
       } catch (e) {
         alert('Failed to attempt project 2')
       }

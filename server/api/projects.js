@@ -38,6 +38,7 @@ router.post('/projects', upload.any(), (req, res) => {
     title: req.body.title,
     description: req.body.description,
     owner: req.body.owner,
+    ownerName: req.body.ownerName,
     file: req.files,
     classes: req.body.classes,
     type: req.body.type,

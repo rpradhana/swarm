@@ -5,6 +5,7 @@ const ProjectSchema = new Schema({
   title: String,
   description: String,
   owner: String,
+  ownerName: String,
   file: [Schema.Types.Mixed],
   classes: [String],
   type: String,

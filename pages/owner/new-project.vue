@@ -189,6 +189,7 @@ export default {
       formData.append('title', this.Project.title)
       formData.append('description', this.Project.description)
       formData.append('owner', this.$store.state.authUser.user._id)
+      formData.append('ownerName', this.$store.state.authUser.user.name)
       formData.append('type', this.Project.typeSelected)
       formData.append('incentive', this.Project.incentive)
       formData.append('expense', 0)

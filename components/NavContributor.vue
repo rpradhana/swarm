@@ -19,9 +19,15 @@
                           placeholder="Search projects"/>
           </div>
           <div class="nav-menu">
-            <b-button variant="link" class="ml-3 mr-5 nav-link">
+            <!-- <b-button variant="link" class="ml-3 mr-5 nav-link">
+            </b-button> -->
+            <b-button v-if="$store.state.attempt"
+                      variant="primary"
+                      :to="'/contributor/projects/' + $store.state.attempt.project._id"
+                      class="ml-3 mr-3">
+              Active session
             </b-button>
-            <b-dropdown variant="link" right class="link-black">
+            <b-dropdown variant="link" right class="link-black ml-5">
               <template slot="button-content">
                 ​<picture class="avatar">
                   <img src="https://placeimg.com/32/32/people" class="img-fluid img-thumbnail" alt="avatar">
@@ -39,9 +45,7 @@
 
 <script>
 export default {
-
   name: 'Nav',
-
   data () {
     return {
 

@@ -58,7 +58,16 @@
 // import axios from '~/plugins/axios'
 
 export default {
-
+  data () {
+    return {
+      form: {
+        email: '',
+        password: '',
+        errorMessage: null
+      },
+      show: true
+    }
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }

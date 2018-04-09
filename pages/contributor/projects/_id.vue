@@ -1,7 +1,6 @@
 <template>
   <section class="v-container">
     <b-container class="pb-7 pt-5">
-      {{ project }}
       <b-row>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
@@ -204,9 +203,9 @@ export default {
       // return redirect('/')
     }
   },
-  async asyncData () {
-    let { data } = await axios.get('/api/project/5aca9d05141d1d28deda75c9')
-    console.log(data)
+  async asyncData ({ store }) {
+    let { data } = await axios.get('/api/project/' + store.state.attempt.project._id)
+    // console.log(data)
     return data
   },
   data () {

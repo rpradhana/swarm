@@ -48,13 +48,13 @@ app.use(session({
 // POST `/api/attempt` to attempt a project and add the id to the `req.session.attempt`
 app.post('/api/attempt', function (req, res) {
 
-  Project.findOne({ id: req.body.id }, '', (error, attempt) => {
+  Project.findOne({ _id: req.body.id }, '', (error, project) => {
     if (error) {
       console.error(error)
-    } else if (attempt) {
-      if (req.body.id === attempt.id) {
-        req.session.attempt = { id: attempt.id }
-        return res.json({ attempt: attempt })
+    } else if (project) {
+      if (req.body.id === project.id) {
+        req.session.attempt = { id: project.id }
+        return res.json({ project: project })
       }
     } else {
     }

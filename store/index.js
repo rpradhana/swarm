@@ -43,7 +43,7 @@ const store = () => new Vuex.Store({
           id
         })
       }).then((res) => {
-        if (res.status >= 400) {
+        if (res.status >= 400 && res.status < 500) {
           throw new Error('Failed to attempt project')
         } else {
           return res.json()
