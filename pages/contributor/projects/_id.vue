@@ -25,7 +25,7 @@
       </b-row>
       <b-row align-h="center">
         <b-col sm="12" md="8">
-          <b-card no-body class="mb-5">
+          <b-card no-body class="mb-5 shadow">
             <b-tabs no-fade card v-model="currentStep">
               <b-form @submit="onSubmit" v-if="show">
                 <b-tab ref="step1" title="Step 1" active>
@@ -158,17 +158,7 @@
             </b-tabs>
           </b-card>
         </b-col>
-      </b-row>
-
-      <b-row align-h="center">
-        <b-col sm="12" md="8" class="text-center">
-          <b-button class="skip text-uppercase" variant="link" size="sm">
-            Skip this question
-          </b-button>
-        </b-col>
-      </b-row>
-
-        <b-col sm="12" md="4" class="d-none">
+<!--         <b-col sm="12" md="4">
           <b-card class="shadow mb-5">
             <div class="mb-3">
               <div>
@@ -185,6 +175,14 @@
               End session
             </b-button>
           </b-card>
+        </b-col> -->
+      </b-row>
+
+      <b-row align-h="center">
+        <b-col sm="12" md="8" class="text-center">
+          <b-button class="skip text-uppercase" variant="link" size="sm">
+            Skip this question
+          </b-button>
         </b-col>
       </b-row>
     </b-container>

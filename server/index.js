@@ -62,6 +62,12 @@ app.post('/api/attempt', function (req, res) {
 
 })
 
+// POST `/api/logout` to log out the user and remove it from the `req.session`
+app.post('/api/endAttempt', function (req, res) {
+  delete req.session.attempt
+  res.json({ ok: true })
+})
+
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
 app.post('/api/login', function (req, res) {
 

@@ -65,6 +65,35 @@
                         :per-page="20"/>
         </b-col>
       </b-row>
+
+      <!-- Modal Component -->
+      <b-modal centered ref="attemptExistsModal" id="attemptExistsModal" title="You have an active session">
+        <b-container>
+          <b-row>
+            <p>You can only attempt one project at the same time.</p>
+          </b-row>
+        </b-container>
+        <div slot="modal-footer" class="w-100">
+          <b-btn v-if="$store.state.attempt"
+                 class="float-right ml-3"
+                 variant="primary"
+                 :to="'/contributor/projects/' + $store.state.attempt.project._id">
+            Open session
+          </b-btn>
+          <b-btn v-else
+                 class="float-right ml-3"
+                 variant="primary"
+                 :to="'/contributor/projects/'">
+            Open session
+          </b-btn>
+          <b-btn class="float-right" variant="light" @click="btnShow=false">
+            Cancel
+          </b-btn>
+          <b-btn class="float-left" variant="outline-danger" @click="endAttempt">
+            End session
+          </b-btn>
+        </div>
+      </b-modal>
     </b-container>
   </section>
 </template>
@@ -115,7 +144,8 @@ export default {
           })
           this.$nuxt.$router.replace({ path: '/contributor/projects/' + projectId })
         } else {
-          alert('You have another active session.')
+          this.$refs.attemptExistsModal.show()
+          // alert('You have another active session.')
         }
       } catch (e) {
         alert('Failed to attempt project 2')

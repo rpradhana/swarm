@@ -21,12 +21,21 @@
           <div class="nav-menu">
             <!-- <b-button variant="link" class="ml-3 mr-5 nav-link">
             </b-button> -->
-            <b-button v-if="$store.state.attempt"
+<!--             <b-button v-if="$store.state.attempt"
                       variant="primary"
                       :to="'/contributor/projects/' + $store.state.attempt.project._id"
                       class="ml-3 mr-3">
               Active session
-            </b-button>
+            </b-button> -->
+            <b-dropdown v-if="$store.state.attempt"
+                        split
+                        text="Active Session"
+                      variant="primary"
+                      :to="'/contributor/projects/' + $store.state.attempt.project._id"
+                      class="ml-3 mr-3">
+              <b-dropdown-item v-b-modal.sessionInfoModal>Session info</b-dropdown-item>
+              <b-dropdown-item @click="endAttempt">End session</b-dropdown-item>
+            </b-dropdown>
             <b-dropdown variant="link" right class="link-black ml-5">
               <template slot="button-content">
                 ​<picture class="avatar">
@@ -39,6 +48,34 @@
           </div>
         </b-row>
       </b-col>
+      <b-modal id="sessionInfoModal"
+               v-model="btnShow"
+               size="sm"
+               title="Session info"
+               centered>
+        <b-container fluid>
+          <b-row>
+            <b-col cols="8"><strong>Session earnings: </strong></b-col>
+            <b-col>1</b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="8"><strong>Task done: </strong></b-col>
+            <b-col>1</b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="8"><strong>Time spent: </strong> </b-col>
+            <b-col>1</b-col>
+          </b-row>
+        </b-container>
+         <div slot="modal-footer" class="w-100">
+           <b-btn class="float-right ml-3" variant="outline-danger" @click="endAttempt">
+             End session
+           </b-btn>
+           <b-btn class="float-right" variant="light" @click="btnShow=false">
+             Close
+           </b-btn>
+         </div>
+      </b-modal>
     </b-container>
   </nav>
 </template>
@@ -48,7 +85,7 @@ export default {
   name: 'Nav',
   data () {
     return {
-
+      btnShow: false
     }
   },
   methods: {
@@ -57,6 +94,17 @@ export default {
         await this.$store.dispatch('logout')
         if (!this.$store.state.authUser) {
           this.$nuxt.$router.replace({ path: '/' })
+        }
+      } catch (e) {
+        this.form.errorMessage = e.message
+      }
+    },
+    async endAttempt () {
+      try {
+        await this.$store.dispatch('endAttempt')
+        this.btnShow = false
+        if (!this.$store.state.attempt) {
+          this.$nuxt.$router.replace({ path: '/contributor/dashboard' })
         }
       } catch (e) {
         this.form.errorMessage = e.message

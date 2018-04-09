@@ -68,6 +68,15 @@ const store = () => new Vuex.Store({
         commit('SET_ATTEMPT', attempt)
       })
     },
+    endAttempt ({ commit }) {
+      return fetch('/api/endAttempt', {
+        // Send the client cookies to the server
+        credentials: 'same-origin',
+        method: 'POST'
+      }).then(() => {
+        commit('SET_ATTEMPT', null)
+      })
+    },
     login ({ commit }, { email, password, type }) {
       return fetch('/api/login', {
         // Send the client cookies to the server
@@ -99,6 +108,7 @@ const store = () => new Vuex.Store({
         method: 'POST'
       }).then(() => {
         commit('SET_USER', null)
+        commit('SET_ATTEMPT', null)
       })
     }
   }
