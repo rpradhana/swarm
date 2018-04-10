@@ -16,14 +16,18 @@
                    :per-page="20"
                    :items="projects"
                    :fields="fields">
-            <template slot="#" slot-scope="row">
+            <template slot="details" slot-scope="row">
               <b-button variant="link"
                         class="p-0"
                         @click.stop="row.toggleDetails">
                 <i class="material-icons secondary-cta-link offset-min">expand_{{ row.detailsShowing ? 'more' : 'less'}}</i>
               </b-button>
             </template>
-            <template slot="##" slot-scope="row">
+            <template slot="creationDate" slot-scope="data">
+              <!-- A custom formatted data column cell -->
+              {{ data.value }}
+            </template>
+            <template slot="action" slot-scope="row">
 <!--               <b-button variant="light" class="mr-3 pt-0 pb-0" style="height: 34px">
                 <i class="material-icons secondary-cta-link">remove_red_eye</i>
               </b-button> -->
@@ -47,7 +51,7 @@
                     <strong>Owner: </strong>{{ row.item.ownerName }}
                   </span>
                   <span class="mr-5">
-                    <strong>Expiry: </strong>{{ (row.item.expiryDate !== 'null') ? row.item.expiryDate : 'No time limit' }}
+                    <strong>Expiry: </strong>{{ (!row.item.expiryDate) ? row.item.expiryDate : 'No time limit' }}
                   </span>
                 </div>
                 <div>
@@ -112,7 +116,9 @@ export default {
   },
   async asyncData () {
     let { data } = await axios.get('/api/projects')
-    console.log(data)
+    for (var ii = 0; ii < data.projects.length; ii++) {
+      data.projects[ii].creationDate = window.moment(data.projects[ii].creationDate).format('ll')
+    }
     return data
   },
   data () {
@@ -121,13 +127,13 @@ export default {
         id: ''
       },
       fields: [
-        '#',
+        { key: 'details', label: ' ', sortable: false },
         { key: 'title', sortable: true },
         { key: 'type', sortable: true },
         { key: 'attempts', sortable: true },
         { key: 'incentive', sortable: true },
-        { key: 'creationDate', sortable: true },
-        '##'
+        { key: 'creationDate', label: 'Created', sortable: true },
+        { key: 'action', label: ' ', sortable: false }
       ]
     }
   },
@@ -150,7 +156,20 @@ export default {
       } catch (e) {
         alert('Failed to attempt project 2')
       }
+    },
+    async endAttempt () {
+      try {
+        await this.$store.dispatch('endAttempt')
+        this.btnShow = false
+        if (!this.$store.state.attempt) {
+          this.$nuxt.$router.replace({ path: '/contributor/dashboard' })
+        }
+      } catch (e) {
+        this.form.errorMessage = e.message
+      }
     }
+  },
+  computed: {
   },
   head () {
     return {

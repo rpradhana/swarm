@@ -27,7 +27,7 @@
         <b-col sm="12" md="8">
           <b-card no-body class="mb-5 shadow">
             <b-tabs no-fade card v-model="currentStep">
-              <b-form @submit="onSubmit" v-if="show">
+              <b-form @submit.prevent="onSubmit" v-if="show">
                 <b-tab ref="step1" title="Step 1" active>
                   <h5 class="title mb-3">
                     Find one difference between A and B
@@ -203,7 +203,7 @@ export default {
   },
   async asyncData ({ store }) {
     let { data } = await axios.get('/api/project/' + store.state.attempt.project._id)
-    // console.log(data)
+    console.log(data)
     return data
   },
   data () {
@@ -234,7 +234,6 @@ export default {
   },
   methods: {
     onSubmit: function (evt) {
-      evt.preventDefault()
       alert(JSON.stringify(this.form))
     },
     resetFeature: function () {

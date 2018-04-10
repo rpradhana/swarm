@@ -5,17 +5,16 @@ const router = Router()
 // Dependencies
 const multer = require('multer')
 const path = require('path')
-
-let uploadIndex = 0
+const moment = require('moment')
 
 var upload = multer({ storage: multer.diskStorage({
 
   destination: function (req, file, callback) {
+    console.log(req, file, callback)
     callback(null, './static/uploads')
   },
   filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-    uploadIndex++
+    callback(null, file.fieldname + '-' + moment() + path.extname(file.originalname))
   }
 
 }),
@@ -49,7 +48,7 @@ router.post('/projects', upload.any(), (req, res) => {
     contributor: req.body.contributor,
     contributorLimit: req.body.contributorLimit,
     estimatedCost: req.body.estimatedCost,
-    creationDate: req.body.creationDate,
+    creationDate: moment(),
     expiryDate: req.body.expiryDate,
     modelDate: req.body.modelDate,
     modelQuality: req.body.modelQuality,

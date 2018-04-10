@@ -185,6 +185,8 @@ export default {
 
       axios.get('/api/projects/')
 
+      // var now = new Date().getTime()
+
       let formData = new FormData()
       formData.append('title', this.Project.title)
       formData.append('description', this.Project.description)
@@ -197,10 +199,10 @@ export default {
       formData.append('attemptsLimit', this.Project.attemptsLimit)
       formData.append('contributor', 0)
       formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
-      formData.append('creationDate', Date.now())
-      formData.append('expiryDate', null)
-      formData.append('modelDate', null)
-      formData.append('modelQuality', null)
+      // formData.append('creationDate', now) // Default value in server
+      // formData.append('expiryDate', null)
+      // formData.append('modelDate', null)
+      // formData.append('modelQuality', null)
       formData.append('status', 'Ongoing')
       for (var ii = 0; ii < this.Project.file.length; ii++) {
         formData.append('file', this.Project.file[ii])

@@ -13,6 +13,7 @@ import CTA from '~/components/CTA.vue'
 import Howto from '~/components/Howto.vue'
 
 export default {
+  layout: 'default',
   fetch ({ store, redirect }) {
     if (store.state.authUser) {
       return redirect('/owner/dashboard')

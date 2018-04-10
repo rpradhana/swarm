@@ -4,18 +4,6 @@ const router = Router()
 
 const User = require('../models/user')
 
-// Mock Users
-// const users = [
-//   { name: 'Alexandre' },
-//   { name: 'Pooya' },
-//   { name: 'Sébastien' },
-// ]
-
-// /* GET users listing. */
-// router.get('/users', (req, res, next) => {
-//   res.json(users)
-// })
-
 // POST register new user
 router.post('/users', (req, res, next) => {
 
