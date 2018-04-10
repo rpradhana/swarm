@@ -22,8 +22,13 @@
                             type="email"
                             v-model="form.email"
                             required
+                            :state="emailState"
+                            aria-describedby="emailFeedback"
                             placeholder="Enter your email">
               </b-form-input>
+              <!-- <b-form-invalid-feedback id="emailFeedback">
+                {{ form.emailErrorMsg }}
+              </b-form-invalid-feedback> -->
             </b-form-group>
             <b-form-group id="passwordGroup"
                           class="mb-4"
@@ -33,8 +38,13 @@
                             type="password"
                             v-model="form.password"
                             required
+                            :state="passwordState"
+                            aria-describedby="passwordFeedback"
                             placeholder="Enter your password">
               </b-form-input>
+              <b-form-invalid-feedback id="passwordFeedback">
+                {{ form.passwordErrorMsg }}
+              </b-form-invalid-feedback>
             </b-form-group>
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Sign In</b-button>
             <span class="small secondary-cta-link">New user?
@@ -63,7 +73,8 @@ export default {
       form: {
         email: '',
         password: '',
-        errorMessage: null
+        emailErrorMsg: null,
+        passwordErrorMsg: null
       },
       show: true
     }
@@ -72,7 +83,22 @@ export default {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
   },
-
+  computed: {
+    emailState () {
+      if (this.form.emailErrorMsg) {
+        return false
+      } else {
+        return null
+      }
+    },
+    passwordState () {
+      if (this.form.passwordErrorMsg) {
+        return false
+      } else {
+        return null
+      }
+    }
+  },
   methods: {
     async login () {
       var type = (this.$route.query.u === 'owner') ? 'owner' : 'contributor'
@@ -84,13 +110,14 @@ export default {
         })
         this.form.email = ''
         this.form.password = ''
-        this.form.errorMessage = null
+        this.form.emailErrorMsg = null
+        this.form.passwordErrorMsg = null
         if (this.$store.state.authUser) {
           this.$nuxt.$router.replace({ path: type + '/dashboard' })
         }
       } catch (e) {
-        alert('Invalid login credentials')
-        this.form.errorMessage = e.message
+        this.form.emailErrorMsg = 'Invalid email address'
+        this.form.passwordErrorMsg = 'Invalid login credentials'
       }
     }
   },

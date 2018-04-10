@@ -78,9 +78,11 @@ app.post('/api/login', function (req, res) {
       if (req.body.email === user.email && req.body.password === user.password && req.body.type === user.type) {
         req.session.authUser = { email: user.email, type: user.type }
         return res.json({ user: user })
+      } else {
+        res.status(401).json({ error: 'Invalid password' })
       }
     } else {
-      res.status(401).json({ error: 'Invalid login credentials' })
+      res.status(401).json({ error: 'Invalid email address' })
     }
   })
 

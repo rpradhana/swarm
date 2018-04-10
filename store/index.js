@@ -92,7 +92,6 @@ const store = () => new Vuex.Store({
         })
       }).then((res) => {
         if (res.status === 401) {
-          alert('Invalid login credentials')
           throw new Error('Invalid login credentials')
         } else {
           return res.json()
