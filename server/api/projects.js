@@ -49,7 +49,7 @@ router.post('/projects', upload.any(), (req, res) => {
     contributorLimit: req.body.contributorLimit,
     estimatedCost: req.body.estimatedCost,
     creationDate: moment(),
-    expiryDate: req.body.expiryDate,
+    expiryDate: moment(req.body.expiryDate),
     modelDate: req.body.modelDate,
     modelQuality: req.body.modelQuality,
     status: req.body.status

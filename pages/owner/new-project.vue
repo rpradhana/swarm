@@ -21,6 +21,7 @@
                             placeholder="Enter project title">
               </b-form-input>
             </b-form-group>
+
             <b-form-group id="descriptionGroup"
                           class="mb-4"
                           label="Description"
@@ -32,28 +33,7 @@
                             placeholder="Enter project description">
               </b-form-input>
             </b-form-group>
-            <b-form-group id="datasetGroup"
-                          class="mb-4"
-                          label="Dataset"
-                          label-for="datasetGroup"
-                          required>
-              <b-form-file multiple
-                           class="text-truncate"
-                           v-model="Project.file"
-                           placeholder="Upload a folder"/>
-              <div class="small">Selected files: {{ Project.file.length }}</div>
-            </b-form-group>
-            <b-form-group id="classes"
-                          class="mb-4"
-                          label="Predetermined classes"
-                          label-for="classes"
-                          required>
-              <b-form-file multiple
-                           class="text-truncate"
-                           v-model="Project.classes"
-                           placeholder="Upload sample files"/>
-              <div class="small">Selected files: {{ Project.classes.length }}</div>
-            </b-form-group>
+
             <b-form-group id="typeGroup"
                           class="mb-4"
                           label="Type"
@@ -65,6 +45,51 @@
                                   name="radiosStacked">
               </b-form-radio-group>
             </b-form-group>
+            <b-form-group id="datasetGroup"
+                          class="mb-4"
+                          label="Dataset"
+                          label-for="datasetGroup">
+              <b-form-file multiple
+                           required
+                           class="text-truncate"
+                           v-model="Project.file"
+                           aria-describedby="fileCaption"
+                           placeholder="Upload a folder"/>
+              <b-form-text id="fileCaption">
+                Selected files: {{ Project.file.length }}
+              </b-form-text>
+            </b-form-group>
+
+            <!--
+            <b-form-group id="classes"
+                          class="mb-4"
+                          label="Predetermined classes"
+                          label-for="classes"
+                          required>
+              <b-form-file multiple
+                           class="text-truncate"
+                           v-model="Project.classes"
+                           aria-describedby="classesCaption"
+                           placeholder="Upload sample files"/>
+              <b-form-text id="classesCaption">
+                Selected files: {{ Project.classes.length }}
+              </b-form-text>
+            </b-form-group>
+            -->
+
+            <b-form-group id="expiryDateGroup"
+                          class="mb-4"
+                          label="Expiry date (optional)"
+                          label-for="expiryDateGroup">
+              <b-form-input id="expiryDate"
+                            type="date"
+                            aria-describedby="expiryCaption"
+                            v-model="Project.expiryDate">
+              </b-form-input>
+              <b-form-text id="expiryCaption">
+                Leave empty for unlimited duration
+              </b-form-text>
+            </b-form-group>
 
             <b-row>
               <b-col md="6">
@@ -75,11 +100,14 @@
                               required>
                   <b-input-group prepend="$">
                     <b-form-input id="incentive"
-                                  type="text"
+                                  type="number"
+                                  required
+                                  :value="Project.incentive"
+                                  min="0.005"
+                                  step="0.005"
                                   required
                                   @change="validateIncentive"
-                                  v-model="Project.incentive"
-                                  placeholder="Min. 0.005">
+                                  v-model="Project.incentive">
                     </b-form-input>
                   </b-input-group>
                 </b-form-group>
@@ -91,10 +119,18 @@
                               label-for="AttemptsGroup"
                               required>
                   <b-form-input id="AttemptsLimit"
-                                type="text"
+                                type="number"
+                                required
+                                :value="Project.attemptsLimit"
+                                min="0"
+                                step="1000"
                                 v-model="Project.attemptsLimit"
+                                aria-describedby="attemptsCaption"
                                 placeholder="Empty for unlimited">
                   </b-form-input>
+                  <b-form-text id="attemptsCaption">
+                    0 = unlimited
+                  </b-form-text>
                 </b-form-group>
               </b-col>
             </b-row>
@@ -103,7 +139,10 @@
                           class="mb-4"
                           label="Estimated cost"
                           label-for="estimateGroup">
-              <span>{{ Project.incentive }} × {{ Project.attemptsLimit }} = ${{ Project.incentive * Project.attemptsLimit }} </span>
+              <span v-if="Project.incentive * Project.attemptsLimit > 0">{{ Project.incentive }} × {{ Project.attemptsLimit }} = ${{ Project.incentive * Project.attemptsLimit }} </span>
+              <span v-else>
+                <i>Unable to calculate estimated cost</i>
+              </span>
             </b-form-group>
 
             <b-button class="mt-1 mr-3" type="submit" variant="primary">Create project</b-button>
@@ -150,7 +189,8 @@ export default {
           { text: 'Prediction', value: 'prediction' }
         ],
         classes: '',
-        incentive: 0.005,
+        expiryDate: null,
+        incentive: 0.02,
         attemptsLimit: 0
       },
       show: true
@@ -200,7 +240,8 @@ export default {
       formData.append('contributor', 0)
       formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
       // formData.append('creationDate', now) // Default value in server
-      // formData.append('expiryDate', null)
+
+      if (this.Project.expiryDate) formData.append('expiryDate', this.Project.expiryDate)
       // formData.append('modelDate', null)
       // formData.append('modelQuality', null)
       formData.append('status', 'Ongoing')
