@@ -355,7 +355,7 @@ export default {
         formData.append('classes', this.Project.classes[ii].class)
 
         // For each training data in every class
-        console.log('1')
+        console.log('training')
         if (this.Project.classes[ii].trainingData) {
           for (var jj = 0; jj < this.Project.classes[ii].trainingData.length; jj++) {
             formData.append('tr-' + ii, this.Project.classes[ii].trainingData[jj])
@@ -364,7 +364,7 @@ export default {
 
         // For each test data in every class
         if (this.Project.classes[ii].testData) {
-          console.log('2')
+          console.log('testing')
           // For each training data in every class
           for (var kk = 0; kk < this.Project.classes[ii].testData.length; kk++) {
             formData.append('te', this.Project.classes[ii].testData[kk])

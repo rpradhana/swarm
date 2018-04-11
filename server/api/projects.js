@@ -59,7 +59,7 @@ router.post('/projects', upload.fields([
     owner: req.body.owner,
     ownerName: req.body.ownerName,
     testData: req.files['te'],
-    classes: '',
+    classes: req.body.classes,
     type: req.body.type,
     incentive: req.body.incentive,
     expense: req.body.expense,

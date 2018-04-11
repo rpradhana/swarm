@@ -3,8 +3,9 @@
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6">
+          <!-- project.file[0].path.substring(6) -->
           <b-card class="shadow mb-5"
-                  :img-src="project.file[0].path.substring(6)"
+                  img-src=""
                   img-alt="A"
                   img-top>
             <div class="text-center">
@@ -14,7 +15,7 @@
         </b-col>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
-                  :img-src="project.file[1].path.substring(6)"
+                  img-src=""
                   img-alt="B"
                   img-top>
             <div class="text-center">
@@ -119,63 +120,10 @@
                     </b-button>
                   </div>
                 </b-tab>
-
-<!--                 <b-tab title="Step 3">
-                  <h5 class="title mb-3">
-                    A's {{ feature }} is _ while B's is _
-                  </h5>
-                  <b-form-group horizontal
-                                :label-cols="1"
-                                label="A"
-                                label-size="lg"
-                                label-class="text-center"
-                                label-for="featureA">
-                    <b-form-input id="featureA"
-                                  size="lg"
-                                  autofocus
-                                  type="text"
-                                  required
-                                  placeholder="e.g. pattern, color, size">
-                    </b-form-input>
-                  </b-form-group>
-                  <b-form-group horizontal
-                                :label-cols="1"
-                                label="B"
-                                label-size="lg"
-                                label-class="text-center"
-                                label-for="featureB">
-                    <b-form-input id="featureB"
-                                  size="lg"
-                                  autofocus
-                                  type="text"
-                                  required
-                                  placeholder="e.g. pattern, color, size">
-                    </b-form-input>
-                  </b-form-group>
-                </b-tab> -->
-
               </b-form>
             </b-tabs>
           </b-card>
         </b-col>
-<!--         <b-col sm="12" md="4">
-          <b-card class="shadow mb-5">
-            <div class="mb-3">
-              <div>
-                <strong>Session earnings: </strong>{{ session.earnings }}
-              </div>
-              <div>
-                <strong>Task done: </strong>{{ session.taskDone }}
-              </div>
-              <div>
-                <strong>Time spent: </strong>${{ session.timeSpent }}
-              </div>
-            </div>
-            <b-button variant="light">
-              End session
-            </b-button>
-          </b-card>
-        </b-col> -->
       </b-row>
 
       <b-row align-h="center">
