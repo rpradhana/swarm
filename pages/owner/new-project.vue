@@ -18,20 +18,18 @@
                             type="text"
                             required
                             v-model="Project.title"
-                            placeholder="Enter project title">
-              </b-form-input>
+                            placeholder="Enter project title"/>
             </b-form-group>
-
             <b-form-group id="descriptionGroup"
                           class="mb-4"
                           label="Description"
                           label-for="descriptionGroup">
-              <b-form-input id="description"
-                            type="text"
-                            required
-                            v-model="Project.description"
-                            placeholder="Enter project description">
-              </b-form-input>
+              <b-form-textarea id="description"
+                               required
+                               :rows="4"
+                               :max-rows="6"
+                               v-model="Project.description"
+                               placeholder="Enter project description"/>
             </b-form-group>
 
             <b-form-group id="typeGroup"
@@ -45,20 +43,119 @@
                                   name="radiosStacked">
               </b-form-radio-group>
             </b-form-group>
+
             <b-form-group id="datasetGroup"
                           class="mb-4"
                           label="Dataset"
+                          label-for="datasetGroup"
+                          required>
+              <b-input-group>
+                <b-btn v-b-modal.datasetModal variant="tertiary">Edit dataset</b-btn>
+              </b-input-group>
+            </b-form-group>
+
+            <b-modal id="datasetModal"
+                     size="lg"
+                     v-model="btnShow"
+                     title="Dataset"
+                     centered>
+              <b-container fluid>
+<!--                 <b-row>
+                  <b-col>
+                    <b-form-group id="classCountGroup"
+                                  class="mb-4"
+                                  label="Number of classes"
+                                  label-for="classCountGroup"
+                                  required>
+                      <b-input-group>
+                        <b-form-input id="classCount"
+                                      type="number"
+                                      required
+                                      :value="classCount"
+                                      min="1"
+                                      step="1"
+                                      required
+                                      @change="updateClassCount(classCount)"
+                                      v-model="classCount">
+                        </b-form-input>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row> -->
+                <b-row v-for="(label, index) in Project.classes" :key="label.id">
+                  <b-col cols="4">
+                    <b-form-input id="classes"
+                                  type="text"
+                                  required
+                                  v-model="label.class"
+                                  :placeholder="'Class ' + index"/>
+                  </b-col>
+                  <b-col class="pl-0 pr-0">
+                    <b-form-file multiple
+                                 required
+                                 class="text-truncate"
+                                 v-model="label.trainingData"
+                                 aria-describedby="fileCaption"
+                                 placeholder="Upload files"/>
+                    <b-form-text id="fileCaption" class="mt-0 mb-3">
+                      Selected files: {{ label.trainingData.length }}
+                    </b-form-text>
+                  </b-col>
+                  <b-col cols="1">
+                    <b-btn class="p-0 float-right secondary-cta-link" variant="link" @click="removeClass()">
+                      <i class="material-icons pt-1">close</i>
+                    </b-btn>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <b-btn class="" variant="tertiary" @click="addClass">
+                     Add class
+                    </b-btn>
+                  </b-col>
+                </b-row>
+              </b-container>
+              <div slot="modal-footer" class="w-100">
+                <b-btn class="float-right ml-3" variant="primary" @click="btnShow=false">
+                 Update dataset
+                </b-btn>
+              </div>
+            </b-modal>
+
+<!--             <b-modal id="datasetModal"
+                     size="lg"
+                     title="Dataset"
+                     centered>
+              <b-container fluid>
+
+              </b-container>
+               <div slot="modal-footer" class="w-100">
+                 <b-btn class="float-right" variant="light" @click="btnShow=false">
+                   Close
+                 </b-btn>
+               </div>
+            </b-modal> -->
+
+<!--             <b-form-group id="datasetGroup"
+                          class="mb-4"
+                          label="Dataset"
                           label-for="datasetGroup">
+              <b-form-input id="classes"
+                            class="mb-2"
+                            type="text"
+                            required
+                            v-model="Project.classes[0].class"
+                            placeholder="Enter project classes"/>
               <b-form-file multiple
                            required
                            class="text-truncate"
-                           v-model="Project.file"
+                           v-model="Project.testData"
                            aria-describedby="fileCaption"
-                           placeholder="Upload a folder"/>
+                           placeholder="Upload files"/>
               <b-form-text id="fileCaption">
-                Selected files: {{ Project.file.length }}
+                Selected files: {{ Project.testData.length }}
               </b-form-text>
-            </b-form-group>
+            </b-form-group> -->
 
             <!--
             <b-form-group id="classes"
@@ -155,6 +252,7 @@
 
 <script>
 import axios from '~/plugins/axios'
+// import DatasetModal from '~/components/DatasetModal.vue'
 
 export default {
   layout: 'owner',
@@ -182,18 +280,27 @@ export default {
         title: '',
         description: '',
         owner: '',
-        file: '',
+        testData: '',
         typeSelected: 'modelling',
         typeOptions: [
           { text: 'Modelling', value: 'modelling' },
           { text: 'Prediction', value: 'prediction' }
         ],
-        classes: '',
+        classes: [
+          {
+            class: '',
+            index: 0,
+            trainingData: ''
+          }
+        ],
         expiryDate: null,
         incentive: 0.02,
         attemptsLimit: 0
       },
-      show: true
+      classCount: 1,
+      show: true,
+      btnShow: false,
+      btnDisableRemove: false
     }
   },
   methods: {
@@ -202,30 +309,28 @@ export default {
         console.log('error')
       }
     },
+    addClass () {
+      this.classCount++
+      this.btnDisableRemove = false
+      this.Project.classes.push({
+        class: '',
+        index: this.classCount,
+        trainingData: ''
+      })
+      console.log('class = ' + this.classCount)
+    },
+    removeClass (index) {
+      if (this.classCount > 1) {
+        this.classCount--
+        this.Project.classes.splice(index, 1)
+      } else {
+        this.btnDisableRemove = true
+      }
+      console.log('class = ' + this.classCount)
+    },
     async newProject (evt) {
-      // var newProject = {
-      //   title: this.Project.title,
-      //   description: this.Project.description,
-      //   owner: this.$store.state.authUser.user._id,
-      //   // file: this.Project.file,
-      //   classes: null,
-      //   type: this.Project.typeSelected,
-      //   incentive: this.Project.incentive,
-      //   expense: 0,
-      //   attempts: 0,
-      //   attemptsLimit: this.Project.attemptsLimit,
-      //   contributor: 0,
-      //   estimatedCost: this.Project.incentive * this.Project.attemptsLimit,
-      //   creationDate: Date.now(),
-      //   expiryDate: null,
-      //   modelDate: null,
-      //   modelQuality: null,
-      //   status: 'Ongoing'
-      // }
-
+      console.log(this.Project)
       axios.get('/api/projects/')
-
-      // var now = new Date().getTime()
 
       let formData = new FormData()
       formData.append('title', this.Project.title)
@@ -240,14 +345,31 @@ export default {
       formData.append('contributor', 0)
       formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
       // formData.append('creationDate', now) // Default value in server
-
       if (this.Project.expiryDate) formData.append('expiryDate', this.Project.expiryDate)
       // formData.append('modelDate', null)
       // formData.append('modelQuality', null)
       formData.append('status', 'Ongoing')
-      for (var ii = 0; ii < this.Project.file.length; ii++) {
-        formData.append('file', this.Project.file[ii])
-        formData.append('index', ii)
+
+      // For each class
+      for (var ii = 0; ii < this.Project.classes.length; ii++) {
+        formData.append('classes', this.Project.classes[ii].class)
+
+        // For each training data in every class
+        console.log('1')
+        if (this.Project.classes[ii].trainingData) {
+          for (var jj = 0; jj < this.Project.classes[ii].trainingData.length; jj++) {
+            formData.append('tr-' + ii, this.Project.classes[ii].trainingData[jj])
+          }
+        }
+
+        // For each test data in every class
+        if (this.Project.classes[ii].testData) {
+          console.log('2')
+          // For each training data in every class
+          for (var kk = 0; kk < this.Project.classes[ii].testData.length; kk++) {
+            formData.append('te', this.Project.classes[ii].testData[kk])
+          }
+        }
       }
 
       console.log('Project data = ' + this.Project)
@@ -258,7 +380,7 @@ export default {
         formData,
         { headers: { 'content-type': 'multipart/form-data; boundary=X' } }
       ).then((response) => {
-        console.log(this.Project.file)
+        console.log(this.Project.testData)
         this.$nuxt.$router.replace({ path: 'dashboard' })
       }).catch((error) => {
         console.log(error)
@@ -271,6 +393,7 @@ export default {
     }
   },
   components: {
+    // DatasetModal
   }
 }
 </script>

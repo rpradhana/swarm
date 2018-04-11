@@ -10,11 +10,12 @@ const moment = require('moment')
 var upload = multer({ storage: multer.diskStorage({
 
   destination: function (req, file, callback) {
-    console.log(req, file, callback)
+    // console.log(req, file, callback)
     callback(null, './static/uploads')
   },
   filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + moment() + path.extname(file.originalname))
+    console.log(req)
+    callback(null, file.fieldname + '-' + req.body.owner + '-' + moment().format('x') + path.extname(file.originalname))
   }
 
 }),
@@ -29,24 +30,42 @@ fileFilter: function(req, file, callback) {
 })
 
 const Project = require('../models/project')
+const Class = require('../models/class')
 
 // Add new projects
-router.post('/projects', upload.any(), (req, res) => {
+router.post('/projects', upload.fields([
+    { name: 'tr-0' },
+    { name: 'tr-1' },
+    { name: 'tr-2' },
+    { name: 'tr-3' },
+    { name: 'tr-4' },
+    { name: 'tr-5' },
+    { name: 'tr-6' },
+    { name: 'tr-7' },
+    { name: 'tr-8' },
+    { name: 'tr-9' },
+    { name: 'tr-10' },
+    { name: 'tr-11' },
+    { name: 'tr-12' },
+    { name: 'tr-13' },
+    { name: 'tr-14' },
+    { name: 'tr-15' },
+    { name: 'te' }
+  ]), (req, res) => {
 
   const newProject = new Project({
     title: req.body.title,
     description: req.body.description,
     owner: req.body.owner,
     ownerName: req.body.ownerName,
-    file: req.files,
-    classes: req.body.classes,
+    testData: req.files['te'],
+    classes: '',
     type: req.body.type,
     incentive: req.body.incentive,
     expense: req.body.expense,
     attempts: req.body.attempts,
     attemptsLimit: req.body.attemptsLimit,
     contributor: req.body.contributor,
-    contributorLimit: req.body.contributorLimit,
     estimatedCost: req.body.estimatedCost,
     creationDate: moment(),
     expiryDate: moment(req.body.expiryDate),
@@ -55,15 +74,33 @@ router.post('/projects', upload.any(), (req, res) => {
     status: req.body.status
   })
 
-  newProject.save((error) => {
+  newProject.save((error, project) => {
+
+    let newClass
+
+    project.classes.forEach((pClass, i) => {
+      newClass = new Class({
+        projectId: project._id,
+        class: req.body.pClass,
+        index: i,
+        trainingData: req.files['tr-' + i]
+      })
+
+      newClass.save((error, c) => {
+        if (error) {
+          console.log(error)
+        }
+      })
+    })
+
     if (error) {
       console.log(error)
-    }
-    else res.send({
+    } else res.send({
       success: true,
       message: 'Project saved successfully!'
     })
   })
+
 })
 
 // Update status
