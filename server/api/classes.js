@@ -4,7 +4,7 @@ const router = Router()
 
 const Class = require('../models/class')
 
-// Fetch all projects
+// Fetch all classes
 router.get('/classes', (req, res) => {
   Class.find({}, '', (error, classes) => {
     if (error) {

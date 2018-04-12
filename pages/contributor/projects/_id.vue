@@ -1,11 +1,18 @@
 <template>
   <section class="v-container">
+                    <b-button class="ml-3"
+                              variant="primary"
+                              size="lg"
+                              v-on:click="attempt">
+                      ATTEMPT
+                    </b-button>
+                    {{ feature }}
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6">
           <!-- project.file[0].path.substring(6) -->
           <b-card class="shadow mb-5"
-                  img-src=""
+                  :img-src="task.a"
                   img-alt="A"
                   img-top>
             <div class="text-center">
@@ -15,7 +22,7 @@
         </b-col>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
-                  img-src=""
+                  :img-src="task.b"
                   img-alt="B"
                   img-top>
             <div class="text-center">
@@ -144,14 +151,14 @@ export default {
   layout: 'contributor',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      // return redirect('/welcome?a=sign-in')
+      return redirect('/welcome?a=sign-in')
     } else if (store.state.authUser.user.type !== 'contributor') {
-      // return redirect('/')
+      return redirect('/')
     }
   },
   async asyncData ({ store }) {
     let { data } = await axios.get('/api/project/' + store.state.attempt.project._id)
-    console.log(data)
+    console.log('Initial data', data)
     return data
   },
   data () {
@@ -160,6 +167,8 @@ export default {
       feature: '',
       featureA: '',
       featureB: '',
+      pathA: '/uploads/tr-0-5ace32166c2ddb29c3a424fe-1523463558779.jpg',
+      pathB: '/uploads/tr-0-5ace32166c2ddb29c3a424fe-1523463558779.jpg',
       currentStep: 0,
       canProceed: 1,
       session: {
@@ -181,22 +190,35 @@ export default {
     }
   },
   methods: {
-    onSubmit: function (evt) {
+    onSubmit (evt) {
       alert(JSON.stringify(this.form))
     },
-    resetFeature: function () {
+    resetFeature () {
       this.featureA = ''
       this.featureB = ''
     },
-    back: function () {
+    back () {
     },
-    step1to2: function () {
+    step1to2 () {
       if (this.feature.length > 0) {
         this.proceed()
       }
     },
-    proceed: function () {
+    proceed () {
       this.currentStep += 1
+    },
+    async attempt () {
+      axios.get('/api/attempt/' + this.$store.state.attempt.project._id)
+        .then((res) => {
+          console.log(res.data)
+
+          // Change the image
+          this.task.a = res.data.a.path.substring(6)
+          this.task.b = res.data.b.path.substring(6)
+        })
+      // Get class 1
+
+      // Get class 2
     }
   },
   head () {

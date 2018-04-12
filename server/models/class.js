@@ -6,6 +6,7 @@ const ClassSchema = new Schema({
   projectId: String,
   class: String,
   index: Number,
+  features: [Schema.Types.Mixed],
   trainingData: [Schema.Types.Mixed]
 })
 

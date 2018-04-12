@@ -252,7 +252,6 @@
 
 <script>
 import axios from '~/plugins/axios'
-// import DatasetModal from '~/components/DatasetModal.vue'
 
 export default {
   layout: 'owner',

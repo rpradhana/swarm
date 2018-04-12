@@ -14,10 +14,10 @@
               </b-button>
             </div>
           </div>
-          <div class="search">
+<!--           <div class="search">
             <b-form-input type="text"
                           placeholder="Search projects"/>
-          </div>
+          </div> -->
           <div class="nav-menu">
             <!-- <b-button variant="link" class="ml-3 mr-5 nav-link">
             </b-button> -->
@@ -30,9 +30,9 @@
             <b-dropdown v-if="$store.state.attempt"
                         split
                         text="Active Session"
-                      variant="primary"
-                      :to="'/contributor/projects/' + $store.state.attempt.project._id"
-                      class="ml-3 mr-3">
+                        variant="primary"
+                        @click="openSession"
+                        class="ml-3 mr-3">
               <b-dropdown-item v-b-modal.sessionInfoModal>Session info</b-dropdown-item>
               <b-dropdown-item @click="endAttempt">End session</b-dropdown-item>
             </b-dropdown>
@@ -42,7 +42,7 @@
                   <img src="https://placeimg.com/32/32/people" class="img-fluid img-thumbnail" alt="avatar">
                 </picture>
               </template>
-              <b-dropdown-item @click.prevent="">Profile</b-dropdown-item>
+<!--               <b-dropdown-item @click.prevent="">Profile</b-dropdown-item> -->
               <b-dropdown-item @click="logout">Sign out</b-dropdown-item>
             </b-dropdown>
           </div>
@@ -81,14 +81,32 @@
 </template>
 
 <script>
+import axios from '~/plugins/axios'
 export default {
   name: 'Nav',
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser) {
+      // return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type !== 'contributor') {
+      // return redirect('/')
+    }
+  },
   data () {
     return {
       btnShow: false
     }
   },
+  async asyncData () {
+    let { data } = await axios.get('/api/projects')
+    for (var ii = 0; ii < data.projects.length; ii++) {
+      data.projects[ii].creationDate = window.moment(data.projects[ii].creationDate).format('ll')
+    }
+    return data
+  },
   methods: {
+    openSession () {
+      this.$nuxt.$router.replace({ path: '/contributor/projects/' + this.$store.state.attempt.project._id })
+    },
     async logout () {
       try {
         await this.$store.dispatch('logout')

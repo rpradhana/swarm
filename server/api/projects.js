@@ -81,7 +81,7 @@ router.post('/projects', upload.fields([
     project.classes.forEach((pClass, i) => {
       newClass = new Class({
         projectId: project._id,
-        class: req.body.pClass,
+        class: pClass,
         index: i,
         trainingData: req.files['tr-' + i]
       })
