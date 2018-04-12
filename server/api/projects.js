@@ -105,16 +105,34 @@ router.post('/projects', upload.fields([
 })
 
 // Update status
-// router.post('/projects/status', (req, res) => {
-//   Project.update(
-//     { '_id': req.body.projectId },
-//     {
-//       '$set': {
-//         req.body.status
-//       }
-//     }
-//   )
-// })
+router.post('/status', (req, res) => {
+
+  console.log(req.body)
+
+  // Project.findOne({ _id : req.body.projectId }, '', (error, project) => {
+
+  //   const updatedProject = new Project ({
+  //     title: project.title,
+  //     status: req.body.status
+  //   })
+
+  //   console.log(project)
+
+  //   updatedProject.save()
+
+  // })
+
+  Project.update(
+    { _id : req.body.projectId },
+    {
+      $set: {
+        status : req.body.status
+      }
+    }
+  )
+
+  res.send('status updated')
+})
 
 // Fetch all projects
 router.get('/projects', (req, res) => {

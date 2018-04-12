@@ -120,7 +120,7 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 import ProjectGridItem from '~/components/ProjectGridItem.vue'
 
 export default {
@@ -133,8 +133,9 @@ export default {
     }
   },
   async asyncData () {
-    // let { data } = await axios.get('/api/users')
-    // return { users: data }
+    let { data } = await axios.get('/api/projects')
+
+    return { users: data }
   },
   methods: {
     format (type, input) {

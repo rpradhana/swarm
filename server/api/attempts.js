@@ -65,7 +65,6 @@ router.get('/attemptsBy/:userId', (req, res) => {
         })
         console.log(dateList, ' : ' ,projectList, ' : ' ,taskCountList)
 
-
         var rows = []
         projectList.forEach((item, index) => {
 

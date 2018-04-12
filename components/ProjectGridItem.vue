@@ -52,9 +52,11 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
+  fetch ({ store, redirect }) {
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
@@ -100,21 +102,35 @@ export default {
         case 'Ongoing': {
           this.status = 'Paused'
 
-          // let statusUpdate = {
-          //   // projectId = this.
-          // }
+          let statusUpdate = {
+            projectId: this.id,
+            status: this.status
+          }
 
-          // axios.post('/api/status/', statusUpdate)
-          //   .then((response) => {
-          //     console.log(response)
-          //   })
-          //   .catch((error) => {
-          //     console.log(error)
-          //   })
+          await axios.post('/api/status', statusUpdate)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
           break
         }
         case 'Paused': {
           this.status = 'Ongoing'
+
+          let statusUpdate = {
+            projectId: this.id,
+            status: this.status
+          }
+
+          await axios.post('/api/status', statusUpdate)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
           break
         }
         case 'Done': {
