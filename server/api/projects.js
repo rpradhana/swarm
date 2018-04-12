@@ -128,7 +128,7 @@ router.get('/projects', (req, res) => {
   }).sort({ _id: -1 })
 })
 
-// Fetch all projects
+// Fetch all projects by user
 router.get('/projects/:userId', (req, res) => {
   const userId = req.params.userId
   Project.find({ owner: userId }, '', (error, projects) => {
@@ -141,7 +141,7 @@ router.get('/projects/:userId', (req, res) => {
   }).sort({ userId: -1 })
 })
 
-// Fetch all project
+// Fetch specific project
 router.get('/project/:projectId', (req, res) => {
   const projectId = req.params.projectId
   Project.findOne({ _id: projectId }, '', (error, project) => {

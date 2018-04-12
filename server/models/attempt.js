@@ -10,7 +10,8 @@ const AttemptsSchema = new Schema({
   featureBId: String,
   valueA: Schema.Types.Mixed,
   valueB: Schema.Types.Mixed,
-  userId: String
+  userId: String,
+  timestamp: Schema.Types.Mixed
 })
 
 const Attempt = mongoose.model('Attempt', AttemptsSchema)

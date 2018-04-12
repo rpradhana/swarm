@@ -15,6 +15,13 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+function toObject(arr) {
+  var rv = {};
+  for (var i = 0; i < arr.length; ++i)
+    rv[i] = arr[i];
+  return rv;
+}
+
 // Fetch all attempts
 router.get('/attempt', (req, res) => {
   Attempts.find({}, '', (error, attempts) => {
@@ -24,6 +31,65 @@ router.get('/attempt', (req, res) => {
       attempts: attempts
     })
   }).sort({ _id: -1 })
+})
+
+// Fetch all attempts by user
+router.get('/attemptsBy/:userId', (req, res) => {
+  const userId = req.params.userId
+  Attempt.find({ userId: userId }, '', (error, attempts) => {
+    Project.find({}, '', (error, projects) => {
+      if (error) {
+        console.error(error)
+      } else {
+
+        var attemptCounter = 0
+        var projectList = []
+        var dateList = []
+        var taskCountList = []
+        var isDistinctProject
+        var isDistinctTime
+        var totalEarnings = 0
+
+        attempts.forEach((a, index) => {
+          if (a.timestamp) {
+            attemptCounter++
+            isDistinctProject = (!_.includes(projectList, a.projectId))
+            isDistinctTime = (!_.includes(dateList, moment(a.timestamp).format('l')))
+            if (isDistinctProject && isDistinctTime) {
+              projectList.push(a.projectId)
+              dateList.push(a.timestamp)
+              taskCountList.push(attemptCounter)
+              attemptCounter = 0
+            }
+          }
+        })
+        console.log(dateList, ' : ' ,projectList, ' : ' ,taskCountList)
+
+
+        var rows = []
+        projectList.forEach((item, index) => {
+
+          var earnings = (taskCountList[index] * _.find(projects, { 'id': item }).incentive)
+          rows.push({
+            date: moment(dateList[index]).format('l'),
+            title: _.find(projects, { 'id': item }).title,
+            type: _.find(projects, { 'id': item }).type,
+            tasks: taskCountList[index],
+            earnings: earnings
+          })
+
+          totalEarnings += earnings
+        })
+        console.log(rows)
+        res.send({
+          attempts: attempts,
+          rows: rows,
+          totalEarnings: totalEarnings
+        })
+
+      }
+    })
+  }).sort({ timestamp: 1 })
 })
 
 /**
@@ -48,7 +114,6 @@ router.get('/attempt/:projectId', (req, res) => {
       matrixRows = [],
       found = 0,
       row
-
 
   Project.findOne({ _id: projectId }, '', (error, project) => {
     Class.find({ projectId: projectId }, '', (error, classes) => {
@@ -190,7 +255,8 @@ router.post('/postAttempt', (req, res, next) => {
                 featureId: f0._id,
                 valueA: req.body.a,
                 valueB: req.body.b,
-                userId: req.body.userId
+                userId: req.body.userId,
+                timestamp: moment()
               })
               firstAttempt.save()
               console.log(firstFeature)
@@ -226,7 +292,8 @@ router.post('/postAttempt', (req, res, next) => {
                   featureId: fnew._id,
                   valueA: req.body.a,
                   valueB: req.body.b,
-                  userId: req.body.userId
+                  userId: req.body.userId,
+                  timestamp: moment()
                 })
                 newAttempt.save()
                 console.log('adding new feature ...')
@@ -251,7 +318,8 @@ router.post('/postAttempt', (req, res, next) => {
                   featureId: f._id,
                   valueA: req.body.a,
                   valueB: req.body.b,
-                  userId: req.body.userId
+                  userId: req.body.userId,
+                  timestamp: moment()
                 })
                 newAttempt.save()
               }
