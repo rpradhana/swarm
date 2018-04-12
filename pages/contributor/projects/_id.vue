@@ -239,7 +239,7 @@ export default {
       this.currentStep += 1
     },
     async getAttempt () {
-      if (this.currentStep >= 1) {
+      if (this.currentStep >= 0) {
         axios.get('/api/attempt/' + this.$store.state.attempt.project._id)
           .then((res) => {
             console.log(res.data)
@@ -281,9 +281,10 @@ export default {
         a: a,
         b: b,
         c1: this.c1,
-        c2: this.c2
+        c2: this.c2,
+        userId: this.$store.state.authUser.user._id
       }
-
+      console.log('attempt = ', newAttempt)
       axios.post('/api/postAttempt/', newAttempt)
         .then((res) => {
           console.log(res.data)

@@ -9,6 +9,11 @@ const _ = require('lodash')
 const Project = require('../models/project')
 const Class = require('../models/class')
 const Attempt = require('../models/attempt')
+const Feature = require('../models/feature')
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 // Fetch all attempts
 router.get('/attempt', (req, res) => {
@@ -21,7 +26,9 @@ router.get('/attempt', (req, res) => {
   }).sort({ _id: -1 })
 })
 
-// Fetch and attempt a project
+/**
+ * GET Attempt
+ */
 router.get('/attempt/:projectId', (req, res) => {
   const projectId = req.params.projectId
 
@@ -38,7 +45,8 @@ router.get('/attempt/:projectId', (req, res) => {
       b,
       foundFeatures = [],
       matrix = [[]],
-      matrixRows = []
+      matrixRows = [],
+      found = 0
 
   // Get the project as project
   Project.findOne({ _id: projectId }, '', (error, project) => {
@@ -63,99 +71,117 @@ router.get('/attempt/:projectId', (req, res) => {
 
         featureCount = foundFeatures.length
 
-        // Iterate over classes
-        classes.some((c, index) => {
+          // Iterate over classes
+          classes.some((c, index) => {
 
-          if (featureCount === 0) {action = 1}
-          else if (featureCount < Math.ceil(Math.log2(c.length))) {action = 2}
-          else if (featureCount >= Math.ceil(Math.log2(c.length))) {action = 3}
+            if (found) {action = 0}
+            else if (featureCount === 0) {action = 1}
+            else if (featureCount < Math.ceil(Math.log2(c.length))) {action = 2}
+            else if (featureCount >= Math.ceil(Math.log2(c.length))) {action = 3}
 
-          switch(action) {
+            (action > 0) ? console.log('act = ' + action) : ''
 
-            // feature matrix is empty
-            // get class 1 & 2
-            case (1): {
-              c1 = 0
-              c2 = 1
-              rand = Math.random(classes[c1].trainingData.length)
-              a = classes[c1].trainingData[rand]
-              rand = Math.random(classes[c2].trainingData.length)
-              b = classes[c2].trainingData[rand]
-              break
-            }
+            switch(action) {
 
-            // feature count < minimum log2(classes)
-            // optimize loop
-            case (2): {
-              if (iteration < INEFFICIENCY_TRESHOLD) {
-
-                // iterate classes and pick 2 classes
-                classes.some((c, jj) => {
-                  // first loop will assign c1 with class that has empty/lowest feature
-                  if (!c1 && c.features.length < featureCount) {
-                    c1 = jj
-                  }
-                  // next loop will assign c2 with next class that has empty/lowest feature
-                  if (c1 && c1 === jj && !c2 && c.features.length < featureCount) {
-                    c2 = jj
-                  }
-                })
-              } else {
-                // OPTIMIZE!
+              // feature matrix is empty
+              // get class 1 & 2
+              case (1): {
+                c1 = 0
+                c2 = 1
+                found = 1
+                break
               }
-              break
+
+              // feature count < minimum log2(classes)
+              // optimize loop
+              case (2): {
+                if (iteration < INEFFICIENCY_TRESHOLD) {
+
+                  // iterate classes and pick 2 classes
+                  classes.some((c, jj) => {
+                    // first loop will assign c1 with class that has empty/lowest feature
+                    if (!c1 && c.features.length < featureCount) {
+                      c1 = jj
+                    }
+                    // next loop will assign c2 with next class that has empty/lowest feature
+                    if (c1 && c1 === jj && !c2 && c.features.length < featureCount) {
+                      c2 = jj
+                    }
+                  })
+                } else {
+                  // OPTIMIZE!
+                }
+                break
+              }
+
+              // feature count is reaches minimum required
+              case (3): {
+                // test empties
+                foundFeatures.some((f, ii) => {
+                  classes.some((c, jj) => {
+                    // if empty
+                    if (!c.features[ii]) {
+                    // TEST
+                    }
+                  })
+                })
+
+                // test feature matrix
+                // build feature row
+                classes.some((c, ii) => {
+                  c.some((f, jj) => {
+                    matrix[ii][jj] = f.values[0] // values are sorted by occurence
+                  })
+                })
+
+                for (row of matrix) for (e of row) matrixRows.push(e)
+
+                matrixRows.some((r, ii) => {
+                  matrixRows.some((r2, jj) => {
+                    if (ii !== jj && _.isEqual(rows[ii], rows[jj])) {
+                      c1 = ii
+                      c2 = jj
+                    }
+                  })
+                })
+
+                // Default: random
+                do {
+                    c1 = Math.floor(Math.random() * c.length);
+                } while (c1 === c2);
+
+                break
+              }
             }
+          })
 
-            // feature count is reaches minimum required
-            case (3): {
-              // test empties
-              foundFeatures.some((f, ii) => {
-                classes.some((c, jj) => {
-                  // if empty
-                  if (!c.features[ii]) {
-                  // TEST
-                  }
-                })
-              })
+        // console.log('c1 = ' + c1 + ', c2 = ' + c2)
+        // res.send({
+        //   req: req.body,
+        //   project: project,
+        //   action: action,
+        //   classes: classes,
+        //   a: classes[c1].trainingData[0],
+        //   b: classes[c2].trainingData[0],
+        //   c1: c1,
+        //   c2: c2
+        // })
 
-              // test feature matrix
-              // build feature row
-              classes.some((c, ii) => {
-                c.some((f, jj) => {
-                  matrix[ii][jj] = f.values[0] // values are sorted by occurence
-                })
-              })
-
-              for (row of matrix) for (e of row) matrixRows.push(e)
-
-              matrixRows.some((r, ii) => {
-                matrixRows.some((r2, jj) => {
-                  if (ii !== jj && _.isEqual(rows[ii], rows[jj])) {
-                    c1 = ii
-                    c2 = jj
-                  }
-                })
-              })
-
-              // Default: random
-              do {
-                  c1 = Math.floor(Math.random() * c.length);
-              } while (c1 === c2);
-
-              break
-            }
-          }
-        })
+        rand = getRandomInt(classes[c1].trainingData.length)
+        console.log('#a = ' + rand)
+        a = classes[c1].trainingData[rand]
+        rand = getRandomInt(classes[c2].trainingData.length)
+        console.log('#b = ' + rand)
+        b = classes[c2].trainingData[rand]
 
         console.log('c1 = ' + c1 + ', c2 = ' + c2)
-
         res.send({
           req: req.body,
           project: project,
           action: action,
           classes: classes,
-          a: classes[c1].trainingData[0],
-          b: classes[c2].trainingData[0],
+          a: a,
+          b: b,
           c1: c1,
           c2: c2
         })
@@ -167,280 +193,112 @@ router.get('/attempt/:projectId', (req, res) => {
 
 })
 
-// POST new attempt
+/**
+ * POST New Attempt
+ */
 router.post('/postAttempt', (req, res, next) => {
 
   Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
-    if (error) {
-      console.error(error)
-    } else {
+    Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
+      Feature.find({ projectId: req.body.projectId }, '', (error, features) => {
 
-      let criteria = [],
-      data,
-      foundFeature = null
+        console.log('Feature length = ', features.length)
 
-      // class of a specific project
-      criteria.push({ projectId: req.body.projectId })
-      criteria.push({ class: '' })
-
-      // find all class
-      Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
-
-        // find related feature
-        classes.forEach((c, ii) => {
-          if (c.features) {
-            c.features.forEach((f, ii) => {
-              foundFeature = (req.body.feature === f) ? f : null
+        // first feature & first attempt
+        if (features.length <= 0) {
+          let firstFeature = new Feature ({
+            feature: req.body.feature,
+            projectId: project._id,
+            accuracy: 1
+          })
+          firstFeature
+            .save((e, f0) => {
+              let firstAttempt = new Attempt ({
+                projectId: req.body.projectId,
+                classAId: classes[req.body.c1]._id,
+                classBId: classes[req.body.c2]._id,
+                featureId: f0._id,
+                valueA: req.body.a,
+                valueB: req.body.b,
+                userId: req.body.userId
+              })
+              firstAttempt.save()
+              console.log(firstFeature)
             })
-          } else {
-            foundFeature = null
-          }
-        })
-
-        console.log('Found feature = ' + foundFeature)
-
-        // update related feature
-        if (foundFeature === null) {
-          console.log(req.body.c1)
-
-          let crit = []
-          crit.push({ projectId: req.body.projectId })
-          crit.push({ class: req.body.c1 })
-          crit = crit.length > 0 ? { $and: crit } : {}
-
-          console.log('c1 id ' + classes[req.body.c1]._id)
-          console.log('c2 id ' + classes[req.body.c2]._id)
-
-          Class.findOneAndUpdate(
-            { _id: classes[req.body.c1]._id },
-            {
-              class: 'FEATURE',
-              feature: [
-                {
-                  feature: 'A',
-                  values: [
-                    { v: 2 }
-                  ]
-                }
-              ]
-            },
-            { upsert: true },
-            (error, doc) => {
-              console.log(doc)
-            }
-          )
-
-          console.log(classes)
-
-          // // UPDATE C2
-          // Class.findOneAndUpdate(
-          //   { $and: [
-          //       { projectId: req.body.projectId },
-          //       { class: project.classes[req.body.c1] }
-          //     ]
-          //   },
-          //   {
-          //     $push: {'Class.$.class' : 'TEST'}
-          //   },
-          //   { upsert: true }
-          // )
-
-          // // UPDATE C2
-          // Class.findOne(
-          //   { $and: [
-          //       { projectId: req.body.projectId },
-          //       { class: project.classes[req.body.c2] }
-          //     ]
-          //   },
-          //   '',
-          //   (error, classes) => {
-          //     // Class.findById(_id, (e, data) => {
-          //     // //   var t = data.classes.id(_id1)
-          //     // //   t.class = 'YAY'
-          //     // //   data.save()
-          //     // //   console.log(data)
-          //     // })
-          //   }
-          // )
-
-          // Class.update(
-          //   { $and: [
-          //       { projectId: req.body.projectId },
-          //       { class: project.classes[req.body.c1] }
-          //     ]
-          //   },
-          //   {
-          //     $set: {
-
-          //     }
-          //   },
-          //   {
-          //     upsert: true
-          //   }
-          // )
-
-          // Class.findOne(
-          //   { $and: [
-          //       { projectId: req.body.projectId },
-          //       { class: project.classes[req.body.c1] }
-          //     ]
-          //   },
-          //   '',
-          //   (error, classes) => {
-          //     // classes.set('useFindAndModify', false)
-          //     // var feature = {
-          //     //   "feature": "A",
-          //     //   "values": [
-          //     //     { "v": 1 }
-          //     //   ]
-          //     // }
-
-          //     // classes.features = [{
-          //     //   "feature": req.body.feature,
-          //     //   "values": [
-          //     //     { "v": 1 }
-          //     //   ]
-          //     // }]
-          //     // // classes.insert(
-          //     // //   { 'index': 1 }
-          //     // // )
-          //     // classes.save()
-
-          //     // classes.update({},
-          //     //   {
-          //     //     $set: { "feature": req.body.feature }
-          //     //   },
-          //     //   { upsert: true }
-          //     // )
-
-          //     console.log(classes)
-          //   }
-          // )
-
-
-        } else {
-          // UPDATE ONE
-          // UPDATE ALL
         }
 
+        else if (features.length > 0) {
+
+          var isNew = true
+          features.forEach((f) => {
+            console.log(req.body.feature, ' : ', f.feature)
+            if (req.body.feature === f.feature) {
+              isNew = false
+            }
+          })
+          console.log('isNew = ', isNew)
+
+          console.log()
+
+          // new feature?
+          if (isNew) {
+            let newFeature = new Feature ({
+              feature: req.body.feature,
+              projectId: project._id,
+              accuracy: 1
+            })
+            newFeature
+              .save((e, fnew) => {
+                let newAttempt = new Attempt ({
+                  projectId: req.body.projectId,
+                  classAId: classes[req.body.c1]._id,
+                  classBId: classes[req.body.c2]._id,
+                  featureId: fnew._id,
+                  valueA: req.body.a,
+                  valueB: req.body.b,
+                  userId: req.body.userId
+                })
+                newAttempt.save()
+                console.log('adding new feature ...')
+                console.log(newFeature)
+              })
+          }
+
+          // feature already exist => new attempt
+          else if (!isNew) {
+            Feature.findOne(
+              { $and: [
+                  { projectId: project._id },
+                  { feature: req.body.feature }
+                ]
+              },
+              '',
+              (error, f) => {
+                let newAttempt = new Attempt ({
+                  projectId: req.body.projectId,
+                  classAId: classes[req.body.c1]._id,
+                  classBId: classes[req.body.c2]._id,
+                  featureId: f._id,
+                  valueA: req.body.a,
+                  valueB: req.body.b,
+                  userId: req.body.userId
+                })
+                newAttempt.save()
+              }
+            )
+          }
+        }
+
+        classes.forEach((c) => {
+          features.forEach((f) => {
+
+          })
+        })
+
       })
-
-      // project.classes.forEach((c) => {
-      //   console.log(project.classes)
-      // })
-
-      // criteria = criteria.length > 0 ? { $and: criteria } : {}
-      // // Get related classes as classes[]
-      // Class.find(criteria, '', (error, classes) => {
-
-      //   classes.forEach((c, ii) => {
-      //     // console.log(c._id)
-      //   })
-
-      // })
-      res.send(project)
-    }
+    })
+    res.send(project)
   })
-
-    // Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
-
-    //   let criteria = [],
-    //       data = {}
-
-    //   // class of a specific project
-    //   criteria.push({ projectId: req.body.projectId })
-
-    //   project.classes.forEach((c) => {
-
-    //     // class from client === class in server
-    //     if (req.body.feature === c) {
-    //       criteria.push({ class: req.body.feature })
-    //       console.log(req.body.feature)
-    //     }
-
-    //     // class from client doesn't exist
-    //     else {
-
-    //     }
-    //   })
-    //   // criteria.push({ class: 'a' })
-
-    //   criteria = criteria.length > 0 ? { $and: criteria } : {}
-
-
-    //   // Get related classes as classes[]
-    //   Class.find(criteria, '', (error, classes) => {
-
-    //     data = classes
-    //     res.send(data)
-
-    //   })
-
-    // })
-
-    // find Project as project
-    // foreach classes
-    // if features
-
-
-
-
-  // Get the project as project
-  // Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
-  //   if (error) {
-  //     console.error(error)
-  //   } else {
-
-
-
-  //     // Get related classes as classes[]
-  //     Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
-
-
-  //       classes.forEach((c, ii) => {
-  //         data = c
-
-  //         console.log(c)
-
-  //         c.update(
-  //           { _id: c._id },
-  //           {
-  //             $set:
-  //             {
-  //               features: [
-  //                 { feature: 'a', values: true }
-  //               ]
-  //             }
-  //           }
-  //         )
-  //       })
-  //     })
-
-  //     Class.find(
-  //       { projectId: req.body.projectId }, '',
-  //       (error, c) => {
-  //     })
-
-  //     res.send(data)
-  //   }
-  // })
-
-  // const newUser = new User({
-  //   name: req.body.name,
-  //   email: req.body.email,
-  //   password: req.body.password,
-  //   paypal: req.body.paypal,
-  //   type: req.body.type
-  // })
-
-  // newUser.save((error) => {
-  //   if (error) {
-  //     console.log(error)
-  //   } else res.send({
-  //     success: true,
-  //     message: 'User saved successfully!'
-  //   })
-  // })
 })
 
 export default router
