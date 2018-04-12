@@ -3,7 +3,7 @@
                     <b-button class="ml-3"
                               variant="primary"
                               size="lg"
-                              v-on:click="attempt">
+                              @click="getAttempt">
                       ATTEMPT
                     </b-button>
                     {{ feature }}
@@ -12,7 +12,7 @@
         <b-col sm="12" md="6">
           <!-- project.file[0].path.substring(6) -->
           <b-card class="shadow mb-5"
-                  :img-src="task.a"
+                  :img-src="taskA"
                   img-alt="A"
                   img-top>
             <div class="text-center">
@@ -22,7 +22,7 @@
         </b-col>
         <b-col sm="12" md="6">
           <b-card class="shadow mb-5"
-                  :img-src="task.b"
+                  :img-src="taskB"
                   img-alt="B"
                   img-top>
             <div class="text-center">
@@ -35,7 +35,7 @@
         <b-col sm="12" md="8">
           <b-card no-body class="mb-5 shadow">
             <b-tabs no-fade card v-model="currentStep">
-              <b-form @submit.prevent="onSubmit" v-if="show">
+              <b-form @submit.prevent="getAttempt" v-if="show">
                 <b-tab ref="step1" title="Step 1" active>
                   <h5 class="title mb-3">
                     Find one difference between A and B
@@ -47,6 +47,8 @@
                                   autofocus
                                   type="text"
                                   v-model="feature"
+                                  @input="step1to2"
+                                  @keyup.enter="proceed"
                                   required
                                   placeholder="e.g. pattern, color, size">
                     </b-form-input>
@@ -56,9 +58,9 @@
                       No difference
                     </b-button>
                     <b-button class="ml-3"
-                              variant="primary"
+                              :variant="canProceed ? 'primary' : 'disabled'"
                               size="lg"
-                              v-on:click="step1to2">
+                              v-on:click="proceed">
                       Next
                     </b-button>
                   </div>
@@ -119,10 +121,10 @@
                     </b-form-group>
                   </template>
                   <div class="justify-content-end d-flex">
-                    <b-button v-on:click="back" variant="light" size="lg">
+                    <b-button @click="back" variant="light" size="lg">
                       Back
                     </b-button>
-                    <b-button type="submit" class="ml-3" variant="primary" size="lg">
+                    <b-button type="submit" class="ml-3" variant="primary" size="lg" @click.prevent="postAttempt">
                       Submit
                     </b-button>
                   </div>
@@ -157,12 +159,18 @@ export default {
     }
   },
   async asyncData ({ store }) {
-    let { data } = await axios.get('/api/project/' + store.state.attempt.project._id)
+    let { data } = await axios.get('/api/attempt/' + store.state.attempt.project._id)
+    // Change the image
+    data['taskA'] = data.a.path.substring(6)
+    data['taskB'] = data.b.path.substring(6)
+    data['c1'] = data.c1
+    data['c2'] = data.c2
     console.log('Initial data', data)
     return data
   },
   data () {
     return {
+      flags: [],
       show: true,
       feature: '',
       featureA: '',
@@ -170,16 +178,12 @@ export default {
       pathA: '/uploads/tr-0-5ace32166c2ddb29c3a424fe-1523463558779.jpg',
       pathB: '/uploads/tr-0-5ace32166c2ddb29c3a424fe-1523463558779.jpg',
       currentStep: 0,
-      canProceed: 1,
+      canProceed: 0,
       session: {
         title: 'Classify the species of birds of paradise',
         taskDone: 150,
         timeSpent: 15,
         earnings: 300
-      },
-      task: {
-        a: 'http://cdn.lightgalleries.net/4bd5ec0079abc/images/BOP-101211-297---Version-2-1.jpg',
-        b: 'https://www.hbw.com/sites/default/files/styles/ibc_2k/public/ibc/p/Lesser_Bird_of_Paradise_06.jpg?itok=BAYcHgw0'
       },
       selected: 'a',
       options: [
@@ -191,34 +195,109 @@ export default {
   },
   methods: {
     onSubmit (evt) {
-      alert(JSON.stringify(this.form))
+    },
+    reset () {
+      this.selected = 'a'
+      this.feature = ''
+      this.featureA = ''
+      this.featureB = ''
+      this.currentStep = 0
+      this.canProceed = 0
     },
     resetFeature () {
+      switch (this.selected) {
+        case ('a'): {
+          this.featureA = true
+          this.featureB = false
+          break
+        }
+        case ('b'): {
+          this.featureA = false
+          this.featureB = true
+          break
+        }
+        case ('c'): {
+          break
+        }
+      }
+
       this.featureA = ''
       this.featureB = ''
     },
     back () {
+      this.currentStep = 0
+      this.reset()
     },
     step1to2 () {
       if (this.feature.length > 0) {
-        this.proceed()
+        this.canProceed = 1
+      } else if (this.feature.length === 0) {
+        this.canProceed = 0
       }
     },
     proceed () {
       this.currentStep += 1
     },
-    async attempt () {
-      axios.get('/api/attempt/' + this.$store.state.attempt.project._id)
-        .then((res) => {
-          console.log(res.data)
+    async getAttempt () {
+      if (this.currentStep >= 1) {
+        axios.get('/api/attempt/' + this.$store.state.attempt.project._id)
+          .then((res) => {
+            console.log(res.data)
 
-          // Change the image
-          this.task.a = res.data.a.path.substring(6)
-          this.task.b = res.data.b.path.substring(6)
-        })
+            // Change the image
+            this.taskA = res.data.a.path.substring(6)
+            this.taskB = res.data.b.path.substring(6)
+          })
+      } else {
+        this.proceed()
+      }
       // Get class 1
 
       // Get class 2
+    },
+    async postAttempt () {
+      let a, b
+      switch (this.selected) {
+        case ('a'): {
+          a = true
+          b = false
+          break
+        }
+        case ('b'): {
+          a = false
+          b = true
+          break
+        }
+        case ('c'): {
+          a = this.featureA
+          b = this.featureB
+          break
+        }
+      }
+      let newAttempt = {
+        mode: this.selected,
+        projectId: this.$store.state.attempt.project._id,
+        feature: this.feature,
+        a: a,
+        b: b,
+        c1: this.c1,
+        c2: this.c2
+      }
+
+      axios.post('/api/postAttempt/', newAttempt)
+        .then((res) => {
+          console.log(res.data)
+        })
+        .then(() => {
+          // this.getAttempt()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      this.back(() => {
+        this.getAttempt()
+      })
     }
   },
   head () {

@@ -83,6 +83,7 @@ router.post('/projects', upload.fields([
         projectId: project._id,
         class: pClass,
         index: i,
+        features: [],
         trainingData: req.files['tr-' + i]
       })
 

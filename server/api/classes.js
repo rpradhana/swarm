@@ -19,7 +19,7 @@ router.get('/classes', (req, res) => {
 // Fetch all classes
 router.get('/classes/:projectId', (req, res) => {
   const projectId = req.params.projectId
-  Class.findOne({ projectId: projectId }, '', (error, pClass) => {
+  Class.find({ projectId: projectId }, '', (error, pClass) => {
     if (error) {
       console.error(error)
     }

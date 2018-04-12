@@ -154,7 +154,7 @@ export default {
           // alert('You have another active session.')
         }
       } catch (e) {
-        alert('Failed to attempt project 2')
+        alert('Failed to attempt project')
       }
     },
     async endAttempt () {

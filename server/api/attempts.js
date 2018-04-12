@@ -11,7 +11,7 @@ const Class = require('../models/class')
 const Attempt = require('../models/attempt')
 
 // Fetch all attempts
-router.get('/attempts', (req, res) => {
+router.get('/attempt', (req, res) => {
   Attempts.find({}, '', (error, attempts) => {
     if (error) {
       console.error(error)
@@ -77,7 +77,9 @@ router.get('/attempt/:projectId', (req, res) => {
             case (1): {
               c1 = 0
               c2 = 1
+              rand = Math.random(classes[c1].trainingData.length)
               a = classes[c1].trainingData[rand]
+              rand = Math.random(classes[c2].trainingData.length)
               b = classes[c2].trainingData[rand]
               break
             }
@@ -148,10 +150,14 @@ router.get('/attempt/:projectId', (req, res) => {
         console.log('c1 = ' + c1 + ', c2 = ' + c2)
 
         res.send({
+          req: req.body,
+          project: project,
           action: action,
           classes: classes,
           a: classes[c1].trainingData[0],
-          b: classes[c2].trainingData[0]
+          b: classes[c2].trainingData[0],
+          c1: c1,
+          c2: c2
         })
 
       }).sort({ _id: -1 })
@@ -159,6 +165,282 @@ router.get('/attempt/:projectId', (req, res) => {
     }
   }).sort({ projectId: 1 })
 
+})
+
+// POST new attempt
+router.post('/postAttempt', (req, res, next) => {
+
+  Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
+    if (error) {
+      console.error(error)
+    } else {
+
+      let criteria = [],
+      data,
+      foundFeature = null
+
+      // class of a specific project
+      criteria.push({ projectId: req.body.projectId })
+      criteria.push({ class: '' })
+
+      // find all class
+      Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
+
+        // find related feature
+        classes.forEach((c, ii) => {
+          if (c.features) {
+            c.features.forEach((f, ii) => {
+              foundFeature = (req.body.feature === f) ? f : null
+            })
+          } else {
+            foundFeature = null
+          }
+        })
+
+        console.log('Found feature = ' + foundFeature)
+
+        // update related feature
+        if (foundFeature === null) {
+          console.log(req.body.c1)
+
+          let crit = []
+          crit.push({ projectId: req.body.projectId })
+          crit.push({ class: req.body.c1 })
+          crit = crit.length > 0 ? { $and: crit } : {}
+
+          console.log('c1 id ' + classes[req.body.c1]._id)
+          console.log('c2 id ' + classes[req.body.c2]._id)
+
+          Class.findOneAndUpdate(
+            { _id: classes[req.body.c1]._id },
+            {
+              class: 'FEATURE',
+              feature: [
+                {
+                  feature: 'A',
+                  values: [
+                    { v: 2 }
+                  ]
+                }
+              ]
+            },
+            { upsert: true },
+            (error, doc) => {
+              console.log(doc)
+            }
+          )
+
+          console.log(classes)
+
+          // // UPDATE C2
+          // Class.findOneAndUpdate(
+          //   { $and: [
+          //       { projectId: req.body.projectId },
+          //       { class: project.classes[req.body.c1] }
+          //     ]
+          //   },
+          //   {
+          //     $push: {'Class.$.class' : 'TEST'}
+          //   },
+          //   { upsert: true }
+          // )
+
+          // // UPDATE C2
+          // Class.findOne(
+          //   { $and: [
+          //       { projectId: req.body.projectId },
+          //       { class: project.classes[req.body.c2] }
+          //     ]
+          //   },
+          //   '',
+          //   (error, classes) => {
+          //     // Class.findById(_id, (e, data) => {
+          //     // //   var t = data.classes.id(_id1)
+          //     // //   t.class = 'YAY'
+          //     // //   data.save()
+          //     // //   console.log(data)
+          //     // })
+          //   }
+          // )
+
+          // Class.update(
+          //   { $and: [
+          //       { projectId: req.body.projectId },
+          //       { class: project.classes[req.body.c1] }
+          //     ]
+          //   },
+          //   {
+          //     $set: {
+
+          //     }
+          //   },
+          //   {
+          //     upsert: true
+          //   }
+          // )
+
+          // Class.findOne(
+          //   { $and: [
+          //       { projectId: req.body.projectId },
+          //       { class: project.classes[req.body.c1] }
+          //     ]
+          //   },
+          //   '',
+          //   (error, classes) => {
+          //     // classes.set('useFindAndModify', false)
+          //     // var feature = {
+          //     //   "feature": "A",
+          //     //   "values": [
+          //     //     { "v": 1 }
+          //     //   ]
+          //     // }
+
+          //     // classes.features = [{
+          //     //   "feature": req.body.feature,
+          //     //   "values": [
+          //     //     { "v": 1 }
+          //     //   ]
+          //     // }]
+          //     // // classes.insert(
+          //     // //   { 'index': 1 }
+          //     // // )
+          //     // classes.save()
+
+          //     // classes.update({},
+          //     //   {
+          //     //     $set: { "feature": req.body.feature }
+          //     //   },
+          //     //   { upsert: true }
+          //     // )
+
+          //     console.log(classes)
+          //   }
+          // )
+
+
+        } else {
+          // UPDATE ONE
+          // UPDATE ALL
+        }
+
+      })
+
+      // project.classes.forEach((c) => {
+      //   console.log(project.classes)
+      // })
+
+      // criteria = criteria.length > 0 ? { $and: criteria } : {}
+      // // Get related classes as classes[]
+      // Class.find(criteria, '', (error, classes) => {
+
+      //   classes.forEach((c, ii) => {
+      //     // console.log(c._id)
+      //   })
+
+      // })
+      res.send(project)
+    }
+  })
+
+    // Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
+
+    //   let criteria = [],
+    //       data = {}
+
+    //   // class of a specific project
+    //   criteria.push({ projectId: req.body.projectId })
+
+    //   project.classes.forEach((c) => {
+
+    //     // class from client === class in server
+    //     if (req.body.feature === c) {
+    //       criteria.push({ class: req.body.feature })
+    //       console.log(req.body.feature)
+    //     }
+
+    //     // class from client doesn't exist
+    //     else {
+
+    //     }
+    //   })
+    //   // criteria.push({ class: 'a' })
+
+    //   criteria = criteria.length > 0 ? { $and: criteria } : {}
+
+
+    //   // Get related classes as classes[]
+    //   Class.find(criteria, '', (error, classes) => {
+
+    //     data = classes
+    //     res.send(data)
+
+    //   })
+
+    // })
+
+    // find Project as project
+    // foreach classes
+    // if features
+
+
+
+
+  // Get the project as project
+  // Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
+  //   if (error) {
+  //     console.error(error)
+  //   } else {
+
+
+
+  //     // Get related classes as classes[]
+  //     Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
+
+
+  //       classes.forEach((c, ii) => {
+  //         data = c
+
+  //         console.log(c)
+
+  //         c.update(
+  //           { _id: c._id },
+  //           {
+  //             $set:
+  //             {
+  //               features: [
+  //                 { feature: 'a', values: true }
+  //               ]
+  //             }
+  //           }
+  //         )
+  //       })
+  //     })
+
+  //     Class.find(
+  //       { projectId: req.body.projectId }, '',
+  //       (error, c) => {
+  //     })
+
+  //     res.send(data)
+  //   }
+  // })
+
+  // const newUser = new User({
+  //   name: req.body.name,
+  //   email: req.body.email,
+  //   password: req.body.password,
+  //   paypal: req.body.paypal,
+  //   type: req.body.type
+  // })
+
+  // newUser.save((error) => {
+  //   if (error) {
+  //     console.log(error)
+  //   } else res.send({
+  //     success: true,
+  //     message: 'User saved successfully!'
+  //   })
+  // })
 })
 
 export default router
