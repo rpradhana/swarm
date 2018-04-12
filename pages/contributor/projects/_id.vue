@@ -1,12 +1,5 @@
 <template>
   <section class="v-container">
-                    <b-button class="ml-3"
-                              variant="primary"
-                              size="lg"
-                              @click="getAttempt">
-                      ATTEMPT
-                    </b-button>
-                    {{ feature }}
     <b-container class="pb-7 pt-5">
       <b-row>
         <b-col sm="12" md="6">
@@ -54,9 +47,9 @@
                     </b-form-input>
                   </b-form-group>
                   <div class="justify-content-end d-flex">
-                    <b-button variant="light" size="lg">
+<!--                     <b-button variant="light" size="lg">
                       No difference
-                    </b-button>
+                    </b-button> -->
                     <b-button class="ml-3"
                               :variant="canProceed ? 'primary' : 'disabled'"
                               size="lg"
@@ -137,7 +130,7 @@
 
       <b-row align-h="center">
         <b-col sm="12" md="8" class="text-center">
-          <b-button class="skip text-uppercase" variant="link" size="sm">
+          <b-button class="skip text-uppercase" variant="link" size="sm" @click="skip">
             Skip this question
           </b-button>
         </b-col>
@@ -227,6 +220,7 @@ export default {
     back () {
       this.currentStep = 0
       this.reset()
+      console.log('step = ', this.currentStep)
     },
     step1to2 () {
       if (this.feature.length > 0) {
@@ -236,7 +230,8 @@ export default {
       }
     },
     proceed () {
-      this.currentStep += 1
+      this.currentStep = 1
+      console.log('step = ', this.currentStep)
     },
     async getAttempt () {
       if (this.currentStep >= 0) {
@@ -251,9 +246,9 @@ export default {
       } else {
         this.proceed()
       }
-      // Get class 1
-
-      // Get class 2
+    },
+    async skip () {
+      this.getAttempt()
     },
     async postAttempt () {
       let a, b
@@ -290,15 +285,14 @@ export default {
           console.log(res.data)
         })
         .then(() => {
-          // this.getAttempt()
+          this.back()
+        })
+        .then(() => {
+          this.getAttempt()
         })
         .catch((error) => {
           console.log(error)
         })
-
-      this.back(() => {
-        this.getAttempt()
-      })
     }
   },
   head () {

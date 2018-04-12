@@ -46,132 +46,104 @@ router.get('/attempt/:projectId', (req, res) => {
       foundFeatures = [],
       matrix = [[]],
       matrixRows = [],
-      found = 0
+      found = 0,
+      row
 
-  // Get the project as project
+
   Project.findOne({ _id: projectId }, '', (error, project) => {
-    if (error) {
-      console.error(error)
-    } else {
+    Class.find({ projectId: projectId }, '', (error, classes) => {
+      Feature.find({ projectId: projectId }, '', (error, features) => {
 
-      // Get related classes as classes[]
-      Class.find({ projectId: projectId }, '', (error, classes) => {
+        if (found) {action = 0}
+        else if (features.length === 0) {action = 1}
+        else if (features.length < Math.ceil(Math.log2(classes.length))) {action = 2}
+        else if (features.length >= Math.ceil(Math.log2(classes.length))) {action = 3}
 
-        // Check feature count
-        classes.some((c, ii) => {
-          if (c.features) {
+        console.log('classes count = ', classes.length)
+        console.log('features count = ', features.length)
+        console.log('action = ', action)
 
-            c.features.some((f, jj) => {
-              if (!_.includes(foundFeatures, f)) {
-                foundFeatures.push(f)
-              }
-            })
+        switch(action) {
+
+          // feature matrix is empty
+          // get class 1 & 2
+          case (1): {
+            c1 = 0
+            c2 = 1
+            found = 1
+            break
           }
-        })
 
-        featureCount = foundFeatures.length
+          // feature count < minimum log2(classes)
+          // optimize loop
+          case (2): {
+            if (iteration < INEFFICIENCY_TRESHOLD) {
 
-          // Iterate over classes
-          classes.some((c, index) => {
-
-            if (found) {action = 0}
-            else if (featureCount === 0) {action = 1}
-            else if (featureCount < Math.ceil(Math.log2(c.length))) {action = 2}
-            else if (featureCount >= Math.ceil(Math.log2(c.length))) {action = 3}
-
-            (action > 0) ? console.log('act = ' + action) : ''
-
-            switch(action) {
-
-              // feature matrix is empty
-              // get class 1 & 2
-              case (1): {
-                c1 = 0
-                c2 = 1
-                found = 1
-                break
-              }
-
-              // feature count < minimum log2(classes)
-              // optimize loop
-              case (2): {
-                if (iteration < INEFFICIENCY_TRESHOLD) {
-
-                  // iterate classes and pick 2 classes
-                  classes.some((c, jj) => {
-                    // first loop will assign c1 with class that has empty/lowest feature
-                    if (!c1 && c.features.length < featureCount) {
-                      c1 = jj
-                    }
-                    // next loop will assign c2 with next class that has empty/lowest feature
-                    if (c1 && c1 === jj && !c2 && c.features.length < featureCount) {
-                      c2 = jj
-                    }
-                  })
-                } else {
-                  // OPTIMIZE!
+              // iterate classes and pick 2 classes
+              classes.some((c, jj) => {
+                // first loop will assign c1 with class that has empty/lowest feature
+                if (!c1 && c.features.length < featureCount) {
+                  c1 = jj
                 }
-                break
-              }
-
-              // feature count is reaches minimum required
-              case (3): {
-                // test empties
-                foundFeatures.some((f, ii) => {
-                  classes.some((c, jj) => {
-                    // if empty
-                    if (!c.features[ii]) {
-                    // TEST
-                    }
-                  })
-                })
-
-                // test feature matrix
-                // build feature row
-                classes.some((c, ii) => {
-                  c.some((f, jj) => {
-                    matrix[ii][jj] = f.values[0] // values are sorted by occurence
-                  })
-                })
-
-                for (row of matrix) for (e of row) matrixRows.push(e)
-
-                matrixRows.some((r, ii) => {
-                  matrixRows.some((r2, jj) => {
-                    if (ii !== jj && _.isEqual(rows[ii], rows[jj])) {
-                      c1 = ii
-                      c2 = jj
-                    }
-                  })
-                })
-
-                // Default: random
-                do {
-                    c1 = Math.floor(Math.random() * c.length);
-                } while (c1 === c2);
-
-                break
-              }
+                // next loop will assign c2 with next class that has empty/lowest feature
+                if (c1 && c1 === jj && !c2 && c.features.length < featureCount) {
+                  c2 = jj
+                }
+              })
+            } else {
+              // OPTIMIZE!
             }
-          })
+            break
+          }
 
-        // console.log('c1 = ' + c1 + ', c2 = ' + c2)
-        // res.send({
-        //   req: req.body,
-        //   project: project,
-        //   action: action,
-        //   classes: classes,
-        //   a: classes[c1].trainingData[0],
-        //   b: classes[c2].trainingData[0],
-        //   c1: c1,
-        //   c2: c2
-        // })
+          // feature count is reaches minimum required
+          case (3): {
+            // test empties
+
+            // foundFeatures.some((f, ii) => {
+            //   classes.some((c, jj) => {
+            //     // if empty
+            //     if (!c.features[ii]) {
+            //     // TEST
+            //     }
+            //   })
+            // })
+
+            // // test feature matrix
+            // // build feature row
+            // classes.some((c, ii) => {
+            //   console.log(c)
+            //   c.some((f, jj) => {
+            //     matrix[ii][jj] = f.values[0] // values are sorted by occurence
+            //   })
+            // })
+
+            // for (row of matrix) for (e of row) matrixRows.push(e)
+
+            // matrixRows.some((r, ii) => {
+            //   matrixRows.some((r2, jj) => {
+            //     if (ii !== jj && _.isEqual(rows[ii], rows[jj])) {
+            //       c1 = ii
+            //       c2 = jj
+            //     }
+            //   })
+            // })
+
+            // Default: random
+            c1 = Math.floor(Math.random() * classes.length)
+            do {
+                c2 = Math.floor(Math.random() * classes.length);
+            } while (c2 === c1);
+
+            break
+          }
+        }
 
         rand = getRandomInt(classes[c1].trainingData.length)
-        console.log('#a = ' + rand)
+        console.log('random #a = ' + rand)
         a = classes[c1].trainingData[rand]
         rand = getRandomInt(classes[c2].trainingData.length)
-        console.log('#b = ' + rand)
+        console.log('random #b = ' + rand)
         b = classes[c2].trainingData[rand]
 
         console.log('c1 = ' + c1 + ', c2 = ' + c2)
@@ -187,10 +159,8 @@ router.get('/attempt/:projectId', (req, res) => {
         })
 
       }).sort({ _id: -1 })
-
-    }
-  }).sort({ projectId: 1 })
-
+    }).sort({ _id: -1 })
+  }).sort({ _id: -1 })
 })
 
 /**
