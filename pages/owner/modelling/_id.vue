@@ -25,13 +25,13 @@
                      title="Dataset"
                      centered>
               <b-container fluid>
-                <b-row v-for="(label, index) in data.project.classes" :key="label.id">
+                <b-row v-for="(label, index) in data.classes" :key="label.id">
                   <b-col cols="4">
                     <b-form-input id="classes"
                                   type="text"
                                   required
                                   v-model="label.class"
-                                  placeholder="label.class"/>
+                                  :placeholder="data.project.classes[index]"/>
                   </b-col>
                   <b-col class="pl-0 pr-0">
                     <b-form-file multiple
@@ -39,9 +39,9 @@
                                  class="text-truncate"
                                  v-model="label.trainingData"
                                  aria-describedby="fileCaption"
-                                 :placeholder="label.class"/>
+                                 placeholder="Upload files"/>
                     <b-form-text id="fileCaption" class="mt-0 mb-3">
-                      Selected files: {{ label.trainingData }}
+                      Selected files: {{ label.trainingData.length }}
                     </b-form-text>
                   </b-col>
                   <b-col cols="1">
@@ -65,8 +65,6 @@
               </div>
             </b-modal>
 
-            {{ data.project._id }}
-            {{ data.sampleClasses[0].trainingData.path.substr(6) }}
             <div class="mb-4">
               <h5 class="mb-3">Sample classes</h5>
               <div class="clearfix">
@@ -76,11 +74,11 @@
                      :alt="c.class"
                      :id="'c-' + index"
                      :src="c.trainingData.path.substr(6)">
-                <b-tooltip v-for="(c, index) in classes"
+                <b-tooltip v-for="(c, index) in data.project.classes"
                            triggers="hover"
                            :key="c._id"
                            :target="'c-' + index"
-                           :title="c.class">
+                           :title="c">
                 </b-tooltip>
               </div>
             </div>
@@ -99,6 +97,7 @@
             </div>
             <div>
               <b-table striped hover :items="features" :fields="fields"/>
+              <!-- <b-table striped hover :items="data.features" :fields="fields"/> -->
             </div>
           </b-card>
         </b-col>
@@ -126,9 +125,34 @@
           </b-button>
           <b-button class="w-100 mb-3"
                     variant="primary"
+                    v-b-modal.modelModal
                     size="lg">
             View model
           </b-button>
+
+          <b-modal class=""
+                   id="modelModal"
+                   title="Feature matrix"
+                   centered
+                   v-model="modelShow"
+                   size="lg">
+            <b-container>
+              <b-row>
+                <b-col>
+                  <b-table striped hover :items="featureMatrix">
+                  </b-table>
+<!--                   {{ data.project.classes }}
+                  {{ data.features }} -->
+                </b-col>
+              </b-row>
+            </b-container>
+            <div slot="modal-footer" class="w-100">
+              <b-btn class="float-right ml-3" variant="primary" @click="modelShow=false">
+               Close
+              </b-btn>
+            </div>
+          </b-modal>
+
           <b-card id="basic-info" class="shadow mb-5">
             <div class="card-text">
               <div class="mb-3">
@@ -218,7 +242,7 @@ export default {
     addClass () {
       this.classCount++
       this.btnDisableRemove = false
-      this.Project.classes.push({
+      this.data.classes.push({
         class: '',
         index: this.classCount,
         trainingData: ''
@@ -226,9 +250,9 @@ export default {
       console.log('class = ' + this.classCount)
     },
     removeClass (index) {
-      if (this.classCount > 1) {
+      if (this.classCount >= 1) {
         this.classCount--
-        this.Project.classes.splice(index, 1)
+        this.data.classes.splice(index, 1)
       } else {
         this.btnDisableRemove = true
       }
@@ -278,6 +302,10 @@ export default {
   },
   data () {
     return {
+      classCount: 0,
+      btnDisableRemove: false,
+      modelShow: false,
+      btnShow: false,
       project: {
         id: '00000001',
         title: 'Classify the species of birds of paradise',
@@ -291,6 +319,11 @@ export default {
         status: 'Ongoing',
         description: 'Given the images of birds identify the existence of certain features to classify its exact species.'
       },
+      featureMatrix: [
+        { class: 'Falcon', f1: '1', f2: '1', f3: '1', f4: '0', f5: '1' },
+        { class: 'Hawk', f1: '1', f2: '0', f3: '1', f4: '0', f5: '0' },
+        { class: 'Eagle', f1: '1', f2: '1', f3: '0', f4: '1', f5: '1' }
+      ],
       datasets: [
         {
           name: 'img0001',

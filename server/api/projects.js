@@ -179,22 +179,25 @@ router.get('/modelling/:projectId', (req, res) => {
 
   Project.findOne({ _id: projectId }, '', (error, project) => {
     Class.find({ projectId: projectId }, '', (error, classes) => {
+      Feature.find({ projectId: projectId }, '', (error, features) => {
 
-      var sampleClasses = []
-      console.log(classes)
-      classes.forEach((c) => {
-        sampleClasses.push({
-          class: c.class,
-          trainingData: c.trainingData[0]
+        var sampleClasses = []
+        console.log(classes)
+        classes.forEach((c) => {
+          sampleClasses.push({
+            class: c.class,
+            trainingData: c.trainingData[0]
+          })
         })
-      })
 
-      res.send({
-        project: project,
-        sampleClasses: sampleClasses,
-        classes: classes
-      })
+        res.send({
+          project: project,
+          sampleClasses: sampleClasses,
+          classes: classes,
+          features: features
+        })
 
+      }).sort({ projectId: 1 })
     }).sort({ projectId: 1 })
   }).sort({ _id: 1 })
 

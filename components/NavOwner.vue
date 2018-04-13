@@ -13,7 +13,7 @@
             <b-dropdown variant="link" right class="link-black">
               <template slot="button-content">
                 ​<picture class="avatar">
-                  <img src="https://placeimg.com/32/32/people" class="img-fluid img-thumbnail" alt="avatar">
+                  <img src="https://picsum.photos/32/32/?blur&image=1056" class="img-fluid img-thumbnail" alt="avatar">
                 </picture>
               </template>
               <b-dropdown-item @click.prevent="">Profile</b-dropdown-item>
