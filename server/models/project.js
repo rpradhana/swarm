@@ -1,12 +1,14 @@
 const mongoose = require('mongoose')
+
 const Schema = mongoose.Schema
 
 const ProjectSchema = new Schema({
   title: String,
   description: String,
   owner: String,
-  file: [Schema.Types.Mixed],
-  classes: [String],
+  ownerName: String,
+  testData: [Schema.Types.Mixed],
+  classes: [Schema.Types.Mixed],
   type: String,
   incentive: Number,
   expense: Number,
@@ -14,9 +16,9 @@ const ProjectSchema = new Schema({
   attemptsLimit: Number,
   contributor: Number,
   estimatedCost: Number,
-  creationDate: Schema.Types.Mixed,
-  expiryDate: Schema.Types.Mixed,
-  modelDate: Schema.Types.Mixed,
+  creationDate: Date,
+  expiryDate: Date,
+  modelDate: Date,
   modelQuality: String,
   status: String
 })

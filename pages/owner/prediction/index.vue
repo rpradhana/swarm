@@ -18,38 +18,28 @@
                 Edit dataset
               </b-button>
             </div>
-            <div class="mb-4">
-              <h5 class="mb-3">Predefined classes</h5>
-              <div class="clearfix">
-                <img v-for="(c, index) in classes"
-                     class="rounded float-left mr-2 mb-2"
-                     :key="c._id"
-                     :alt="c.class"
-                     :id="'c-' + index"
-                     :src="c.src">
-                <b-tooltip v-for="(c, index) in classes"
-                           triggers="hover"
-                           :key="c._id"
-                           :target="'c-' + index"
-                           :title="c.class">
-                </b-tooltip>
-              </div>
-            </div>
-            <div>
-              <b-button variant="light">
-                Edit classes
-              </b-button>
-            </div>
           </b-card>
           <b-card id="features" class="shadow mb-5">
             <div class="mb-4">
-              <h5 class="mb-3">List of features</h5>
-              <b-button variant="light">
-                Edit features
+              <h5 class="mb-3">Results</h5>
+              <b-button variant="primary">
+                Download <code class="text-white">.csv</code>
               </b-button>
             </div>
             <div>
-              <b-table striped hover :items="features" :fields="fields"/>
+              <b-table class="mb-5"
+                       striped
+                       hover
+                       :current-page="currentPage"
+                       :per-page="20"
+                       :items="results"
+                       :fields="fields">
+              </b-table>
+              <b-pagination size="md"
+                            v-model="currentPage"
+                            align="right"
+                            :total-rows="results.length"
+                            :per-page="20"/>
             </div>
           </b-card>
         </b-col>
@@ -121,7 +111,6 @@
 
 <script>
 // import axios from '~/plugins/axios'
-import ProjectGridItem from '~/components/ProjectGridItem.vue'
 
 export default {
   layout: 'owner',
@@ -148,16 +137,16 @@ export default {
     return {
       project: {
         id: '00000001',
-        title: 'Classify the species of birds of paradise',
-        type: 'Modelling',
-        contributors: 10000,
-        contributorsLimit: 15000,
+        title: 'Identifying the species of birds',
+        type: 'Prediction',
+        contributors: 14,
+        contributorsLimit: 1000,
         expense: 131.80,
         expensePerTask: 0.01,
         latest: '1/03/2017',
         quality: 'Good',
         status: 'Ongoing',
-        description: 'Given the images of birds identify the existence of certain features to classify its exact species.'
+        description: 'Given the images of birds, identify the features of birds in the image.'
       },
       datasets: [
         {
@@ -196,35 +185,46 @@ export default {
         }
       ],
       fields: [
-        { key: 'feature', sortable: false },
-        { key: 'values', sortable: false },
-        { key: 'occurence', sortable: true }
+        { key: 'name', sortable: true },
+        { key: 'label', sortable: true },
+        { key: 'confidence', sortable: true }
       ],
-      features: [
+      currentPage: 1,
+      results: [
         {
-          feature: 'Pattern',
-          values: ['Plain', 'Red stripes', '3 colors'],
-          occurence: 332
+          name: 'img-0000001.jpg',
+          label: 'Paradisaea apoda',
+          confidence: 0.9
         },
         {
-          feature: 'Split tail',
-          values: [true, false],
-          occurence: 124
+          name: 'img-0000002.jpg',
+          label: 'Paradisaea minor',
+          confidence: 0.86
         },
         {
-          feature: 'Crown',
-          values: [true, false],
-          occurence: 62
+          name: 'img-0000003.jpg',
+          label: 'Paradisaea minor',
+          confidence: 0.88
         },
         {
-          feature: 'Curly claw',
-          values: [true, false],
-          occurence: 32
+          name: 'img-0000004.jpg',
+          label: 'Paradisaea apoda',
+          confidence: 0.92
         },
         {
-          feature: 'Long tail',
-          values: [true, false],
-          occurence: 18
+          name: 'img-0000005.jpg',
+          label: 'Paradisaea raggiana',
+          confidence: 0.91
+        },
+        {
+          name: 'img-0000006.jpg',
+          label: 'Paradisaea apoda',
+          confidence: 0.74
+        },
+        {
+          name: 'img-0000007.jpg',
+          label: 'Paradisaea apoda',
+          confidence: 0.85
         }
       ]
     }
@@ -235,7 +235,6 @@ export default {
     }
   },
   components: {
-    ProjectGridItem
   }
 }
 </script>

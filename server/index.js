@@ -17,6 +17,7 @@ db.once('open', function(callback){
 })
 
 const User = require('./models/user')
+const Project = require('./models/project')
 
 // Express
 const app = express()
@@ -44,6 +45,29 @@ app.use(session({
   cookie: { maxAge: 60*60*1000, secure: false }
 }))
 
+// POST `/api/attempt` to attempt a project and add the id to the `req.session.attempt`
+app.post('/api/attempt', function (req, res) {
+
+  Project.findOne({ _id: req.body.id }, '', (error, project) => {
+    if (error) {
+      console.error(error)
+    } else if (project) {
+      if (req.body.id === project.id) {
+        req.session.attempt = { id: project.id }
+        return res.json({ project: project })
+      }
+    } else {
+    }
+  })
+
+})
+
+// POST `/api/logout` to log out the user and remove it from the `req.session`
+app.post('/api/endAttempt', function (req, res) {
+  delete req.session.attempt
+  res.json({ ok: true })
+})
+
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
 app.post('/api/login', function (req, res) {
 
@@ -54,9 +78,11 @@ app.post('/api/login', function (req, res) {
       if (req.body.email === user.email && req.body.password === user.password && req.body.type === user.type) {
         req.session.authUser = { email: user.email, type: user.type }
         return res.json({ user: user })
+      } else {
+        res.status(401).json({ error: 'Invalid password' })
       }
     } else {
-      res.status(401).json({ error: 'Bad credentials' })
+      res.status(401).json({ error: 'Invalid email address' })
     }
   })
 

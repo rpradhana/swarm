@@ -14,7 +14,7 @@
                    hover
                    :current-page="currentPage"
                    :per-page="20"
-                   :items="projects"
+                   :items="rows"
                    :fields="fields">
             <template slot="#" slot-scope="row">
               <b-button variant="link"
@@ -65,10 +65,10 @@
           <b-card class="shadow mb-5">
             <h5 class="mb-3">Overview</h5>
             <div>
-              <strong>Attempts taken: </strong>{{ attemptsTaken }}
+              <strong>Attempts taken: </strong>{{ rows.length }}
             </div>
             <div>
-              <strong>Task done: </strong>{{ taskDone }}
+              <strong>Task done: </strong>{{ attempts.length }}
             </div>
             <div>
               <strong>Total earnings: </strong>${{ totalEarnings }}
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
   layout: 'contributor',
@@ -92,9 +92,12 @@ export default {
       return redirect('/')
     }
   },
-  async asyncData () {
-    // let { data } = await axios.get('/api/users')
-    // return { users: data }
+  async asyncData ({ store }) {
+    if (store.state.authUser) {
+      let { data } = await axios.get('/api/attemptsBy/' + store.state.authUser.user._id)
+      console.log(data)
+      return data
+    }
   },
   data () {
     return {
@@ -102,6 +105,7 @@ export default {
       attemptsTaken: 5,
       taskDone: 30000,
       totalEarnings: 12.90,
+      currentPage: 1,
       fields: [
         { key: 'date', sortable: true },
         { key: 'title', sortable: true },

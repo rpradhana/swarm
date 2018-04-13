@@ -34,10 +34,16 @@
         </div>
       </div>
       <div class="card-actions">
-        <b-button variant="primary" class="mr-3" to="model">
+        <b-button variant="primary" class="mr-3" @click="openProject">
           Manage
         </b-button>
-        <b-button variant="secondary" class="mr-3">
+        <b-button v-if="status === 'Ongoing'" variant="secondary" class="mr-3" @click="startPause">
+          {{ status }}
+        </b-button>
+        <b-button v-else-if="status === 'Paused'" variant="tertiary" class="mr-3" @click="startPause">
+          {{ status }}
+        </b-button>
+        <b-button v-else-if="status === 'Finished'" variant="disabled" class="mr-3">
           {{ status }}
         </b-button>
       </div>
@@ -46,12 +52,16 @@
 </template>
 
 <script>
-// import axios from '~/plugins/axios'
+import axios from '~/plugins/axios'
 
 export default {
+  fetch ({ store, redirect }) {
+  },
   async asyncData () {
     // let { data } = await axios.get('/api/users')
     // return { users: data }
+  },
+  data: {
   },
   props: {
     id: {
@@ -86,6 +96,60 @@ export default {
     }
   },
   methods: {
+
+    async startPause () {
+      switch (this.status) {
+        case 'Ongoing': {
+          this.status = 'Paused'
+
+          let statusUpdate = {
+            projectId: this.id,
+            status: this.status
+          }
+
+          await axios.post('/api/status', statusUpdate)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          break
+        }
+        case 'Paused': {
+          this.status = 'Ongoing'
+
+          let statusUpdate = {
+            projectId: this.id,
+            status: this.status
+          }
+
+          await axios.post('/api/status', statusUpdate)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          break
+        }
+        case 'Done': {
+          break
+        }
+      }
+    },
+    async openProject () {
+      try {
+        await this.$store.dispatch('project', {
+          id: this.id
+        })
+        console.log(this.$store.state.project.project._id)
+        if (this.$store.state.project) {
+          this.$nuxt.$router.replace({ path: '/owner/modelling/' + this.id })
+        }
+      } catch (e) {
+      }
+    },
     format (type, input) {
       switch (type) {
         case 'comma': return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')

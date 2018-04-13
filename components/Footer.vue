@@ -3,9 +3,9 @@
     <b-container>
       <b-row align-h="between">
         <div>
-          <b-button variant="link" class="footer-link">
+<!--           <b-button variant="link" class="footer-link">
             About
-          </b-button>
+          </b-button> -->
           <b-button variant="link" class="footer-link" href="https://github.com/rpradhana/swarm">
             Github
           </b-button>

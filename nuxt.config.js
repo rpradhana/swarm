@@ -48,6 +48,9 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/png', href: '/swarm-icon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' }
+    ],
+    script: [
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js' }
     ]
   },
   /*
