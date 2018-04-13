@@ -74,7 +74,8 @@ router.get('/attemptsBy/:userId', (req, res) => {
             title: _.find(projects, { 'id': item }).title,
             type: _.find(projects, { 'id': item }).type,
             tasks: taskCountList[index],
-            earnings: earnings
+            earnings: earnings,
+            attempts: 5
           })
 
           totalEarnings += earnings
