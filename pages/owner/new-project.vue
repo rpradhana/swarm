@@ -83,7 +83,7 @@
                   </b-col>
                 </b-row> -->
                 <b-row v-for="(label, index) in Project.classes" :key="label.id">
-                  <b-col cols="4">
+                  <b-col cols="4" v-if="Project.typeSelected === 'modelling'">
                     <b-form-input id="classes"
                                   type="text"
                                   required
@@ -101,13 +101,13 @@
                       Selected files: {{ label.trainingData.length }}
                     </b-form-text>
                   </b-col>
-                  <b-col cols="1">
+                  <b-col cols="1" v-if="Project.typeSelected === 'modelling'">
                     <b-btn class="p-0 float-right secondary-cta-link" variant="link" @click="removeClass()">
                       <i class="material-icons pt-1">close</i>
                     </b-btn>
                   </b-col>
                 </b-row>
-                <b-row>
+                <b-row v-if="Project.typeSelected === 'modelling'">
                   <b-col>
                     <b-btn class="" variant="tertiary" @click="addClass">
                      Add class
