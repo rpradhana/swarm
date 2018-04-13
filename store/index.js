@@ -14,7 +14,8 @@ const vuexLocalStorage = new VuexPersist({
   // Function that passes the state and returns the state with only the objects you want to store.
   reducer: state => ({
     authUser: state.authUser,
-    attempt: state.attempt
+    attempt: state.attempt,
+    project: state.project
   })
   // Function that passes a mutation and lets you decide if it should update the state in localStorage.
   // filter: mutation => (true)
@@ -26,15 +27,19 @@ const store = () => new Vuex.Store({
 
   state: {
     authUser: null,
-    attempt: null
+    attempt: null,
+    project: null
   },
 
   mutations: {
     SET_USER: function (state, user) {
       state.authUser = user
     },
-    SET_ATTEMPT: function (state, project) {
-      state.attempt = project
+    SET_ATTEMPT: function (state, attempt) {
+      state.attempt = attempt
+    },
+    SET_PROJECT: function (state, project) {
+      state.project = project
     }
   },
 
@@ -46,6 +51,30 @@ const store = () => new Vuex.Store({
       if (req.session && req.session.attempt) {
         commit('SET_ATTEMPT', req.session.attempt)
       }
+      if (req.session && req.session.project) {
+        commit('SET_PROJECT', req.session.project)
+      }
+    },
+    project ({ commit }, { id }) {
+      return fetch('/api/attempt', {
+        // Send the client cookies to the server
+        credentials: 'same-origin',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id
+        })
+      }).then((res) => {
+        if (res.status >= 400 && res.status < 500) {
+          throw new Error('Failed to open project')
+        } else {
+          return res.json()
+        }
+      }).then((project) => {
+        commit('SET_PROJECT', project)
+      })
     },
     attempt ({ commit }, { id }) {
       return fetch('/api/attempt', {

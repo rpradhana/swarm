@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <b-button variant="primary" class="mr-3" to="model">
+        <b-button variant="primary" class="mr-3" @click="openProject">
           Manage
         </b-button>
         <b-button v-if="status === 'Ongoing'" variant="secondary" class="mr-3" @click="startPause">
@@ -136,6 +136,18 @@ export default {
         case 'Done': {
           break
         }
+      }
+    },
+    async openProject () {
+      try {
+        await this.$store.dispatch('project', {
+          id: this.id
+        })
+        console.log(this.$store.state.project.project._id)
+        if (this.$store.state.project) {
+          this.$nuxt.$router.replace({ path: '/owner/modelling/' + this.id })
+        }
+      } catch (e) {
       }
     },
     format (type, input) {

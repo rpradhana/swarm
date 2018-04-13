@@ -31,6 +31,7 @@ fileFilter: function(req, file, callback) {
 
 const Project = require('../models/project')
 const Class = require('../models/class')
+const Feature = require('../models/feature')
 
 // Add new projects
 router.post('/projects', upload.fields([
@@ -170,6 +171,33 @@ router.get('/project/:projectId', (req, res) => {
       project: project
     })
   }).sort({ projectId: 1 })
+})
+
+// For modelling
+router.get('/modelling/:projectId', (req, res) => {
+  const projectId = req.params.projectId
+
+  Project.findOne({ _id: projectId }, '', (error, project) => {
+    Class.find({ projectId: projectId }, '', (error, classes) => {
+
+      var sampleClasses = []
+      console.log(classes)
+      classes.forEach((c) => {
+        sampleClasses.push({
+          class: c.class,
+          trainingData: c.trainingData[0]
+        })
+      })
+
+      res.send({
+        project: project,
+        sampleClasses: sampleClasses,
+        classes: classes
+      })
+
+    }).sort({ projectId: 1 })
+  }).sort({ _id: 1 })
+
 })
 
 export default router
