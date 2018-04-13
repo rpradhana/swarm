@@ -155,14 +155,14 @@ router.get('/attempt/:projectId', (req, res) => {
                 }
               })
             } else {
-              // OPTIMIZE!
+              // TODO: optimize
             }
             break
           }
 
           // feature count is reaches minimum required
           case (3): {
-            // test empties
+            // TODO: test empties
 
             // foundFeatures.some((f, ii) => {
             //   classes.some((c, jj) => {
