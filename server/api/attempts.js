@@ -187,6 +187,41 @@ router.get('/attempt/:projectId', (req, res) => {
 
             // feature count is reaches minimum required
             case (3): {
+
+              // default
+              var classAttempts = _.map(attempts, (ca) => {
+                foundAttempts.push(ca.classAId)
+                foundAttempts.push(ca.classBId)
+              })
+
+              classes.some((c, ii) => {
+                attemptCounts[ii] = 0
+              })
+
+              foundAttempts.some((fa, ii) => {
+                classes.some((c, jj) => {
+                  if (fa == c._id) {
+                    // console.log(fa, ' : ', c._id)
+                    attemptCounts[jj]++
+                  }
+                })
+              })
+              console.log('attempt counts = ', attemptCounts)
+
+              // iterate classes and pick 2 classes
+              classes.some((c, ii) => {
+                // next loop will assign c2 with next class that has empty/lowest feature
+                if (c1 && !c2 && c2 !== c1 && attemptCounts[ii] <= Math.min(...attemptCounts)) {
+                  c2 = ii
+                }
+                // first loop will assign c1 with class that has empty/lowest feature
+                if (!c1 && attemptCounts[ii] <= Math.min(...attemptCounts)) {
+                  c1 = ii
+                  console.log()
+                }
+              })
+
+
               // TODO: test empties
 
               // foundFeatures.some((f, ii) => {
@@ -219,10 +254,10 @@ router.get('/attempt/:projectId', (req, res) => {
               // })
 
               // Default: random
-              c1 = Math.floor(Math.random() * classes.length)
-              do {
-                  c2 = Math.floor(Math.random() * classes.length);
-              } while (c2 === c1);
+              // c1 = Math.floor(Math.random() * classes.length)
+              // do {
+              //     c2 = Math.floor(Math.random() * classes.length);
+              // } while (c2 === c1);
 
               break
             }
