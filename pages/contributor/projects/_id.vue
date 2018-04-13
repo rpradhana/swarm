@@ -2,7 +2,7 @@
   <section class="v-container">
     <b-container class="pb-7 pt-5">
       <b-row>
-        <b-col sm="12" md="6">
+        <b-col sm="12" md="4" offset-md="2">
           <!-- project.file[0].path.substring(6) -->
           <b-card class="shadow mb-5"
                   :img-src="taskA"
@@ -13,7 +13,7 @@
             </div>
           </b-card>
         </b-col>
-        <b-col sm="12" md="6">
+        <b-col sm="12" md="4">
           <b-card class="shadow mb-5"
                   :img-src="taskB"
                   img-alt="B"

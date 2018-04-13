@@ -320,9 +320,13 @@ export default {
         description: 'Given the images of birds identify the existence of certain features to classify its exact species.'
       },
       featureMatrix: [
-        { class: 'Falcon', f1: '1', f2: '1', f3: '1', f4: '0', f5: '1' },
-        { class: 'Hawk', f1: '1', f2: '0', f3: '1', f4: '0', f5: '0' },
-        { class: 'Eagle', f1: '1', f2: '1', f3: '0', f4: '1', f5: '1' }
+        { class: 'apoda', f1: 'yellow', f2: '0', f3: '1', f4: 'smooth', f5: '1' },
+        { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'ragged', f5: '0' },
+        { class: 'guiliermi', f1: 'white', f2: '1', f3: '0', f4: 'ragged', f5: '1' },
+        { class: 'minor', f1: 'yellow', f2: '0', f3: '1', f4: 'thick', f5: '1' },
+        { class: 'raggiana', f1: 'brown', f2: '0', f3: '0', f4: 'thin', f5: '1' },
+        { class: 'rubra', f1: 'red', f2: '0', f3: '1', f4: 'thin', f5: '1' },
+        { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'thin', f5: '0' }
       ],
       datasets: [
         {

@@ -57,7 +57,7 @@
         </b-col>
         <b-col sm="12" md="4" order-md="2" order-sm="1">
           <b-card class="shadow mb-5">
-            <h5 class="mb-3">Available earnings: ${{ available }}</h5>
+            <h5 class="mb-3">Available earnings: ${{ totalEarnings }}</h5>
             <b-button variant="primary">
               Transfer via Paypal
             </b-button>

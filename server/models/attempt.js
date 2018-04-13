@@ -8,6 +8,7 @@ const AttemptsSchema = new Schema({
   classBId: String,
   featureAId: String,
   featureBId: String,
+  featureId: String,
   valueA: Schema.Types.Mixed,
   valueB: Schema.Types.Mixed,
   userId: String,
