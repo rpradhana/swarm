@@ -12,20 +12,22 @@
                   enctype="multipart/form-data">
             <b-form-group id="titleGroup"
                           class="mb-4"
-                          label="Title"
+                          label="Title*"
                           label-for="titleGroup">
               <b-form-input id="title"
                             type="text"
                             required
                             v-model="Project.title"
+                            :state="projectState"
                             placeholder="Enter project title"/>
             </b-form-group>
             <b-form-group id="descriptionGroup"
                           class="mb-4"
-                          label="Description"
+                          label="Description*"
                           label-for="descriptionGroup">
               <b-form-textarea id="description"
                                required
+                               :state="descriptionState"
                                :rows="4"
                                :max-rows="6"
                                v-model="Project.description"
@@ -34,7 +36,7 @@
 
             <b-form-group id="typeGroup"
                           class="mb-4"
-                          label="Type"
+                          label="Type*"
                           label-for="typeGroup">
               <b-form-radio-group v-model="Project.typeSelected"
                                   :options="Project.typeOptions"
@@ -45,7 +47,7 @@
 
             <b-form-group id="datasetGroup"
                           class="mb-4"
-                          label="Dataset"
+                          label="Dataset*"
                           label-for="datasetGroup">
               <b-input-group>
                 <b-btn v-b-modal.datasetModal variant="tertiary">Edit dataset</b-btn>
@@ -243,6 +245,18 @@
         </b-col>
       </b-row>
     </b-container>
+    <b-modal centered size="sm" id="alertSubmit" ref="alertSubmit" title="Could not create project">
+      <b-container>
+        <b-row>
+          Please make sure that you have entered all required data.
+        </b-row>
+      </b-container>
+      <div slot="modal-footer" class="w-100">
+        <b-btn type="submit" class="float-right ml-3" variant="primary" @click="$refs.alertSubmit.hide()">
+         Ok
+        </b-btn>
+      </div>
+    </b-modal>
   </section>
 </template>
 
@@ -274,7 +288,11 @@ export default {
     return {
       Project: {
         title: '',
+        titleState: null,
+        titleErrorMsg: null,
         description: '',
+        descriptionState: null,
+        descriptionErrorMsg: null,
         owner: '',
         testData: '',
         typeSelected: 'modelling',
@@ -325,62 +343,82 @@ export default {
       console.log('class = ' + this.classCount)
     },
     async newProject (evt) {
-      console.log(this.Project)
-      axios.get('/api/projects/')
+      if (this.Project.title.length <= 0 || this.Project.title.description <= 0 || this.Project.classes[0].class === '') {
+        this.$refs.alertSubmit.show()
+      } else {
+        console.log(this.Project)
+        axios.get('/api/projects/')
 
-      let formData = new FormData()
-      formData.append('title', this.Project.title)
-      formData.append('description', this.Project.description)
-      formData.append('owner', this.$store.state.authUser.user._id)
-      formData.append('ownerName', this.$store.state.authUser.user.name)
-      formData.append('type', this.Project.typeSelected)
-      formData.append('incentive', this.Project.incentive)
-      formData.append('expense', 0)
-      formData.append('attempts', 0)
-      formData.append('attemptsLimit', this.Project.attemptsLimit)
-      formData.append('contributor', 0)
-      formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
-      // formData.append('creationDate', now) // Default value in server
-      if (this.Project.expiryDate) formData.append('expiryDate', this.Project.expiryDate)
-      // formData.append('modelDate', null)
-      // formData.append('modelQuality', null)
-      formData.append('status', 'Ongoing')
+        let formData = new FormData()
+        formData.append('title', this.Project.title)
+        formData.append('description', this.Project.description)
+        formData.append('owner', this.$store.state.authUser.user._id)
+        formData.append('ownerName', this.$store.state.authUser.user.name)
+        formData.append('type', this.Project.typeSelected)
+        formData.append('incentive', this.Project.incentive)
+        formData.append('expense', 0)
+        formData.append('attempts', 0)
+        formData.append('attemptsLimit', this.Project.attemptsLimit)
+        formData.append('contributor', 0)
+        formData.append('estimatedCost', this.Project.incentive * this.Project.attemptsLimit)
+        // formData.append('creationDate', now) // Default value in server
+        if (this.Project.expiryDate) formData.append('expiryDate', this.Project.expiryDate)
+        // formData.append('modelDate', null)
+        // formData.append('modelQuality', null)
+        formData.append('status', 'Ongoing')
 
-      // For each class
-      for (var ii = 0; ii < this.Project.classes.length; ii++) {
-        formData.append('classes', this.Project.classes[ii].class)
+        // For each class
+        for (var ii = 0; ii < this.Project.classes.length; ii++) {
+          formData.append('classes', this.Project.classes[ii].class)
 
-        // For each training data in every class
-        console.log('training')
-        if (this.Project.classes[ii].trainingData) {
-          for (var jj = 0; jj < this.Project.classes[ii].trainingData.length; jj++) {
-            formData.append('tr-' + ii, this.Project.classes[ii].trainingData[jj])
-          }
-        }
-
-        // For each test data in every class
-        if (this.Project.classes[ii].testData) {
-          console.log('testing')
           // For each training data in every class
-          for (var kk = 0; kk < this.Project.classes[ii].testData.length; kk++) {
-            formData.append('te', this.Project.classes[ii].testData[kk])
+          console.log('training')
+          if (this.Project.classes[ii].trainingData) {
+            for (var jj = 0; jj < this.Project.classes[ii].trainingData.length; jj++) {
+              formData.append('tr-' + ii, this.Project.classes[ii].trainingData[jj])
+            }
+          }
+
+          // For each test data in every class
+          if (this.Project.classes[ii].testData) {
+            console.log('testing')
+            // For each training data in every class
+            for (var kk = 0; kk < this.Project.classes[ii].testData.length; kk++) {
+              formData.append('te', this.Project.classes[ii].testData[kk])
+            }
           }
         }
+
+        console.log('Project data = ', this.Project)
+        console.log('Form data = ', formData)
+
+        axios.post(
+          '/api/projects/',
+          formData,
+          { headers: { 'content-type': 'multipart/form-data; boundary=X' } }
+        ).then((response) => {
+          console.log(this.Project.testData)
+          this.$nuxt.$router.replace({ path: 'dashboard' })
+        }).catch((error) => {
+          console.log(error)
+        })
       }
-
-      console.log('Project data = ' + this.Project)
-      console.log('Form data = ' + formData)
-
-      axios.post(
-        '/api/projects/',
-        formData,
-        { headers: { 'content-type': 'multipart/form-data; boundary=X' } }
-      ).then((response) => {
-        console.log(this.Project.testData)
-        this.$nuxt.$router.replace({ path: 'dashboard' })
-      }).catch((error) => {
-        console.log(error)
-      })
+    }
+  },
+  computed: {
+    titleState () {
+      if (this.Project.titleErrorMsg) {
+        return false
+      } else {
+        return null
+      }
+    },
+    descriptionState () {
+      if (this.Project.descriptionErrorMsg) {
+        return false
+      } else {
+        return null
+      }
     }
   },
   head () {
