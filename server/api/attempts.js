@@ -301,9 +301,26 @@ router.post('/postAttempt', (req, res, next) => {
 
         // Update project
         if (project) {
+
+          // add contributor if it's his first attempt
+          Attempt.findOne(
+            { $and: [
+                { projectId: project._id },
+                { userId: req.body.userId }
+              ]
+            },
+            '',
+            (error, attempt) => {
+            if (error) {
+              console.log('contributor : ', project.contributor)
+              project.contributor += 1
+              project.save()
+            }
+          })
+
           project.attempts += 1
           // project.expense += project.incentive // calculate on the fly, don't store
-          console.log('attempts : ', project.attempts)
+          console.log('attempts = ', project.attempts)
           project.save()
         } else {
           console.error(errorP)
@@ -311,7 +328,7 @@ router.post('/postAttempt', (req, res, next) => {
 
         // New feature?
         var isNew = true
-        console.log('Feature length : ', features.length)
+        console.log('Feature length = ', features.length)
         if (features.length > 0) {
           features.forEach((f) => {
             console.log(req.body.feature, ' : ', f.feature)
@@ -320,7 +337,7 @@ router.post('/postAttempt', (req, res, next) => {
             }
           })
         }
-        console.log('isNew : ', isNew)
+        console.log('isNew = ', isNew)
 
         // New feature => new feature new attempt
         if (isNew) {
@@ -371,7 +388,7 @@ router.post('/postAttempt', (req, res, next) => {
                 }
 
                 f.occurence += 1
-                console.log(f.feature, ' occurence : ', f.occurence)
+                console.log(f.feature, ' occurence = ', f.occurence)
                 f.save()
 
                 // Save new Attempt

@@ -28,7 +28,10 @@
         <b-col sm="12" md="8">
           <b-card no-body class="mb-5 shadow">
             <b-tabs no-fade card v-model="currentStep">
-              <b-form @submit.prevent="getAttempt" @keyup.enter="keyupEnterHandler" v-if="show">
+              <b-form @submit.prevent="getAttempt"
+                      @keyup.enter="keyupEnterHandler"
+                      @keyup.enter.native="keyupEnterHandler"
+                      v-if="show">
                 <b-tab ref="step1" title="Step 1" active>
                   <h5 class="title mb-3">
                     Find one difference between A and B
@@ -40,6 +43,7 @@
                                   autofocus
                                   type="text"
                                   v-model="feature"
+                                  @keyup.enter="keyupEnterHandler"
                                   @keyup.enter.native="keyupEnterHandler"
                                   @input="step1to2"
                                   required

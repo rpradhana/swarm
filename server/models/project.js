@@ -14,7 +14,7 @@ const ProjectSchema = new Schema({
   expense: Number,
   attempts: Number,
   attemptsLimit: Number,
-  contributor: Number,
+  contributor: {type: Number, default: 0},
   estimatedCost: Number,
   creationDate: Date,
   expiryDate: Date,
