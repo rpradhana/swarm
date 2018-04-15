@@ -7,7 +7,7 @@
             <nuxt-link to="/owner/dashboard"><img src="~assets/img/swarm-logo.svg"></nuxt-link>
           </div>
           <div class="nav-menu">
-            <b-button variant="primary" class="mr-5" to="new-project">
+            <b-button variant="primary" class="mr-5" to="/owner/new-project">
               New project
             </b-button>
             <b-dropdown variant="link" right class="link-black">

@@ -59,14 +59,14 @@
                 </b-row>
               </b-container>
               <div slot="modal-footer" class="w-100">
-                <b-btn class="float-right ml-3" variant="primary" @click="btnShow=false">
+                <b-btn class="float-right ml-3" variant="primary" @click="updateDataset">
                  Update dataset
                 </b-btn>
               </div>
             </b-modal>
 
             <div class="mb-4">
-              <h5 class="mb-3">Sample classes ({{data.sampleClasses.length}})</h5>
+              <h5 class="mb-3">Sample classes ({{data.project.classes.length}})</h5>
               <div class="clearfix">
                 <img v-for="(c, index) in data.sampleClasses"
                      class="rounded float-left mr-2 mb-2 img-small-square-thumb"
@@ -258,6 +258,18 @@ export default {
         this.btnDisableRemove = true
       }
       console.log('class = ' + this.classCount)
+    },
+    async updateDataset () {
+      // axios.post(
+      //   '/api/projects/',
+      //   formData,
+      //   { headers: { 'content-type': 'multipart/form-data; boundary=X' } }
+      // ).then((response) => {
+      //   this.btnShow = false
+      // }).catch((error) => {
+      //   console.log(error)
+      // })
+      this.btnShow = false
     },
     async startPause () {
       switch (this.project.status) {
