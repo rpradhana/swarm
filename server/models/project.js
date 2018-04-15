@@ -12,7 +12,7 @@ const ProjectSchema = new Schema({
   type: String,
   incentive: Number,
   expense: Number,
-  attempts: Number,
+  attempts: {type: Number, default: 0},
   attemptsLimit: Number,
   contributor: {type: Number, default: 0},
   estimatedCost: Number,

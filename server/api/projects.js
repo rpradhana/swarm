@@ -84,7 +84,6 @@ router.post('/projects', upload.fields([
         projectId: project._id,
         class: pClass,
         index: i,
-        features: [],
         trainingData: req.files['tr-' + i]
       })
 
@@ -106,37 +105,72 @@ router.post('/projects', upload.fields([
 })
 
 // Update status
-router.post('/project/update', (req, res) => {
+router.post('/project/update/status', (req, res) => {
 
   console.log(req.body)
-
   Project.findOne({ _id : req.body.projectId }, '', (error, project) => {
 
-    console.log(project.status)
-    project.status = req.body.status
-    project.save()
+    if (req.body.status) {
+      project.status = req.body.status
+      project.save()
+    }
+  })
+})
 
-  //   const updatedProject = new Project ({
-  //     title: project.title,
-  //     status: req.body.status
-  //   })
+// Update dataset
+// TO FIX
+router.post('/project/update/dataset',
+  upload.fields([
+    { name: 'tr-0' },
+    { name: 'tr-1' },
+    { name: 'tr-2' },
+    { name: 'tr-3' },
+    { name: 'tr-4' },
+    { name: 'tr-5' },
+    { name: 'tr-6' },
+    { name: 'tr-7' },
+    { name: 'tr-8' },
+    { name: 'tr-9' },
+    { name: 'tr-10' },
+    { name: 'tr-11' },
+    { name: 'tr-12' },
+    { name: 'tr-13' },
+    { name: 'tr-14' },
+    { name: 'tr-15' }
+  ]),
+  (req, res) => {
 
-  //   console.log(project)
-
-  //   updatedProject.save()
-
+  req.body.classes.some((reqClass, index) => {
+    if (!reqClass._id) {
+      let newClass = new Class({
+        projectId: req.body.projectId,
+        class: reqClass,
+        index: index,
+        trainingData: {
+          fieldname: 'tr-' + index,
+          originalname: 'placeholder',
+          encoding: '7bit',
+          mimetype: 'image/jpeg',
+          destination: './static/uploads',
+          filename: 'placeholder.png',
+          path: 'static/uploads/placeholder.png',
+          size: 1
+        }
+        // trainingData: req.files['tr-' + index]
+      })
+      // newClass.save()
+      console.log(newClass.class)
+    }
   })
 
-  // Project.update(
-  //   { _id : req.body.projectId },
-  //   {
-  //     $set: {
-  //       status : req.body.status
-  //     }
-  //   }
-  // )
+  // Class.find({ projectId : req.body.projectId }, '', (error, classes) => {
+  //   classes.some((c, index) => {
+  //     console.log(c.class, ' => ', req.body.classes[index].class)
+  //     c.class = req.body.classes[index].class
+  //     c.save()
+  //   })
+  // })
 
-  res.send('status updated')
 })
 
 // Fetch all projects

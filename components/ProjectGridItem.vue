@@ -114,7 +114,7 @@ export default {
         status: this.status
       }
       if (this.status !== 'Done') {
-        await axios.post('/api/project/update', statusUpdate)
+        await axios.post('/api/project/update/status', statusUpdate)
           .then((response) => {
             console.log(response)
           })

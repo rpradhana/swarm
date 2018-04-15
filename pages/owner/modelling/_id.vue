@@ -24,42 +24,48 @@
                      v-model="btnShow"
                      title="Dataset"
                      centered>
-              <b-container fluid>
-                <b-row v-for="(label, index) in data.classes" :key="label.id">
-                  <b-col cols="4">
-                    <b-form-input id="classes"
-                                  type="text"
-                                  required
-                                  v-model="label.class"
-                                  :placeholder="data.project.classes[index]"/>
-                  </b-col>
-                  <b-col class="pl-0 pr-0">
-                    <b-form-file multiple
-                                 required
-                                 class="text-truncate"
-                                 v-model="label.trainingData"
-                                 aria-describedby="fileCaption"
-                                 placeholder="Upload files"/>
-                    <b-form-text id="fileCaption" class="mt-0 mb-3">
-                      Selected files: {{ label.trainingData.length }}
-                    </b-form-text>
-                  </b-col>
-                  <b-col cols="1">
-                    <b-btn class="p-0 float-right secondary-cta-link" variant="link" @click="removeClass()">
-                      <i class="material-icons pt-1">close</i>
-                    </b-btn>
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    <b-btn class="" variant="tertiary" @click="addClass">
-                     Add class
-                    </b-btn>
-                  </b-col>
-                </b-row>
-              </b-container>
+              <b-form @submit.prevent="updateDataset"
+                      enctype="multipart/form-data">
+                <b-container fluid>
+                  <b-row v-for="(label, index) in data.classes" :key="label.id">
+                    <b-col cols="4">
+                      <b-form-input id="classes"
+                                    type="text"
+                                    required
+                                    v-model="label.class"
+                                    :placeholder="'Class '+ (index + 1)"/>
+                    </b-col>
+                    <b-col class="pl-0 pr-0">
+                      <b-form-file multiple
+                                   required
+                                   class="text-truncate"
+                                   v-model="label.trainingData"
+                                   aria-describedby="fileCaption"
+                                   placeholder="Upload files"/>
+                      <b-form-text id="fileCaption" class="mt-0 mb-3">
+                        Selected files: {{ label.trainingData.length }}
+                      </b-form-text>
+                    </b-col>
+                    <b-col cols="1" v-if="index >= data.project.classes.length">
+                    <!-- <b-col cols="1"> -->
+                      <b-btn class="p-0 float-right secondary-cta-link"
+                             variant="link"
+                             @click="removeClass(index)">
+                        <i class="material-icons pt-1">close</i>
+                      </b-btn>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <b-btn class="" variant="tertiary" @click="addClass">
+                       Add class
+                      </b-btn>
+                    </b-col>
+                  </b-row>
+                </b-container>
+              </b-form>
               <div slot="modal-footer" class="w-100">
-                <b-btn class="float-right ml-3" variant="primary" @click="updateDataset">
+                <b-btn type="submit" class="float-right ml-3" variant="primary" @click="updateDataset">
                  Update dataset
                 </b-btn>
               </div>
@@ -244,25 +250,55 @@ export default {
       }
     },
     addClass () {
-      this.classCount++
+      // this.classCount++
       this.btnDisableRemove = false
       this.data.classes.push({
         class: '',
-        index: this.classCount,
+        index: this.data.classes.length,
         trainingData: ''
       })
-      console.log('class = ' + this.classCount)
+      console.log('class = ' + this.data.classes.length)
     },
     removeClass (index) {
-      if (this.classCount >= 1) {
-        this.classCount--
+      if (this.data.classes.length > 1) {
+        // this.classCount--
         this.data.classes.splice(index, 1)
       } else {
         this.btnDisableRemove = true
       }
-      console.log('class = ' + this.classCount)
+      console.log('class = ', this.data.classes)
     },
     async updateDataset () {
+      let formData = new FormData()
+      formData.append('projectId', this.data.project._id)
+
+      // For each class
+      this.data.classes.some((c, index) => {
+        formData.append('classes', c.class)
+
+        // For each training data in every class
+        if (c.trainingData) {
+          c.trainingData.some((tr, index) => {
+            formData.append('tr-' + index, tr)
+          })
+        }
+      })
+
+      // let datasetUpdate = {
+      //   projectId: this.data.project._id,
+      //   classes: this.data.classes
+      // }
+      axios.post(
+        '/api/project/update/dataset',
+        formData,
+        { headers: { 'content-type': 'multipart/form-data; boundary=X' } })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      this.btnShow = false
       // axios.post(
       //   '/api/projects/',
       //   formData,
@@ -294,7 +330,7 @@ export default {
         status: this.data.project.status
       }
       if (this.data.project.status !== 'Done') {
-        await axios.post('/api/project/update', statusUpdate)
+        await axios.post('/api/project/update/status', statusUpdate)
           .then((response) => {
             console.log(response)
           })

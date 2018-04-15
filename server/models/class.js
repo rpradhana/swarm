@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const ClassSchema = new Schema({
   projectId: String,
   class: String,
-  index: Number,
+  index: { type: Number, default: 1 },
   features: [Schema.Types.Mixed],
   trainingData: [Schema.Types.Mixed]
 })
