@@ -27,7 +27,7 @@ router.post('/models', (req, res, next) => {
   if (featureCount >= Math.ceil(2 * Math.ceil(Math.log2(classCount)))) {quality = 'Good'}
   else if (featureCount >= Math.ceil(Math.log2(classCount))) {quality = 'Okay'}
   else if (featureCount < Math.ceil(Math.log2(classCount))) {quality = 'Poor'}
-  else if (featureCount === 0) {quality = 'Insufficient data'}
+  else () {quality = 'Insufficient data'}
 
   console.log('class = ', classCount, ' | feature = ', featureCount)
   console.log('quality = ', quality)

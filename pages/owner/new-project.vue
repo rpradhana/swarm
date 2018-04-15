@@ -18,7 +18,7 @@
                             type="text"
                             required
                             v-model="Project.title"
-                            :state="projectState"
+                            :state="titleState"
                             placeholder="Enter project title"/>
             </b-form-group>
             <b-form-group id="descriptionGroup"

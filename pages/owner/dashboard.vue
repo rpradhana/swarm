@@ -43,6 +43,18 @@ export default {
   async asyncData ({ store }) {
     if (store.state.authUser) {
       let { data } = await axios.get('/api/projects/' + store.state.authUser.user._id)
+      console.log(data)
+      data.projects.some((project, index) => {
+        if (project.modelDate) {
+          project.modelDate = window.moment(project.modelDate).format('lll')
+        }
+        if (project.expiryDate) {
+          project.expiryDate = window.moment(project.expiryDate).format('lll')
+        }
+        if (project.creationDate) {
+          project.creationDate = window.moment(project.creationDate).format('lll')
+        }
+      })
       return data
     }
   },

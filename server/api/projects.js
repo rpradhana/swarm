@@ -264,7 +264,7 @@ router.get('/project/modelling/:projectId', (req, res) => {
             })
           })
 
-          function onlyUnique(value, index, self) { 
+          function onlyUnique(value, index, self) {
               return self.indexOf(value) === index;
           }
 

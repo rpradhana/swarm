@@ -134,7 +134,7 @@
                     variant="primary"
                     v-b-modal.modelModal
                     size="lg">
-            View model
+            Build model
           </b-button>
           <b-button class="w-100 mb-3"
                     v-else
@@ -255,7 +255,9 @@ export default {
   async asyncData ({ store }) {
     console.log(store.state.project.project._id)
     let { data } = await axios.get('/api/project/modelling/' + store.state.project.project._id)
-    data.project.modelDate = window.moment(data.project.modelDate).format('lll')
+    if (data.project.modelDate) {
+      data.project.modelDate = window.moment(data.project.modelDate).format('lll')
+    }
     console.log('Initial data', data)
     return { data }
   },
