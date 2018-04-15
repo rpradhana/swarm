@@ -35,8 +35,7 @@
             <b-form-group id="typeGroup"
                           class="mb-4"
                           label="Type"
-                          label-for="typeGroup"
-                          required>
+                          label-for="typeGroup">
               <b-form-radio-group v-model="Project.typeSelected"
                                   :options="Project.typeOptions"
                                   stacked
@@ -47,8 +46,7 @@
             <b-form-group id="datasetGroup"
                           class="mb-4"
                           label="Dataset"
-                          label-for="datasetGroup"
-                          required>
+                          label-for="datasetGroup">
               <b-input-group>
                 <b-btn v-b-modal.datasetModal variant="tertiary">Edit dataset</b-btn>
               </b-input-group>
@@ -86,13 +84,11 @@
                   <b-col cols="4" v-if="Project.typeSelected === 'modelling'">
                     <b-form-input id="classes"
                                   type="text"
-                                  required
                                   v-model="label.class"
                                   :placeholder="'Class ' + index"/>
                   </b-col>
                   <b-col class="pl-0 pr-0">
                     <b-form-file multiple
-                                 required
                                  class="text-truncate"
                                  v-model="label.trainingData"
                                  aria-describedby="fileCaption"
