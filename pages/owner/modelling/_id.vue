@@ -130,7 +130,15 @@
             Project is {{ data.project.status }}
           </b-button>
           <b-button class="w-100 mb-3"
+                    v-if="data.project.modelDate"
                     variant="primary"
+                    v-b-modal.modelModal
+                    size="lg">
+            View model
+          </b-button>
+          <b-button class="w-100 mb-3"
+                    v-else
+                    variant="tertiary"
                     v-b-modal.modelModal
                     size="lg">
             View model
@@ -145,7 +153,7 @@
             <b-container>
               <b-row>
                 <b-col>
-                  <b-form @submit.prevent="">
+                  <b-form @submit.prevent="updateModel">
                     <b-table responsive striped hover :items="data.model" :fields="data.modelFields">
                       <template v-for="(key, index) in data.modelFields" :slot="'f'+index" slot-scope="data">
                         <b-form-select v-if="data.value.length > 1" v-model="data.value[0]" :options="data.value" class="modelCell">
@@ -247,6 +255,7 @@ export default {
   async asyncData ({ store }) {
     console.log(store.state.project.project._id)
     let { data } = await axios.get('/api/project/modelling/' + store.state.project.project._id)
+    data.project.modelDate = window.moment(data.project.modelDate).format('lll')
     console.log('Initial data', data)
     return { data }
   },
@@ -279,6 +288,25 @@ export default {
         this.btnDisableRemove = true
       }
       console.log('class = ', this.data.classes)
+    },
+    async updateModel () {
+      this.modelShow = false
+      console.log(this.data.model)
+      let quality = 'Good'
+      let newModel = {
+        model: this.data.model,
+        userId: this.data.project.owner,
+        projectId: this.data.project._id,
+        quality: quality
+      }
+      await axios.post('/api/models', newModel)
+        .then((response) => {
+          this.$nuxt.$router.go()
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     async updateDataset () {
       let formData = new FormData()
