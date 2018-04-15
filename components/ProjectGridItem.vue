@@ -57,9 +57,7 @@ import axios from '~/plugins/axios'
 export default {
   fetch ({ store, redirect }) {
   },
-  async asyncData () {
-    // let { data } = await axios.get('/api/users')
-    // return { users: data }
+  async asyncData ({ store }) {
   },
   data: {
   },
@@ -96,46 +94,33 @@ export default {
     }
   },
   methods: {
-
     async startPause () {
+      console.log(this.status)
       switch (this.status) {
         case 'Ongoing': {
           this.status = 'Paused'
-
-          let statusUpdate = {
-            projectId: this.id,
-            status: this.status
-          }
-
-          await axios.post('/api/status', statusUpdate)
-            .then((response) => {
-              console.log(response)
-            })
-            .catch((error) => {
-              console.log(error)
-            })
           break
         }
         case 'Paused': {
           this.status = 'Ongoing'
-
-          let statusUpdate = {
-            projectId: this.id,
-            status: this.status
-          }
-
-          await axios.post('/api/status', statusUpdate)
-            .then((response) => {
-              console.log(response)
-            })
-            .catch((error) => {
-              console.log(error)
-            })
           break
         }
         case 'Done': {
           break
         }
+      }
+      let statusUpdate = {
+        projectId: this.id,
+        status: this.status
+      }
+      if (this.status !== 'Done') {
+        await axios.post('/api/project/update', statusUpdate)
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     },
     async openProject () {

@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ProjectSchema = new Schema({
-  title: String,
-  description: String,
+  title: {type: String, default: ''},
+  description: {type: String, default: ''},
   owner: String,
   ownerName: String,
   testData: [Schema.Types.Mixed],

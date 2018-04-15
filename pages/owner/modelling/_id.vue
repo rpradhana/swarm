@@ -103,25 +103,25 @@
         </b-col>
         <b-col sm="12" md="4" order-md="2" order-sm="1">
           <b-button class="w-100 mb-3"
-                    v-if="project.status === 'Ongoing'"
+                    v-if="data.project.status === 'Ongoing'"
                     variant="secondary"
                     @click="startPause"
                     size="lg">
-            Project is {{ project.status }}
+            Project is {{ data.project.status }}
           </b-button>
           <b-button class="w-100 mb-3"
-                    v-else-if="project.status === 'Paused'"
+                    v-else-if="data.project.status === 'Paused'"
                     variant="tertiary"
                     @click="startPause"
                     size="lg">
-            Project is {{ project.status }}
+            Project is {{ data.project.status }}
           </b-button>
           <b-button class="w-100 mb-3"
-                    v-else-if="project.status === 'disabled'"
+                    v-else-if="data.project.status === 'disabled'"
                     variant="disabled"
                     @click="startPause"
                     size="lg">
-            Project is {{ project.status }}
+            Project is {{ data.project.status }}
           </b-button>
           <b-button class="w-100 mb-3"
                     variant="primary"
@@ -275,44 +275,32 @@ export default {
       this.btnShow = false
     },
     async startPause () {
-      switch (this.project.status) {
+      console.log(this.data.project.status)
+      switch (this.data.project.status) {
         case 'Ongoing': {
-          this.project.status = 'Paused'
-
-          let statusUpdate = {
-            projectId: this.id,
-            status: this.project.status
-          }
-
-          await axios.post('/api/status', statusUpdate)
-            .then((response) => {
-              console.log(response)
-            })
-            .catch((error) => {
-              console.log(error)
-            })
+          this.data.project.status = 'Paused'
           break
         }
         case 'Paused': {
-          this.project.status = 'Ongoing'
-
-          let statusUpdate = {
-            projectId: this.id,
-            status: this.project.status
-          }
-
-          await axios.post('/api/status', statusUpdate)
-            .then((response) => {
-              console.log(response)
-            })
-            .catch((error) => {
-              console.log(error)
-            })
+          this.data.project.status = 'Ongoing'
           break
         }
         case 'Done': {
           break
         }
+      }
+      let statusUpdate = {
+        projectId: this.data.project._id,
+        status: this.data.project.status
+      }
+      if (this.data.project.status !== 'Done') {
+        await axios.post('/api/project/update', statusUpdate)
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     }
   },

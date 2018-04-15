@@ -106,11 +106,15 @@ router.post('/projects', upload.fields([
 })
 
 // Update status
-router.post('/status', (req, res) => {
+router.post('/project/update', (req, res) => {
 
   console.log(req.body)
 
-  // Project.findOne({ _id : req.body.projectId }, '', (error, project) => {
+  Project.findOne({ _id : req.body.projectId }, '', (error, project) => {
+
+    console.log(project.status)
+    project.status = req.body.status
+    project.save()
 
   //   const updatedProject = new Project ({
   //     title: project.title,
@@ -121,16 +125,16 @@ router.post('/status', (req, res) => {
 
   //   updatedProject.save()
 
-  // })
+  })
 
-  Project.update(
-    { _id : req.body.projectId },
-    {
-      $set: {
-        status : req.body.status
-      }
-    }
-  )
+  // Project.update(
+  //   { _id : req.body.projectId },
+  //   {
+  //     $set: {
+  //       status : req.body.status
+  //     }
+  //   }
+  // )
 
   res.send('status updated')
 })
@@ -182,8 +186,8 @@ router.get('/project/modelling/:projectId', (req, res) => {
       Feature.find({ projectId: projectId }, '', (error, features) => {
 
         var sampleClasses = []
-        console.log(classes)
         classes.forEach((c) => {
+          console.log(c.class)
           sampleClasses.push({
             class: c.class,
             trainingData: c.trainingData[0]
