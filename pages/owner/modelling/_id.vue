@@ -5,7 +5,7 @@
         <b-col sm="12">
           <h4 class="title mb-5">
             <nuxt-link to="/owner/dashboard"><i class="material-icons secondary-cta-link offset-min">chevron_left</i></nuxt-link>
-            <!-- {{ data.project.title }} -->
+            {{ data.project.title }}
           </h4>
         </b-col>
       </b-row>
@@ -65,10 +65,8 @@
               </div>
             </b-modal>
 
-            {{ data }}
-
             <div class="mb-4">
-              <h5 class="mb-3">Sample classes</h5>
+              <h5 class="mb-3">Sample classes ({{data.sampleClasses.length}})</h5>
               <div class="clearfix">
                 <img v-for="(c, index) in data.sampleClasses"
                      class="rounded float-left mr-2 mb-2 img-small-square-thumb"
@@ -173,7 +171,7 @@
                 </div>
                 <div v-if="project.expense">
                   <strong>Expense: </strong>
-                  {{ format('currency', format('comma', data.project.expense)) }}
+                  {{ format('currency', format('comma', data.project.attempts * data.project.incentive)) }}
                 </div>
                 <div>
                   <strong>Incentive: </strong>

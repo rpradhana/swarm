@@ -197,7 +197,7 @@ router.get('/project/modelling/:projectId', (req, res) => {
           features: features
         })
 
-      }).sort({ projectId: 1 })
+      }).sort({ occurence: 1 })
     }).sort({ projectId: 1 })
   }).sort({ _id: 1 })
 

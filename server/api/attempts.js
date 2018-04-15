@@ -295,28 +295,39 @@ router.get('/attempt/:projectId', (req, res) => {
  */
 router.post('/postAttempt', (req, res, next) => {
 
-  Project.findOne({ _id: req.body.projectId }, '', (error, project) => {
-    Class.find({ projectId: req.body.projectId }, '', (error, classes) => {
-      Feature.find({ projectId: req.body.projectId }, '', (error, features) => {
+  Project.findOne({ _id: req.body.projectId }, '', (errorP, project) => {
+    Class.find({ projectId: req.body.projectId }, '', (errorC, classes) => {
+      Feature.find({ projectId: req.body.projectId }, '', (errorF, features) => {
 
-        console.log('Feature length = ', features.length)
+        // Update project
+        if (project) {
+          project.attempts += 1
+          // project.expense += project.incentive // calculate on the fly, don't store
+          console.log('attempts : ', project.attempts)
+          project.save()
+        } else {
+          console.error(errorP)
+        }
 
+        // New feature?
         var isNew = true
-        features.forEach((f) => {
-          console.log(req.body.feature, ' : ', f.feature)
-          if (req.body.feature === f.feature) {
-            isNew = false
-          }
-        })
-        console.log('isNew = ', isNew)
+        console.log('Feature length : ', features.length)
+        if (features.length > 0) {
+          features.forEach((f) => {
+            console.log(req.body.feature, ' : ', f.feature)
+            if (req.body.feature === f.feature) {
+              isNew = false
+            }
+          })
+        }
+        console.log('isNew : ', isNew)
 
-        console.log()
-
-        // new feature? => new feature new attempt
+        // New feature => new feature new attempt
         if (isNew) {
           let newFeature = new Feature ({
             feature: req.body.feature,
             projectId: project._id,
+            highestAccuracy: 1,
             occurence: 1,
             values: [req.body.a, req.body.b]
           })
@@ -338,7 +349,7 @@ router.post('/postAttempt', (req, res, next) => {
             })
         }
 
-        // feature already exist? => update + new attempt
+        // Existing feature => update + new attempt
         else if (!isNew) {
           Feature.findOne(
             { $and: [
@@ -386,6 +397,7 @@ router.post('/postAttempt', (req, res, next) => {
     })
     res.send(project)
   })
+
 })
 
 export default router
