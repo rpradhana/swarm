@@ -235,7 +235,10 @@ export default {
   methods: {
     format (type, input) {
       switch (type) {
-        case 'comma': return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        case 'comma':
+          return (Math.round(input * 100) / 100)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
         case 'currency': return ('$' + input)
         case 'titleCase': return input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
       }
