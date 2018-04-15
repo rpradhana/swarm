@@ -5,7 +5,7 @@
         <b-col sm="12">
           <h4 class="title mb-5">
             <nuxt-link to="/owner/dashboard"><i class="material-icons secondary-cta-link offset-min">chevron_left</i></nuxt-link>
-            {{ data.project.title }}
+            <!-- {{ data.project.title }} -->
           </h4>
         </b-col>
       </b-row>

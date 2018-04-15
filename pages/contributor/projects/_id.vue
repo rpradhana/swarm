@@ -28,7 +28,7 @@
         <b-col sm="12" md="8">
           <b-card no-body class="mb-5 shadow">
             <b-tabs no-fade card v-model="currentStep">
-              <b-form @submit.prevent="getAttempt" v-if="show">
+              <b-form @submit.prevent="getAttempt" @keyup.enter="keyupEnterHandler" v-if="show">
                 <b-tab ref="step1" title="Step 1" active>
                   <h5 class="title mb-3">
                     Find one difference between A and B
@@ -40,8 +40,8 @@
                                   autofocus
                                   type="text"
                                   v-model="feature"
+                                  @keyup.enter.native="keyupEnterHandler"
                                   @input="step1to2"
-                                  @keyup.enter="proceed"
                                   required
                                   placeholder="e.g. pattern, color, size">
                     </b-form-input>
@@ -188,7 +188,8 @@ export default {
     }
   },
   methods: {
-    onSubmit (evt) {
+    keyupEnterHandler () {
+      this.currentStep === 0 ? this.step1to2() : this.proceed()
     },
     reset () {
       this.selected = 'a'

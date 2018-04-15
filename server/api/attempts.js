@@ -166,6 +166,7 @@ router.get('/attempt/:projectId', (req, res) => {
                     }
                   })
                 })
+
                 console.log('attempt counts = ', attemptCounts)
 
                 // iterate classes and pick 2 classes
@@ -283,10 +284,10 @@ router.get('/attempt/:projectId', (req, res) => {
             c2: c2
           })
 
-        }).sort({ _id: -1 })
-      }).sort({ _id: -1 })
-    }).sort({ _id: -1 })
-  }).sort({ _id: -1 })
+        }).sort({ _id: 1 })
+      }).sort({ occurence: 1 }) // descending by occurence
+    }).sort({ _id: 1 })
+  }).sort({ _id: 1 })
 })
 
 /**
@@ -300,33 +301,6 @@ router.post('/postAttempt', (req, res, next) => {
 
         console.log('Feature length = ', features.length)
 
-        // // first feature & first attempt
-        // if (features.length <= 0) {
-        //   let firstFeature = new Feature ({
-        //     feature: req.body.feature,
-        //     projectId: project._id,
-        //     accuracy: 1,
-        //     occurence: 1
-        //   })
-        //   firstFeature
-        //     .save((e, f0) => {
-        //       let firstAttempt = new Attempt ({
-        //         projectId: req.body.projectId,
-        //         classAId: classes[req.body.c1]._id,
-        //         classBId: classes[req.body.c2]._id,
-        //         featureId: f0._id,
-        //         valueA: req.body.a,
-        //         valueB: req.body.b,
-        //         userId: req.body.userId,
-        //         timestamp: moment()
-        //       })
-        //       firstAttempt.save()
-        //       console.log(firstFeature)
-        //     })
-        // }
-
-        // else if (features.length > 0) {
-
         var isNew = true
         features.forEach((f) => {
           console.log(req.body.feature, ' : ', f.feature)
@@ -338,7 +312,7 @@ router.post('/postAttempt', (req, res, next) => {
 
         console.log()
 
-        // new feature?
+        // new feature? => new feature new attempt
         if (isNew) {
           let newFeature = new Feature ({
             feature: req.body.feature,
@@ -364,7 +338,7 @@ router.post('/postAttempt', (req, res, next) => {
             })
         }
 
-        // feature already exist => new attempt
+        // feature already exist? => update + new attempt
         else if (!isNew) {
           Feature.findOne(
             { $and: [
@@ -374,26 +348,39 @@ router.post('/postAttempt', (req, res, next) => {
             },
             '',
             (error, f) => {
-              let newAttempt = new Attempt ({
-                projectId: req.body.projectId,
-                classAId: classes[req.body.c1]._id,
-                classBId: classes[req.body.c2]._id,
-                featureId: f._id,
-                valueA: req.body.a,
-                valueB: req.body.b,
-                userId: req.body.userId,
-                timestamp: moment()
-              })
-              newAttempt.save()
+              // Update Feature collection
+              if (f) {
+
+                // Add values into feature values
+                if (!_.includes(f.values, req.body.a)) {
+                  f.values.push(req.body.a)
+                }
+                if (!_.includes(f.values, req.body.b)) {
+                  f.values.push(req.body.b)
+                }
+
+                f.occurence += 1
+                console.log(f.feature, ' occurence : ', f.occurence)
+                f.save()
+
+                // Save new Attempt
+                let newAttempt = new Attempt ({
+                  projectId: req.body.projectId,
+                  classAId: classes[req.body.c1]._id,
+                  classBId: classes[req.body.c2]._id,
+                  featureId: f._id,
+                  valueA: req.body.a,
+                  valueB: req.body.b,
+                  userId: req.body.userId,
+                  timestamp: moment()
+                })
+                newAttempt.save()
+              } else {
+                console.log(error)
+              }
             }
           )
         }
-
-        classes.forEach((c) => {
-          features.forEach((f) => {
-
-          })
-        })
 
       })
     })
