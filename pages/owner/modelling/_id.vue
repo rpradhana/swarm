@@ -13,7 +13,7 @@
         <b-col sm="12" md="8" order-md="1" order-sm="2">
           <b-card id="dataset" class="shadow mb-5">
             <div class="mb-4">
-              <h5 class="mb-3">Datasets provided: {{ format('comma', datasets.length) }}</h5>
+              <h5 class="mb-3">Datasets provided: <!-- {{ format('comma', datasets.length) }} --></h5>
               <b-button v-b-modal.datasetModal variant="light">
                 Edit dataset
               </b-button>
@@ -221,8 +221,9 @@ export default {
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
       return redirect('/welcome?a=sign-in')
-    } else if (store.state.authUser.user.type !== 'owner') {
-      return redirect('/')
+    } else if (store.state.authUser.user.type === 'contributor') {
+      return redirect('/contributor/dashboard')
+    } else {
     }
   },
   async asyncData ({ store }) {

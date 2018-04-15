@@ -35,8 +35,9 @@ export default {
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
       return redirect('/welcome?a=sign-in')
-    } else if (store.state.authUser.user.type !== 'owner') {
-      return redirect('/')
+    } else if (store.state.authUser.user.type === 'contributor') {
+      return redirect('/contributor/dashboard')
+    } else {
     }
   },
   async asyncData ({ store }) {

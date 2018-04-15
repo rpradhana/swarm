@@ -15,8 +15,11 @@ import Howto from '~/components/Howto.vue'
 export default {
   layout: 'default',
   fetch ({ store, redirect }) {
-    if (store.state.authUser) {
+    if (!store.state.authUser) {
+    } else if (store.state.authUser.user.type === 'owner') {
       return redirect('/owner/dashboard')
+    } else if (store.state.authUser.user.type === 'contributor') {
+      return redirect('/contributor/dashboard')
     }
   },
   async asyncData () {

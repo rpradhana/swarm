@@ -257,9 +257,10 @@ export default {
   layout: 'owner',
   fetch ({ store, redirect }) {
     if (!store.state.authUser) {
-      // return redirect('/welcome?a=sign-in')
-    } else if (store.state.authUser.user.type !== 'owner') {
-      // return redirect('/')
+      return redirect('/welcome?a=sign-in')
+    } else if (store.state.authUser.user.type === 'contributor') {
+      return redirect('/contributor/dashboard')
+    } else {
     }
   },
   asyncData ({ params, error }) {
