@@ -145,19 +145,28 @@
             <b-container>
               <b-row>
                 <b-col>
-                  <b-table responsive striped hover :items="data.model" :fields="data.modelFields">
-                    <template slot="f1" slot-scope="data">
-                      {{ data.value }}
-                    </template>
-                  </b-table>
+                  <b-form @submit.prevent="">
+                    <b-table responsive striped hover :items="data.model" :fields="data.modelFields">
+                      <template v-for="(key, index) in data.modelFields" :slot="'f'+index" slot-scope="data">
+                        <b-form-select v-if="data.value.length > 1" v-model="data.value[0]" :options="data.value" class="modelCell">
+                        </b-form-select>
+                        <span v-else>
+                          {{ data.value[0] }}
+                        </span>
+                      </template>
+                    </b-table>
+                  </b-form>
 <!--                   {{ data.project.classes }}
                   {{ data.features }} -->
                 </b-col>
               </b-row>
             </b-container>
             <div slot="modal-footer" class="w-100">
-              <b-btn class="float-right ml-3" variant="primary" @click="modelShow=false">
-               Close
+              <b-btn class="float-right ml-3" variant="primary" @click="updateModel">
+                Update model
+              </b-btn>
+              <b-btn class="float-right ml-3" variant="light" @click="modelShow=false">
+                Close
               </b-btn>
             </div>
           </b-modal>
@@ -364,7 +373,10 @@ export default {
       matrixFields: [
         { key: 'class' },
         { key: 'f1' },
-        { key: 'f2' }
+        { key: 'f2' },
+        { key: 'f3' },
+        { key: 'f4' },
+        { key: 'f5' }
       ],
       fields: [
         { key: 'feature', sortable: false },
@@ -392,5 +404,8 @@ export default {
   .secondary-cta-link {
     color: $gray-600;
       vertical-align: middle;
+  }
+  .modelCell {
+    min-width: 5rem;
   }
 </style>

@@ -264,13 +264,18 @@ router.get('/project/modelling/:projectId', (req, res) => {
             })
           })
 
+          function onlyUnique(value, index, self) { 
+              return self.indexOf(value) === index;
+          }
+
           // Convert feature matrix to object
           classes.some((c, ii) => {
             row = {
               class: c.class
             }
             features.some((f, jj) => {
-              row[f.feature] = matrixCF[ii][jj]
+              // row[f.feature] = matrixCF[ii][jj]
+              row['f'+jj] = matrixCF[ii][jj].filter(onlyUnique)
             })
             model.push(row)
           })
