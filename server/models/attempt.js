@@ -4,11 +4,11 @@ const Schema = mongoose.Schema
 
 const AttemptsSchema = new Schema({
   projectId: String,
-  classAId: String,
-  classBId: String,
-  featureAId: String,
-  featureBId: String,
-  featureId: String,
+  classAId: Schema.Types.ObjectId,
+  classBId: Schema.Types.ObjectId,
+  featureAId: Schema.Types.ObjectId,
+  featureBId: Schema.Types.ObjectId,
+  featureId: Schema.Types.ObjectId,
   valueA: Schema.Types.Mixed,
   valueB: Schema.Types.Mixed,
   userId: String,

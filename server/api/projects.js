@@ -6,6 +6,7 @@ const router = Router()
 const multer = require('multer')
 const path = require('path')
 const moment = require('moment')
+const _ = require('lodash')
 
 var upload = multer({ storage: multer.diskStorage({
 
@@ -20,18 +21,19 @@ var upload = multer({ storage: multer.diskStorage({
 
 }),
 
-fileFilter: function(req, file, callback) {
-  var ext = path.extname(file.originalname)
-  if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-    return callback(/*res.end('Only images are allowed')*/ null, false)
+  fileFilter: function(req, file, callback) {
+    var ext = path.extname(file.originalname)
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+      return callback(/*res.end('Only images are allowed')*/ null, false)
+    }
+    callback(null, true)
   }
-  callback(null, true)
-}
 })
 
 const Project = require('../models/project')
 const Class = require('../models/class')
 const Feature = require('../models/feature')
+const Attempt = require('../models/attempt')
 
 // Add new projects
 router.post('/projects', upload.fields([
@@ -218,23 +220,85 @@ router.get('/project/modelling/:projectId', (req, res) => {
   Project.findOne({ _id: projectId }, '', (error, project) => {
     Class.find({ projectId: projectId }, '', (error, classes) => {
       Feature.find({ projectId: projectId }, '', (error, features) => {
+        Attempt.find({ projectId: projectId }, '', (error, attempts) => {
 
-        var sampleClasses = []
-        classes.forEach((c) => {
-          console.log(c.class)
-          sampleClasses.push({
-            class: c.class,
-            trainingData: c.trainingData[0]
+          // let model = []
+          let matrixCF = []
+          // Initialize empty matrix
+          classes.some((c, ii) => {
+            matrixCF[ii] = []
+            features.some((f, jj) => {
+              matrixCF[ii][jj] = []
+            })
           })
-        })
+          console.log('[c][f] = v')
+          attempts.some((a, index) => {
+            var f = _.findIndex(features, { '_id': a.featureId }),
+                ca = _.findIndex(classes, { '_id': a.classAId }),
+                cb = _.findIndex(classes, { '_id': a.classBId })
+            // console.log(a.featureId)
+            console.log('[',ca,']', '[',f,'] =', a.valueA)
+            console.log('[',cb,']', '[',f,'] =', a.valueB)
+            matrixCF[ca][f].push(a.valueA)
+            matrixCF[cb][f].push(a.valueB)
+          })
+          console.log('\nFeature matrix [', classes.length ,'][', features.length ,']')
+          console.log(matrixCF)
 
-        res.send({
-          project: project,
-          sampleClasses: sampleClasses,
-          classes: classes,
-          features: features
-        })
+          // console.log(matrixCF[0])
 
+          let model = [],
+              row,
+              rowSize,
+              modelFields = []
+
+          // Build fields to be displayed on the table
+          modelFields.push({
+            'key': 'class',
+            'label': 'Class'
+          })
+          features.some((f, ii) => {
+            modelFields.push({
+              'key': 'f'+ ii,
+              'label': f.feature
+            })
+          })
+
+          // Convert feature matrix to object
+          classes.some((c, ii) => {
+            row = {
+              class: c.class
+            }
+            features.some((f, jj) => {
+              row[f.feature] = matrixCF[ii][jj]
+            })
+            model.push(row)
+          })
+
+          console.log('\nFinal model')
+          console.log(model)
+
+          // Build sample class data
+          var sampleClasses = []
+          classes.forEach((c) => {
+            console.log(c.class)
+            sampleClasses.push({
+              class: c.class,
+              trainingData: c.trainingData[0]
+            })
+          })
+
+          // Send data to client
+          res.send({
+            project: project,
+            sampleClasses: sampleClasses,
+            classes: classes,
+            features: features,
+            model: model,
+            modelFields : modelFields
+          })
+
+        }).sort({  })
       }).sort({ occurence: 1 })
     }).sort({ projectId: 1 })
   }).sort({ _id: 1 })

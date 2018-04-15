@@ -102,7 +102,7 @@
               </b-button> -->
             </div>
             <div>
-              <b-table striped hover :items="data.features" :fields="fields"/>
+              <b-table responsive striped hover :items="data.features" :fields="fields"/>
               <!-- <b-table striped hover :items="data.features" :fields="fields"/> -->
             </div>
           </b-card>
@@ -145,7 +145,10 @@
             <b-container>
               <b-row>
                 <b-col>
-                  <b-table striped hover :items="featureMatrix">
+                  <b-table responsive striped hover :items="data.model" :fields="data.modelFields">
+                    <template slot="f1" slot-scope="data">
+                      {{ data.value }}
+                    </template>
                   </b-table>
 <!--                   {{ data.project.classes }}
                   {{ data.features }} -->
@@ -175,7 +178,7 @@
                   {{ format('comma', data.project.attempts) }}
                   <span>/ {{ format('comma', data.project.attemptsLimit) }}</span>
                 </div>
-                <div v-if="project.expense">
+                <div>
                   <strong>Expense: </strong>
                   {{ format('currency', format('comma', data.project.attempts * data.project.incentive)) }}
                 </div>
@@ -200,7 +203,7 @@
                 </div>
               </div>
               <div class="mb-3">
-                <div v-if="project.description">
+                <div>
                   <strong>Description: </strong>
                   {{ format('comma', data.project.description) }}
                 </div>
@@ -347,20 +350,10 @@ export default {
       modelShow: false,
       btnShow: false,
       project: {
-        id: '00000001',
-        title: 'Classify the species of birds of paradise',
-        type: 'Modelling',
-        contributors: 10000,
-        contributorsLimit: 15000,
-        expense: 131.80,
-        expensePerTask: 0.01,
-        latest: '1/03/2017',
-        quality: 'Good',
-        status: 'Ongoing',
-        description: 'Given the images of birds identify the existence of certain features to classify its exact species.'
+        type: 'Modelling'
       },
       featureMatrix: [
-        { class: 'apoda', f1: 'yellow', f2: '0', f3: '1', f4: 'smooth', f5: '1' },
+        { class: 'apoda', f1: ['yellow', 'yellow'], f2: '0', f3: '1', f4: 'smooth', f5: '1' },
         { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'ragged', f5: '0' },
         { class: 'guiliermi', f1: 'white', f2: '1', f3: '0', f4: 'ragged', f5: '1' },
         { class: 'minor', f1: 'yellow', f2: '0', f3: '1', f4: 'thick', f5: '1' },
@@ -368,73 +361,15 @@ export default {
         { class: 'rubra', f1: 'red', f2: '0', f3: '1', f4: 'thin', f5: '1' },
         { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'thin', f5: '0' }
       ],
-      datasets: [
-        {
-          name: 'img0001',
-          src: 'https://picsum.photos/128/128/?photo=1'
-        },
-        {
-          name: 'img0002',
-          src: 'https://picsum.photos/128/128/?photo=2'
-        },
-        {
-          name: 'img0003',
-          src: 'https://picsum.photos/128/128/?photo=3'
-        },
-        {
-          name: 'img0004',
-          src: 'https://picsum.photos/128/128/?photo=4'
-        },
-        {
-          name: 'img0005',
-          src: 'https://picsum.photos/128/128/?photo=5'
-        }
-      ],
-      classes: [
-        {
-          class: 'Paradisaea apoda',
-          src: 'https://picsum.photos/128/128/?photo=1'
-        },
-        {
-          class: 'Paradisaea minor',
-          src: 'https://picsum.photos/128/128/?photo=2'
-        },
-        {
-          class: 'Paradisaea raggiana',
-          src: 'https://picsum.photos/128/128/?photo=3'
-        }
+      matrixFields: [
+        { key: 'class' },
+        { key: 'f1' },
+        { key: 'f2' }
       ],
       fields: [
         { key: 'feature', sortable: false },
         { key: 'values', sortable: false },
         { key: 'occurence', sortable: true }
-      ],
-      features: [
-        {
-          feature: 'Pattern',
-          values: ['Plain', 'Red stripes', '3 colors'],
-          occurence: 332
-        },
-        {
-          feature: 'Split tail',
-          values: [true, false],
-          occurence: 124
-        },
-        {
-          feature: 'Crown',
-          values: [true, false],
-          occurence: 62
-        },
-        {
-          feature: 'Curly claw',
-          values: [true, false],
-          occurence: 32
-        },
-        {
-          feature: 'Long tail',
-          values: [true, false],
-          occurence: 18
-        }
       ]
     }
   },

@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ClassSchema = new Schema({
-  projectId: String,
+  projectId: Schema.Types.ObjectId,
   class: String,
   index: { type: Number, default: 1 },
   features: [Schema.Types.Mixed],
