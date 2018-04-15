@@ -187,6 +187,25 @@ router.get('/projects', (req, res) => {
   }).sort({ _id: -1 })
 })
 
+// Fetch all projects
+router.get('/projects/active', (req, res) => {
+  Project.find(
+    { $and: [
+      { status: 'Ongoing' },
+      { expiryDate: { $lt: moment() } }
+    ]},
+    '', (error, projects) => {
+    if (error) {
+      console.error(error)
+    }
+    else {
+      res.send({
+        projects: projects
+      })
+    }
+  }).sort({ _id: -1 })
+})
+
 // Fetch all projects by user
 router.get('/projects/:userId', (req, res) => {
   const userId = req.params.userId

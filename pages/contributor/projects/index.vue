@@ -12,6 +12,7 @@
         <b-col sm="12">
           <b-table class="mb-5"
                    hover
+                   responsive
                    :current-page="currentPage"
                    :per-page="20"
                    :items="projects"
@@ -116,7 +117,8 @@ export default {
     }
   },
   async asyncData () {
-    let { data } = await axios.get('/api/projects')
+    let { data } = await axios.get('/api/projects/active')
+    console.log(data)
     for (var ii = 0; ii < data.projects.length; ii++) {
       data.projects[ii].creationDate = window.moment(data.projects[ii].creationDate).format('ll')
     }
