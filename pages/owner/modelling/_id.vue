@@ -65,6 +65,8 @@
               </div>
             </b-modal>
 
+            {{ data }}
+
             <div class="mb-4">
               <h5 class="mb-3">Sample classes</h5>
               <div class="clearfix">
@@ -96,7 +98,7 @@
               </b-button> -->
             </div>
             <div>
-              <b-table striped hover :items="features" :fields="fields"/>
+              <b-table striped hover :items="data.features" :fields="fields"/>
               <!-- <b-table striped hover :items="data.features" :fields="fields"/> -->
             </div>
           </b-card>
@@ -228,7 +230,7 @@ export default {
   },
   async asyncData ({ store }) {
     console.log(store.state.project.project._id)
-    let { data } = await axios.get('/api/modelling/' + store.state.project.project._id)
+    let { data } = await axios.get('/api/project/modelling/' + store.state.project.project._id)
     console.log('Initial data', data)
     return { data }
   },

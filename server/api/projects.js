@@ -174,7 +174,7 @@ router.get('/project/:projectId', (req, res) => {
 })
 
 // For modelling
-router.get('/modelling/:projectId', (req, res) => {
+router.get('/project/modelling/:projectId', (req, res) => {
   const projectId = req.params.projectId
 
   Project.findOne({ _id: projectId }, '', (error, project) => {

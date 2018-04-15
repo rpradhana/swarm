@@ -300,92 +300,93 @@ router.post('/postAttempt', (req, res, next) => {
 
         console.log('Feature length = ', features.length)
 
-        // first feature & first attempt
-        if (features.length <= 0) {
-          let firstFeature = new Feature ({
+        // // first feature & first attempt
+        // if (features.length <= 0) {
+        //   let firstFeature = new Feature ({
+        //     feature: req.body.feature,
+        //     projectId: project._id,
+        //     accuracy: 1,
+        //     occurence: 1
+        //   })
+        //   firstFeature
+        //     .save((e, f0) => {
+        //       let firstAttempt = new Attempt ({
+        //         projectId: req.body.projectId,
+        //         classAId: classes[req.body.c1]._id,
+        //         classBId: classes[req.body.c2]._id,
+        //         featureId: f0._id,
+        //         valueA: req.body.a,
+        //         valueB: req.body.b,
+        //         userId: req.body.userId,
+        //         timestamp: moment()
+        //       })
+        //       firstAttempt.save()
+        //       console.log(firstFeature)
+        //     })
+        // }
+
+        // else if (features.length > 0) {
+
+        var isNew = true
+        features.forEach((f) => {
+          console.log(req.body.feature, ' : ', f.feature)
+          if (req.body.feature === f.feature) {
+            isNew = false
+          }
+        })
+        console.log('isNew = ', isNew)
+
+        console.log()
+
+        // new feature?
+        if (isNew) {
+          let newFeature = new Feature ({
             feature: req.body.feature,
             projectId: project._id,
-            accuracy: 1
+            occurence: 1,
+            values: [req.body.a, req.body.b]
           })
-          firstFeature
-            .save((e, f0) => {
-              let firstAttempt = new Attempt ({
+          newFeature
+            .save((e, fnew) => {
+              let newAttempt = new Attempt ({
                 projectId: req.body.projectId,
                 classAId: classes[req.body.c1]._id,
                 classBId: classes[req.body.c2]._id,
-                featureId: f0._id,
+                featureId: fnew._id,
                 valueA: req.body.a,
                 valueB: req.body.b,
                 userId: req.body.userId,
                 timestamp: moment()
               })
-              firstAttempt.save()
-              console.log(firstFeature)
+              newAttempt.save()
+              console.log('adding new feature ...')
+              console.log(newFeature)
             })
         }
 
-        else if (features.length > 0) {
-
-          var isNew = true
-          features.forEach((f) => {
-            console.log(req.body.feature, ' : ', f.feature)
-            if (req.body.feature === f.feature) {
-              isNew = false
-            }
-          })
-          console.log('isNew = ', isNew)
-
-          console.log()
-
-          // new feature?
-          if (isNew) {
-            let newFeature = new Feature ({
-              feature: req.body.feature,
-              projectId: project._id,
-              accuracy: 1
-            })
-            newFeature
-              .save((e, fnew) => {
-                let newAttempt = new Attempt ({
-                  projectId: req.body.projectId,
-                  classAId: classes[req.body.c1]._id,
-                  classBId: classes[req.body.c2]._id,
-                  featureId: fnew._id,
-                  valueA: req.body.a,
-                  valueB: req.body.b,
-                  userId: req.body.userId,
-                  timestamp: moment()
-                })
-                newAttempt.save()
-                console.log('adding new feature ...')
-                console.log(newFeature)
+        // feature already exist => new attempt
+        else if (!isNew) {
+          Feature.findOne(
+            { $and: [
+                { projectId: project._id },
+                { feature: req.body.feature }
+              ]
+            },
+            '',
+            (error, f) => {
+              let newAttempt = new Attempt ({
+                projectId: req.body.projectId,
+                classAId: classes[req.body.c1]._id,
+                classBId: classes[req.body.c2]._id,
+                featureId: f._id,
+                valueA: req.body.a,
+                valueB: req.body.b,
+                userId: req.body.userId,
+                timestamp: moment()
               })
-          }
-
-          // feature already exist => new attempt
-          else if (!isNew) {
-            Feature.findOne(
-              { $and: [
-                  { projectId: project._id },
-                  { feature: req.body.feature }
-                ]
-              },
-              '',
-              (error, f) => {
-                let newAttempt = new Attempt ({
-                  projectId: req.body.projectId,
-                  classAId: classes[req.body.c1]._id,
-                  classBId: classes[req.body.c2]._id,
-                  featureId: f._id,
-                  valueA: req.body.a,
-                  valueB: req.body.b,
-                  userId: req.body.userId,
-                  timestamp: moment()
-                })
-                newAttempt.save()
-              }
-            )
-          }
+              newAttempt.save()
+            }
+          )
         }
 
         classes.forEach((c) => {

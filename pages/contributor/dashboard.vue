@@ -91,7 +91,6 @@ export default {
     } else if (store.state.authUser.user.type === 'owner') {
       return redirect('/owner/dashboard')
     } else {
-      return redirect('/')
     }
   },
   async asyncData ({ store }) {
