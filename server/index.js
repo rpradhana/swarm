@@ -72,7 +72,14 @@ app.post('/api/endAttempt', function (req, res) {
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
 app.post('/api/login', function (req, res) {
 
-  User.findOne({ email: req.body.email }, '', (error, user) => {
+  User.findOne(
+    { $and: [
+        { email: req.body.email },
+        { type: req.body.type }
+      ]
+    },
+    '',
+    (error, user) => {
     if (error) {
       console.error(error)
     } else if (user) {
