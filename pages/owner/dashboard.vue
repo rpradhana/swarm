@@ -8,7 +8,7 @@
           </h4>
         </b-col>
       </b-row>
-      <b-row class="placeholder">
+      <b-row class="placeholder" v-if="projects.length <= 0">
         <b-col xs="12" s="8" offset-s="2" md="6" offset-md="3">
           <b-card class="new-card shadow text-center"
                   title="Create your first project">
