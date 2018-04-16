@@ -14,19 +14,31 @@ router.post('/models', (req, res, next) => {
 
   let classCount = 0,
       featureCount = 0,
-      quality = ''
+      quality = 'Insufficient data',
+      foundEmpty = false
 
   classCount = req.body.model.length
 
+  // Find if any feature is empty
+  // Find total number of features
   req.body.model.some((feature) => {
+    for (var key in feature) {
+      if (feature[key].length === 0) {
+        foundEmpty = true
+      }
+    }
     if (featureCount < Object.keys(feature).length - 1) {
       featureCount = Object.keys(feature).length - 1
     }
   })
 
-  if (featureCount >= Math.ceil(2 * Math.ceil(Math.log2(classCount)))) {quality = 'Good'}
-  else if (featureCount >= Math.ceil(Math.log2(classCount))) {quality = 'Okay'}
-  else if (featureCount < Math.ceil(Math.log2(classCount))) {quality = 'Poor'}
+  console.log('Found empty feature : ', foundEmpty)
+  // Model quality conditions
+  // No empties
+  // Features > log2(Classes)
+  if (!foundEmpty && featureCount >= Math.ceil(2 * Math.ceil(Math.log2(classCount)))) {quality = 'Good'}
+  else if (!foundEmpty && featureCount >= Math.ceil(Math.log2(classCount))) {quality = 'Okay'}
+  else if (foundEmpty || featureCount < Math.ceil(Math.log2(classCount))) {quality = 'Poor'}
   else {quality = 'Insufficient data'}
 
   console.log('class = ', classCount, ' | feature = ', featureCount)
