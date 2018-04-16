@@ -97,4 +97,11 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%)
   }
+  @include media-breakpoint-down(xs) {
+    .nav-brand {
+      width: 35px;
+      height: 35px;
+      overflow: hidden;
+    }
+  }
 </style>

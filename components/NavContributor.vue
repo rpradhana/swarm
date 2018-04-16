@@ -181,4 +181,11 @@ export default {
   .search {
     flex-grow: 1;
   }
+  @include media-breakpoint-down(xs) {
+    .nav-brand {
+      width: 35px;
+      height: 35px;
+      overflow: hidden;
+    }
+  }
 </style>
