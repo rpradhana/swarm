@@ -128,10 +128,11 @@ router.get('/attempt/:projectId', (req, res) => {
           else if (features.length < Math.ceil(Math.log2(classes.length))) {action = 2}
           else if (features.length >= Math.ceil(Math.log2(classes.length))) {action = 3}
 
+          console.log('\nclasses = ', project.classes)
           console.log('classes count = ', classes.length)
-          console.log('classes = ', project.classes)
+          console.log('\nfeatures = ', features)
           console.log('features count = ', features.length)
-          console.log('action = ', action)
+          console.log('\naction = ', action)
 
           switch(action) {
 
@@ -154,19 +155,21 @@ router.get('/attempt/:projectId', (req, res) => {
                   foundAttempts.push(ca.classBId)
                 })
 
+                // Initialize attemptCounts with 0
                 classes.some((c, ii) => {
                   attemptCounts[ii] = 0
                 })
 
                 foundAttempts.some((fa, ii) => {
                   classes.some((c, jj) => {
-                    if (fa == c._id) {
+                    if (JSON.stringify(fa) === JSON.stringify(c._id)) {
                       // console.log(fa, ' : ', c._id)
                       attemptCounts[jj]++
                     }
                   })
                 })
 
+                console.log('\nattempts = ', foundAttempts)
                 console.log('attempt counts = ', attemptCounts)
 
                 // iterate classes and pick 2 classes
@@ -202,7 +205,7 @@ router.get('/attempt/:projectId', (req, res) => {
 
               foundAttempts.some((fa, ii) => {
                 classes.some((c, jj) => {
-                  if (fa == c._id) {
+                  if (JSON.stringify(fa) === JSON.stringify(c._id)) {
                     // console.log(fa, ' : ', c._id)
                     attemptCounts[jj]++
                   }

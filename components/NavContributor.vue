@@ -39,7 +39,7 @@
             <b-dropdown variant="link" right class="link-black ml-5">
               <template slot="button-content">
                 ​<picture class="avatar">
-                  <img src="https://picsum.photos/32/32/?blur&image=1056" class="img-fluid img-thumbnail" alt="avatar">
+                   <img src="/img/avatar_circle_blue_512dp.png" class="img-fluid img-thumbnail" height="32" width="32" alt="avatar">
                 </picture>
               </template>
 <!--               <b-dropdown-item @click.prevent="">Profile</b-dropdown-item> -->

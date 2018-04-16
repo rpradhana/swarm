@@ -134,14 +134,14 @@
                     variant="primary"
                     v-b-modal.modelModal
                     size="lg">
-            Build model
+            View model
           </b-button>
           <b-button class="w-100 mb-3"
                     v-else
                     variant="tertiary"
                     v-b-modal.modelModal
                     size="lg">
-            View model
+            Build model
           </b-button>
 
           <b-modal class=""
@@ -222,7 +222,7 @@
               <div class="mb-3">
                 <div>
                   <strong>Description: </strong>
-                  {{ format('comma', data.project.description) }}
+                  {{ data.project.description }}
                 </div>
               </div>
               <div>

@@ -132,9 +132,9 @@ export default {
       fields: [
         { key: 'details', label: ' ', sortable: false },
         { key: 'title', sortable: true },
+        { key: 'incentive', sortable: true },
         { key: 'type', sortable: true },
         { key: 'attempts', sortable: true },
-        { key: 'incentive', sortable: true },
         { key: 'creationDate', label: 'Created', sortable: true },
         { key: 'action', label: ' ', sortable: false }
       ]
