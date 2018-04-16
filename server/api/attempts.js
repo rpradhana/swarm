@@ -304,22 +304,23 @@ router.post('/postAttempt', (req, res, next) => {
 
         // Update project
         if (project) {
-
           // add contributor if it's his first attempt
           Attempt.findOne(
             { $and: [
-                { projectId: project._id },
-                { userId: req.body.userId }
+                { projectId: JSON.stringify(project._id) },
+                { userId: JSON.stringify(req.body.userId) }
               ]
             },
             '',
             (error, attempt) => {
-            if (error) {
-              console.log('contributor : ', project.contributor)
-              project.contributor += 1
-              project.save()
+              // If any is found, don't add into contributor
+              if (!attempt) {
+                project.contributor += 1
+                console.log('contributor = ', project.contributor)
+                project.save()
+              }
             }
-          })
+          )
 
           project.attempts += 1
           // project.expense += project.incentive // calculate on the fly, don't store

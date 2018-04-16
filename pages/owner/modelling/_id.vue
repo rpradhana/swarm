@@ -141,8 +141,24 @@
                     variant="tertiary"
                     v-b-modal.modelModal
                     size="lg">
-            Build model
+            Build first model
           </b-button>
+
+          <b-modal class=""
+                    id="settingsModal"
+                    centered
+                    v-model="settingsShow"
+                    size="lg">
+            <b-container>
+              <b-row>
+                <b-col>
+                  <b-form @submit.prevent="updateSettings">
+
+                  </b-form>
+                </b-col>
+              </b-row>
+            </b-container>
+          </b-modal>
 
           <b-modal class=""
                    id="modelModal"
@@ -193,7 +209,7 @@
                 <div>
                   <strong>Attempts: </strong>
                   {{ format('comma', data.project.attempts) }}
-                  <span>/ {{ format('comma', data.project.attemptsLimit) }}</span>
+                  <span v-if="data.project.attemptsLimit > 0">/ {{ format('comma', data.project.attemptsLimit) }}</span>
                 </div>
                 <div>
                   <strong>Expense: </strong>
@@ -212,11 +228,6 @@
                 <div>
                   <strong>Model quality: </strong>
                   {{ data.project.modelQuality ? data.project.modelQuality : '-' }}
-                </div>
-                <div>
-                  <strong>Results: </strong>
-                  {{ format('comma', data.project.attempts) }}
-                  <span>/ {{ format('comma', data.project.attemptsLimit) }}</span>
                 </div>
               </div>
               <div class="mb-3">
@@ -260,6 +271,28 @@ export default {
     }
     console.log('Initial data', data)
     return { data }
+  },
+  data () {
+    return {
+      classCount: 0,
+      btnDisableRemove: false,
+      modelShow: false,
+      settingsShow: false,
+      btnShow: false,
+      matrixFields: [
+        { key: 'class' },
+        { key: 'f1' },
+        { key: 'f2' },
+        { key: 'f3' },
+        { key: 'f4' },
+        { key: 'f5' }
+      ],
+      fields: [
+        { key: 'feature', sortable: false },
+        { key: 'values', sortable: false },
+        { key: 'occurence', sortable: true }
+      ]
+    }
   },
   methods: {
     format (type, input) {
@@ -380,39 +413,6 @@ export default {
             console.log(error)
           })
       }
-    }
-  },
-  data () {
-    return {
-      classCount: 0,
-      btnDisableRemove: false,
-      modelShow: false,
-      btnShow: false,
-      project: {
-        type: 'Modelling'
-      },
-      featureMatrix: [
-        { class: 'apoda', f1: ['yellow', 'yellow'], f2: '0', f3: '1', f4: 'smooth', f5: '1' },
-        { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'ragged', f5: '0' },
-        { class: 'guiliermi', f1: 'white', f2: '1', f3: '0', f4: 'ragged', f5: '1' },
-        { class: 'minor', f1: 'yellow', f2: '0', f3: '1', f4: 'thick', f5: '1' },
-        { class: 'raggiana', f1: 'brown', f2: '0', f3: '0', f4: 'thin', f5: '1' },
-        { class: 'rubra', f1: 'red', f2: '0', f3: '1', f4: 'thin', f5: '1' },
-        { class: 'decora', f1: 'yellow', f2: '0', f3: '0', f4: 'thin', f5: '0' }
-      ],
-      matrixFields: [
-        { key: 'class' },
-        { key: 'f1' },
-        { key: 'f2' },
-        { key: 'f3' },
-        { key: 'f4' },
-        { key: 'f5' }
-      ],
-      fields: [
-        { key: 'feature', sortable: false },
-        { key: 'values', sortable: false },
-        { key: 'occurence', sortable: true }
-      ]
     }
   },
   head () {
