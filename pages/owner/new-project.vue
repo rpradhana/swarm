@@ -89,7 +89,7 @@
                                   v-model="label.class"
                                   :placeholder="'Class ' + index"/>
                   </b-col>
-                  <b-col class="pl-0 pr-0">
+                  <b-col class="pl-0 pr-0" v-if="Project.typeSelected === 'modelling'">
                     <b-form-file multiple
                                  class="text-truncate"
                                  v-model="label.trainingData"
@@ -97,6 +97,16 @@
                                  placeholder="Upload files"/>
                     <b-form-text id="fileCaption" class="mt-0 mb-3">
                       Selected files: {{ label.trainingData.length }}
+                    </b-form-text>
+                  </b-col>
+                  <b-col class="pl-0 pr-0" v-else-if="Project.typeSelected === 'prediction'">
+                    <b-form-file multiple
+                                 class="text-truncate"
+                                 v-model="label.testData"
+                                 aria-describedby="fileCaption2"
+                                 placeholder="Upload files"/>
+                    <b-form-text id="fileCaption2" class="mt-0 mb-3">
+                      Selected files: {{ label.testData.length }}
                     </b-form-text>
                   </b-col>
                   <b-col cols="1" v-if="Project.typeSelected === 'modelling'">
@@ -304,7 +314,8 @@ export default {
           {
             class: '',
             index: 0,
-            trainingData: ''
+            trainingData: '',
+            testData: ''
           }
         ],
         expiryDate: null,
@@ -343,7 +354,7 @@ export default {
       console.log('class = ' + this.classCount)
     },
     async newProject (evt) {
-      if (this.Project.title.length <= 0 || this.Project.title.description <= 0 || this.Project.classes[0].class === '') {
+      if (this.Project.title.length <= 0 || this.Project.title.description <= 0 || (this.Project.classes[0].class === '' && this.Project.typeSelected === 'modelling')) {
         this.$refs.alertSubmit.show()
       } else {
         console.log(this.Project)
@@ -382,7 +393,6 @@ export default {
           // For each test data in every class
           if (this.Project.classes[ii].testData) {
             console.log('testing')
-            // For each training data in every class
             for (var kk = 0; kk < this.Project.classes[ii].testData.length; kk++) {
               formData.append('te', this.Project.classes[ii].testData[kk])
             }
