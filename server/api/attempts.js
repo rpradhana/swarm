@@ -5,6 +5,7 @@ const router = Router()
 // Dependencies
 const moment = require('moment')
 const _ = require('lodash')
+const mongoose = require('mongoose')
 
 const Project = require('../models/project')
 const Class = require('../models/class')
@@ -35,12 +36,15 @@ router.get('/attempt', (req, res) => {
 
 // Fetch all attempts by user
 router.get('/attemptsBy/:userId', (req, res) => {
-  const userId = req.params.userId
+  const userId = mongoose.Types.ObjectId(req.params.userId)
+  console.log(typeof userId, ': ' , userId)
   Attempt.find({ userId: userId }, '', (error, attempts) => {
     Project.find({}, '', (error, projects) => {
       if (error) {
         console.error(error)
       } else {
+
+        console.log(attempts.length)
 
         var attemptCounter = 0
         var projectList = []
@@ -49,21 +53,32 @@ router.get('/attemptsBy/:userId', (req, res) => {
         var isDistinctProject
         var isDistinctTime
         var totalEarnings = 0
+        var distinctProjectCount = 0
 
-        attempts.forEach((a, index) => {
+        attempts.forEach((a, ii) => {
           if (a.timestamp) {
-            attemptCounter++
+            // attemptCounter++
             isDistinctProject = (!_.includes(projectList, a.projectId))
             isDistinctTime = (!_.includes(dateList, moment(a.timestamp).format('l')))
             if (isDistinctProject && isDistinctTime) {
+              console.log('DEBUG = DISTINCT ', a.projectId)
               projectList.push(a.projectId)
               dateList.push(a.timestamp)
-              taskCountList.push(attemptCounter)
+              taskCountList.push(1)
               attemptCounter = 0
+            } else {
+              projectList.some((p, jj) => {
+                if (p === a.projectId) {
+                  taskCountList[jj]++
+                  // console.log('[' + jj + '] ' + taskCountList[jj])
+                }
+              })
+              console.log('DEBUG = REPEAT ', a.projectId)
             }
           }
         })
-        console.log(dateList, ' : ' ,projectList, ' : ' ,taskCountList)
+
+        console.log(dateList, ' : ', projectList, ' : ' ,taskCountList)
 
         var rows = []
         projectList.forEach((item, index) => {
@@ -307,12 +322,13 @@ router.post('/postAttempt', (req, res, next) => {
           // add contributor if it's his first attempt
           Attempt.findOne(
             { $and: [
-                { projectId: JSON.stringify(project._id) },
-                { userId: JSON.stringify(req.body.userId) }
+                { projectId: project._id },
+                { userId: req.body.userId }
               ]
             },
             '',
             (error, attempt) => {
+              console.log('DEBUG ', attempt)
               // If any is found, don't add into contributor
               if (!attempt) {
                 project.contributor += 1

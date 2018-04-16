@@ -52,12 +52,12 @@
           <b-pagination size="md"
                         v-model="currentPage"
                         align="right"
-                        :total-rows="projects.length"
+                        :total-rows="rows.length"
                         :per-page="20"/>
         </b-col>
         <b-col sm="12" md="4" order-md="2" order-sm="1">
           <b-card class="shadow mb-5">
-            <h5 class="mb-3">Available earnings: ${{ totalEarnings }}</h5>
+            <h5 class="mb-3">Available earnings: ${{ format('comma', totalEarnings) }}</h5>
             <b-button variant="primary">
               Transfer via Paypal
             </b-button>
@@ -71,7 +71,7 @@
               <strong>Task done: </strong>{{ attempts.length }}
             </div>
             <div>
-              <strong>Total earnings: </strong>${{ totalEarnings }}
+              <strong>Total earnings: </strong>${{ format('comma', totalEarnings) }}
             </div>
           </b-card>
         </b-col>
@@ -96,16 +96,12 @@ export default {
   async asyncData ({ store }) {
     if (store.state.authUser) {
       let { data } = await axios.get('/api/attemptsBy/' + store.state.authUser.user._id)
-      console.log(data)
+      console.log('INITIAL DATA', data)
       return data
     }
   },
   data () {
     return {
-      available: 7.5,
-      attemptsTaken: 5,
-      taskDone: 30000,
-      totalEarnings: 12.90,
       currentPage: 1,
       fields: [
         { key: 'date', sortable: true },
@@ -113,33 +109,19 @@ export default {
         { key: 'type', sortable: true },
         { key: 'tasks', sortable: true },
         { key: 'earnings', sortable: true }
-      ],
-      projects: [
-        {
-          id: '00000001',
-          title: 'Classify the species of birds of paradise',
-          type: 'Modelling',
-          tasks: 10000,
-          earnings: 360,
-          date: '1/03/2017'
-        },
-        {
-          id: '00000002',
-          title: 'Identify features of sad and happy expressions',
-          type: 'Modelling',
-          tasks: 10000,
-          earnings: 360,
-          date: '1/02/2017'
-        },
-        {
-          id: '00000003',
-          title: 'Sort 3 types of our user feedback',
-          type: 'Prediction',
-          tasks: 10000,
-          earnings: 360,
-          date: '2/04/2017'
-        }
       ]
+    }
+  },
+  methods: {
+    format (type, input) {
+      switch (type) {
+        case 'comma':
+          return (Math.round(input * 100) / 100)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        case 'currency': return ('$' + input)
+        case 'titleCase': return input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
+      }
     }
   },
   head () {

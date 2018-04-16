@@ -11,7 +11,7 @@ const AttemptsSchema = new Schema({
   featureId: Schema.Types.ObjectId,
   valueA: Schema.Types.Mixed,
   valueB: Schema.Types.Mixed,
-  userId: String,
+  userId: Schema.Types.ObjectId,
   timestamp: Schema.Types.Mixed
 })
 
