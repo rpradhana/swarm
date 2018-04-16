@@ -7,6 +7,7 @@ import api from './api'
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const session = require('express-session')
+const bcrypt = require('bcrypt')
 
 // MongoDB
 mongoose.connect('mongodb://localhost:27017/swarm');
@@ -75,12 +76,17 @@ app.post('/api/login', function (req, res) {
     if (error) {
       console.error(error)
     } else if (user) {
-      if (req.body.email === user.email && req.body.password === user.password && req.body.type === user.type) {
-        req.session.authUser = { email: user.email, type: user.type }
-        return res.json({ user: user })
-      } else {
-        res.status(401).json({ error: 'Invalid password' })
-      }
+
+      // user.password is the bcrypt hashed password
+      bcrypt.compare(req.body.password, user.password, function(err, response) {
+        if (response) {
+          req.session.authUser = { email: user.email, type: user.type }
+          return res.json({ user: user })
+        } else {
+          res.status(401).json({ error: 'Invalid password' })
+        }
+      })
+
     } else {
       res.status(401).json({ error: 'Invalid email address' })
     }

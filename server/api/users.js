@@ -2,25 +2,30 @@ import { Router } from 'express'
 
 const router = Router()
 
+// Dependencies
+const bcrypt = require('bcrypt')
+
 const User = require('../models/user')
 
 // POST register new user
 router.post('/users', (req, res, next) => {
+  bcrypt.hash(req.body.password, 10, function(err, hash) {
+    // Store hash in database
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: hash,
+      paypal: req.body.paypal,
+      type: req.body.type
+    })
 
-  const newUser = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    paypal: req.body.paypal,
-    type: req.body.type
-  })
-
-  newUser.save((error) => {
-    if (error) {
-      console.log(error)
-    } else res.send({
-      success: true,
-      message: 'User saved successfully!'
+    newUser.save((error) => {
+      if (error) {
+        console.log(error)
+      } else res.send({
+        success: true,
+        message: 'User saved successfully!'
+      })
     })
   })
 })
