@@ -8,6 +8,19 @@
           </h4>
         </b-col>
       </b-row>
+      <b-row class="placeholder">
+        <b-col xs="12" s="8" offset-s="2" md="6" offset-md="3">
+          <b-card class="new-card shadow text-center"
+                  title="Create your first project">
+            <b-button variant="primary"
+                      size="lg"
+                      to="/owner/new-project"
+                      class="mt-4">
+              New Project
+            </b-button>
+          </b-card>
+        </b-col>
+      </b-row>
       <b-row class="project-grid-container">
         <ProjectGridItem v-for = "project in projects"
                          :key                = "project._id"
@@ -74,4 +87,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .new-card {
+    margin-top: calc( 50vh - 16rem );
+    padding-top: $spacer * 3;
+    padding-bottom: $spacer * 3;
+  }
 </style>
