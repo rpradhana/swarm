@@ -56,15 +56,15 @@
         <b-container fluid>
           <b-row>
             <b-col cols="8"><strong>Session earnings: </strong></b-col>
-            <b-col>1</b-col>
+            <b-col>${{ earnings }}</b-col>
           </b-row>
           <b-row>
             <b-col cols="8"><strong>Task done: </strong></b-col>
-            <b-col>1</b-col>
+            <b-col>{{ taskDone }}</b-col>
           </b-row>
           <b-row>
             <b-col cols="8"><strong>Time spent: </strong> </b-col>
-            <b-col>1</b-col>
+            <b-col>{{ timeSpent }} mins</b-col>
           </b-row>
         </b-container>
          <div slot="modal-footer" class="w-100">
@@ -93,6 +93,9 @@ export default {
   },
   data () {
     return {
+      earnings: 0,
+      taskDone: 0,
+      timeSpent: 1,
       btnShow: false
     }
   },
