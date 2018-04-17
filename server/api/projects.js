@@ -192,7 +192,7 @@ router.get('/projects/active', (req, res) => {
   Project.find(
     { $and: [
       { status: 'Ongoing' },
-      { expiryDate: { $lt: moment() } }
+      { expiryDate: { $gt: moment() } }
     ]},
     '', (error, projects) => {
     if (error) {

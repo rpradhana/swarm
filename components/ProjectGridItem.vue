@@ -16,7 +16,7 @@
           </div>
           <div>
             <strong>Expense: </strong>
-            {{ format('currency', format('comma', expense)) }}
+            {{ format('currency', format('comma', Math.round(expense * 100) / 100)) }}
           </div>
           <div v-if="modelDate && modelDate !== 'null'">
             <strong>Latest model: </strong>

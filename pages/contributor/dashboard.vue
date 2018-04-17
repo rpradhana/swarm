@@ -23,6 +23,11 @@
                 <i class="material-icons secondary-cta-link offset-min">expand_{{ row.detailsShowing ? 'more' : 'less'}}</i>
               </b-button>
             </template>
+
+            <template slot="earnings" slot-scope="row">
+              ${{ format('comma', row.value) }}
+            </template>
+
             <template slot="##" slot-scope="row">
               <b-button variant="light" class="mr-3">
                 Preview

@@ -87,7 +87,7 @@
                     <b-form-input id="classes"
                                   type="text"
                                   v-model="label.class"
-                                  :placeholder="'Class ' + index"/>
+                                  :placeholder="'Class ' + (index + 1)"/>
                   </b-col>
                   <b-col class="pl-0 pr-0" v-if="Project.typeSelected === 'modelling'">
                     <b-form-file multiple
