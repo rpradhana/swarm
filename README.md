@@ -1,6 +1,17 @@
 # swarm
 
-> NTU Final Year Project
+#### NTU Final Year Project
+
+Raymond Aditya Pradhana
+
+U1420238K
+
+> #### Task design for crowdsourcing platform
+>
+> In a crowdsourcing platform, a task is broken down into microtasks that are then assigned to
+many workers, whose answers are aggregated to form the final answer to the original task. In
+this project, we implement and evaluate task design strategies to determine their effectiveness.
+The student will be required to build an online platform to demo the strategies.
 
 ## Build Setup
 
@@ -11,12 +22,6 @@ $ npm install # Or yarn install
 # serve with hot reload at localhost:3000
 $ npm run dev
 
-# build for production and launch server
-$ npm start
+# launch nuxt as single page application
+$ npm run nuxt
 ```
-
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
-
-## Backpack
-
-We use [backpack](https://github.com/palmerhq/backpack) to watch and build the application, so you can use the latest ES6 features (module syntax, async/await, etc.).
